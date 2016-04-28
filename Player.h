@@ -22,9 +22,14 @@ public:
 	cocos2d::Action* animDie;
 	cocos2d::Action* stopAim;
 	
+	//player state ui
+	cocos2d::Sprite* hpBar;
+	cocos2d::Sprite* uiWindow;
+	cocos2d::Sprite* pace;
 	virtual bool init();
 
 	//애니메이셔 실행함수
+	void setPlayerUI(cocos2d::Vec2 pos, cocos2d::Layer* uiLayer);
 	void atkAction();
 	void sheildAction();
 	void idleAction();

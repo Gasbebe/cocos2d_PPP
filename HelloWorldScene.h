@@ -71,6 +71,8 @@ public:
 	cocos2d::SpriteFrameCache *cache;
 	void setCharectorAnimations();
 
+	//background
+	cocos2d::Sprite* bg;
 	void Test(Ref* pSender);
 	void Test2(Ref* pSender);
 	protected:

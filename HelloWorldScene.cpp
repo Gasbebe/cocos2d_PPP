@@ -38,17 +38,18 @@ bool HelloWorld::init()
 	*/
 
 	setCharectorAnimations();
+
 	//menuItem  atkBtn  SheildBtn 
 	auto pMenuItem = MenuItemImage::create(
-		"button/button1_100px.png",
-		"button/button2_100px.png"
+		"button/atk_btn.png",
+		"button/atk_btn_press.png"
 		,CC_CALLBACK_1(HelloWorld::Test, this));
 	pMenuItem->setPosition(Vec2(winSize.width / 8, winSize.height / 8));
 
 	
 	auto pMenuItem2 = MenuItemImage::create(
-		"button/button1_100px.png",
-		"button/button2_100px.png"
+		"button/shield_btn.png",
+		"button/shield_btn_press.png"
 		,CC_CALLBACK_1(HelloWorld::Test2, this));
 	pMenuItem2->setPosition(Vec2((winSize.width / 8) * 7, winSize.height / 8));
 	
@@ -69,6 +70,11 @@ bool HelloWorld::init()
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
 
+	//backgrond
+	bg = Sprite::create("UI/bg.png");
+	bg->setPosition(Vec2(winSize.width/2, winSize.height/2));
+	bg->setZOrder(-1);
+	this->addChild(bg);
 	//sprite add body 
 	this->addNewSprite(player1->getPosition(), Size(50, 50), b2_dynamicBody, player1, 0);
 	return true;
@@ -319,8 +325,8 @@ void HelloWorld::setCharectorAnimations() {
 	//player animation shield
 	Vector<SpriteFrame*> player1_animFramesShield;
 
-	for (int i = 1; i < 12; i++) {
-		sprintf(str, "f1_elyxstormblade_attack_%003d.png", i);
+	for (int i = 1; i < 7; i++) {
+		sprintf(str, "f1_elyxstormblade_run_007.png");
 		SpriteFrame* frame = cache->getSpriteFrameByName(str);
 		player1_animFramesShield.pushBack(frame);
 	}
@@ -370,6 +376,7 @@ void HelloWorld::setCharectorAnimations() {
 	player1->animIdle->retain();
 
 	player1->EndAnimation();
+	player1->setPlayerUI(Vec2(winSize.width / 2, winSize.height / 2), this);
 
 	player2 = new Player(10, 10, 10);
 	player3 = new Player(20, 20, 20);

@@ -67,3 +67,19 @@ void Player::EndAnimation() {
 void Player::StartAnimation() {
 	this->runAction(animIdle);
 }
+
+
+void Player::setPlayerUI(Vec2 pos, Layer* uiLayer) {
+
+	uiWindow = Sprite::create("UI/ui.png");
+	uiWindow->setPosition(pos);
+	uiLayer->addChild(uiWindow);
+	//cocos2d::Sprite* pace;
+
+	Size ui_winSize = uiWindow->getContentSize();
+	hpBar = Sprite::create("UI/hp_bar.png");
+	hpBar->setAnchorPoint(Vec2(0, 0));
+	hpBar->setPosition(Vec2(ui_winSize.width, ui_winSize.height));
+	uiWindow->addChild(hpBar);
+
+}
