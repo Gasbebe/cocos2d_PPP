@@ -38,6 +38,12 @@ bool HelloWorld::init()
 	*/
 
 	setCharectorAnimations();
+	
+	//command 
+	command = new Command();
+	command->setPosition(Vec2(winSize.width / 2, (winSize.height / 8) * 7));
+	this->addChild(command);
+	//
 
 	//menuItem  atkBtn  SheildBtn 
 	auto pMenuItem = MenuItemImage::create(
@@ -57,25 +63,16 @@ bool HelloWorld::init()
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu);
 
-	//command 
-	command = new Command();
-	command->setPosition(Vec2(winSize.width / 2, (winSize.height / 8) * 7));
-	this->addChild(command);
-	//
-	
-
-	//monster
-	
 	if (createBox2dWorld(true)) {
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
 
 	//backgrond
 	
-	//bg = Sprite::create("UI/bg.png");
-	//bg->setPosition(Vec2(winSize.width/2, winSize.height/2));
-	//bg->setZOrder(-1);
-	//this->addChild(bg);
+	bg = Sprite::create("UI/bg.png");
+	bg->setPosition(Vec2(winSize.width/2, winSize.height/2));
+	bg->setZOrder(-1);
+	this->addChild(bg);
 	
 
 	//sprite add body 
@@ -254,13 +251,14 @@ b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, Spr
 
 //atk btn 이름 나중에 바꾸기
 void HelloWorld::Test(Ref* pSender) {
-	//player1->atkAction();
 	log("test");
-	command->ViewCommand(1);
+	//1 이면 빨강색 버튼 2이면 파랑색버튼
+	command->ViewCommand(1); 
 	int count;
 
+	//커맨드 3칸이 넘으면 
 	count = command->count;
-	if (count == 4) {
+	if (count > 3) {
 		onAction();
 	}
 }
@@ -272,7 +270,7 @@ void HelloWorld::Test2(Ref* pSender) {
 	int count;
 
 	count = command->count;
-	if (count == 4) {
+	if (count > 3) {
 		onAction();
 	}
 	//player1->showState();
