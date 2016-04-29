@@ -71,12 +71,17 @@ bool HelloWorld::init()
 	}
 
 	//backgrond
-	bg = Sprite::create("UI/bg.png");
-	bg->setPosition(Vec2(winSize.width/2, winSize.height/2));
-	bg->setZOrder(-1);
-	this->addChild(bg);
+	
+	//bg = Sprite::create("UI/bg.png");
+	//bg->setPosition(Vec2(winSize.width/2, winSize.height/2));
+	//bg->setZOrder(-1);
+	//this->addChild(bg);
+	
+
 	//sprite add body 
-	this->addNewSprite(player1->getPosition(), Size(50, 50), b2_dynamicBody, player1, 0);
+	playerBody = addNewSprite(player1->getPosition(), Size(50, 50), b2_dynamicBody, player1, 0);
+	this->addNewSprite(monster->getPosition(), Size(80, 150), b2_dynamicBody, monster, 0);
+	
 	return true;
 }
 
@@ -205,6 +210,13 @@ void HelloWorld::tick(float dt) {
 			spriteData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
 		}
 	}
+	//player1, 2, ,3 이 다완성 되면 for문으로 묶어 3개를 다돌린다
+	if (player1->ps == player1->Run) {
+		playerBody->ApplyForceToCenter(b2Vec2(30, 0), true);
+	}
+	else if (player1->ps == player1->Sheild) {
+		playerBody->ApplyForceToCenter(b2Vec2(-30, 0), true);
+	}
 }
 
 b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, Sprite* sprtie, int type) {
@@ -239,9 +251,6 @@ b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, Spr
 
 	return body;
 }
-
-
-
 
 //atk btn 이름 나중에 바꾸기
 void HelloWorld::Test(Ref* pSender) {
@@ -346,7 +355,12 @@ void HelloWorld::setCharectorAnimations() {
 
 	auto p1_run_animation = Animation::createWithSpriteFrames(player1_animFramesRun, 0.1f);
 	auto p1_run_animate = Animate::create(p1_run_animation);
-	auto player1_AnimRun = Sequence::create(p1_run_animate, player1->stopAim, nullptr);
+	auto player1_AnimRun = RepeatForever::create(p1_run_animate);
+
+	//검사 액션
+	auto act = Spawn::create(player1_AnimRun, MoveBy::create(2, Vec2(200,0)),nullptr);
+	//auto seq = Sequence::create(act, p1_atk_animate, nullptr);
+
 
 	//player animation die
 	Vector<SpriteFrame*> player1_animFramesDie;
@@ -375,9 +389,92 @@ void HelloWorld::setCharectorAnimations() {
 	player1->animIdle = player1_AnimIdle;
 	player1->animIdle->retain();
 
+	player1->animRun = player1_AnimRun;
+	player1->animRun->retain();
+
 	player1->EndAnimation();
-	player1->setPlayerUI(Vec2(winSize.width / 2, winSize.height / 2), this);
+	player1->setUI(Vec2(winSize.width / 4, winSize.height / 8), this);
 
 	player2 = new Player(10, 10, 10);
 	player3 = new Player(20, 20, 20);
+
+
+	//////////////////////////////
+	//       monster            //
+	/////////////////////////////
+
+	monster = new Monster(1000);
+
+	//monster animation idle
+	Vector<SpriteFrame*> monster_animFramesIdle;
+
+	for (int i = 1; i < 14; i++) {
+		sprintf(str, "f5_altgeneral_idle_%003d.png", i);
+		SpriteFrame* frame = cache->getSpriteFrameByName(str);
+		monster_animFramesIdle.pushBack(frame);
+	}
+
+	auto m_idle_animation = Animation::createWithSpriteFrames(monster_animFramesIdle, 0.1f);
+	auto m_idle_animate = Animate::create(m_idle_animation);
+	auto m_AnimIdle = RepeatForever::create(m_idle_animate);
+
+	//monster animation atk
+	Vector<SpriteFrame*> monster_animFramesAtk;
+
+	for (int i = 1; i < 19; i++) {
+		sprintf(str, "f5_altgeneral_attack_%003d.png", i);
+		SpriteFrame* frame = cache->getSpriteFrameByName(str);
+		monster_animFramesAtk.pushBack(frame);
+	}
+
+	auto m_atk_animation = Animation::createWithSpriteFrames(player1_animFramesAtk, 0.1f);
+	auto m_atk_animate = Animate::create(p1_atk_animation);
+	auto m_AnimAtk = Sequence::create(m_atk_animate, nullptr);
+
+	//monster animation shield
+	Vector<SpriteFrame*> monster_animFramesShield;
+
+	for (int i = 1; i < 7; i++) {
+		sprintf(str, "f5_altgeneral_run_007.png");
+		SpriteFrame* frame = cache->getSpriteFrameByName(str);
+		monster_animFramesShield.pushBack(frame);
+	}
+
+	auto m_shield_animation = Animation::createWithSpriteFrames(monster_animFramesShield, 0.1f);
+	auto m_shield_animate = Animate::create(m_shield_animation);
+	auto monster_AnimShield = Sequence::create(m_shield_animate, nullptr);
+
+	//monster animation run
+	Vector<SpriteFrame*> monster_animFramesRun;
+
+	for (int i = 1; i < 8; i++) {
+		sprintf(str, "f5_altgeneral_run_%003d.png", i);
+		SpriteFrame* frame = cache->getSpriteFrameByName(str);
+		monster_animFramesRun.pushBack(frame);
+	}
+
+	auto m_run_animation = Animation::createWithSpriteFrames(monster_animFramesRun, 0.1f);
+	auto m_run_animate = Animate::create(m_run_animation);
+	auto m_AnimRun = Sequence::create(m_run_animate, nullptr);
+
+	//monster animation die
+	Vector<SpriteFrame*> monster_animFramesDie;
+
+	for (int i = 1; i < 14; i++) {
+		sprintf(str, "f5_altgeneral_death_%003d.png", i);
+		SpriteFrame* frame = cache->getSpriteFrameByName(str);
+		monster_animFramesDie.pushBack(frame);
+	}
+
+	auto m_die_animation = Animation::createWithSpriteFrames(monster_animFramesDie, 0.1f);
+	auto m_die_animate = Animate::create(m_die_animation);
+	auto m_AnimDie = Sequence::create(m_die_animate, nullptr);
+
+	monster->setSpriteFrame("f5_altgeneral_idle_000.png");
+	monster->setPosition(Vec2((winSize.width / 8) * 7, winSize.height / 2));
+	monster->setFlipX(true);
+	monster->setScale(1.5f);
+	monster->runAction(m_AnimIdle);
+	this->addChild(monster);
+	
 }

@@ -1,7 +1,7 @@
 #include "Player.h"
 
 USING_NS_CC;
-
+//생성될때 초기화
 Player::Player(double hp, double maxhp, double def){
 	playerHp = hp;
 	playerMaxhp = maxhp;
@@ -12,16 +12,20 @@ Player::Player(double hp, double maxhp, double def){
 		this->autorelease();
 	}
 	ps = Idle;
+
+	//애니이션 멈춤 상태 확인
 	stopAim = CallFunc::create(CC_CALLBACK_0(Player::EndAnimation,this));
 }
+
 bool Player::init() {
 	return true;
 }
 
 void Player::setAction(bool type) {
-	if (ps == Idle) {
+	if (ps == Idle  || ps == Run) {
 		if (type) {
-			atkAction();
+			runAction2();
+			//atkAction();
 		}
 		else {
 			sheildAction();
@@ -31,11 +35,16 @@ void Player::setAction(bool type) {
 		return;
 	}
 }
-
+//Repeatforever 애니메이션은 예외처리
 void Player::atkAction() {
 	//runAction
-	//animatk;
-	this->stopAction(animIdle);
+	if (ps == Idle) {
+		this->stopAction(animIdle);
+	}
+	else if (ps == Run) {
+		this->stopAction(animRun);
+	}
+
 	ps = Atk;
 	this->runAction(animAtk);
 	log("공격");
@@ -43,8 +52,14 @@ void Player::atkAction() {
 
 void Player::sheildAction() {
 	//runAction
-	//auto act = animsheild;
-	this->stopAction(animIdle);
+	if (ps == Idle) {
+		this->stopAction(animIdle);
+	}
+	else if (ps == Run) {
+		this->stopAction(animRun);
+	}
+
+	//this->stopAction(animIdle);
 	ps = Sheild;
 	log("방어");
 	this->runAction(animSheild);
@@ -53,6 +68,7 @@ void Player::sheildAction() {
 
 //상태보기
 void Player::showState() {
+	
 	log("%f",playerHp);
 	log("%f", playerMaxhp);
 	log("%f", playerDef);
@@ -60,16 +76,35 @@ void Player::showState() {
 
 //기본상태로 돌아가기 위한 함수
 void Player::EndAnimation() {
+	
+	idleAction();
+}
+
+void Player::StartAnimation() {
+	idleAction();
+}
+
+void Player::idleAction() {
 	ps = Idle;
 	this->runAction(animIdle);
 }
 
-void Player::StartAnimation() {
-	this->runAction(animIdle);
+void Player::runAction2() {
+	if (ps == Idle) {
+		this->stopAction(animIdle);
+	}
+	else if (ps == Run) {
+		this->stopAction(animRun);
+	}
+	ps = Run;
+	this->runAction(animRun);
 }
 
+void Player::dieAction() {
+	this->runAction(animDie);
+}
 
-void Player::setPlayerUI(Vec2 pos, Layer* uiLayer) {
+void Player::setUI(Vec2 pos, Layer* uiLayer) {
 
 	uiWindow = Sprite::create("UI/ui.png");
 	uiWindow->setPosition(pos);

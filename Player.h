@@ -8,7 +8,7 @@ using namespace cocos2d;
 class Player : public cocos2d::Sprite{
 public:
 
-	enum playerState{Idle, Atk, Sheild, Die};
+	enum playerState{Idle, Atk, Sheild, Die, Run};
 	playerState ps;
 
 	Player(double hp, double maxhp, double def);
@@ -29,7 +29,7 @@ public:
 	virtual bool init();
 
 	//애니메이셔 실행함수
-	void setPlayerUI(cocos2d::Vec2 pos, cocos2d::Layer* uiLayer);
+	void setUI(cocos2d::Vec2 pos, cocos2d::Layer* uiLayer);
 	void atkAction();
 	void sheildAction();
 	void idleAction();

@@ -61,6 +61,7 @@ public:
 
 	//Player
 	Player* player1;
+	b2Body* playerBody;
 	Player* player2;
 	Player* player3;
 
