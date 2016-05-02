@@ -15,6 +15,11 @@ Player::Player(double hp, double maxhp, double def){
 
 	//¾Ö´ÏÀÌ¼Ç ¸ØÃã »óÅÂ È®ÀÎ
 	stopAim = CallFunc::create(CC_CALLBACK_0(Player::EndAnimation,this));
+
+	bodyColl = Sprite::create("collisionBox/collisionBox.png");
+	bodyColl->setPosition(Vec2(50,40));
+	bodyColl->setZOrder(-1);
+	this->addChild(bodyColl);
 }
 
 bool Player::init() {
@@ -22,7 +27,7 @@ bool Player::init() {
 }
 
 void Player::setAction(bool type) {
-	if (ps == Idle  || ps == Run) {
+	if (ps == Idle  || ps == Run || ps == Atk) {
 		if (type) {
 			runAction2();
 			//atkAction();
@@ -44,6 +49,9 @@ void Player::atkAction() {
 	else if (ps == Run) {
 		this->stopAction(animRun);
 	}
+	else if (ps == Atk) {
+		this->stopAction(animAtk);
+	}
 
 	ps = Atk;
 	this->runAction(animAtk);
@@ -52,11 +60,15 @@ void Player::atkAction() {
 
 void Player::sheildAction() {
 	//runAction
+
 	if (ps == Idle) {
 		this->stopAction(animIdle);
 	}
 	else if (ps == Run) {
 		this->stopAction(animRun);
+	}
+	else if (ps == Atk) {
+		this->stopAction(animAtk);
 	}
 
 	//this->stopAction(animIdle);
@@ -96,6 +108,9 @@ void Player::runAction2() {
 	else if (ps == Run) {
 		this->stopAction(animRun);
 	}
+	else if (ps == Atk) {
+		this->stopAction(animAtk);
+	}
 	ps = Run;
 	this->runAction(animRun);
 }
@@ -108,6 +123,7 @@ void Player::setUI(Vec2 pos, Layer* uiLayer) {
 
 	uiWindow = Sprite::create("UI/ui.png");
 	uiWindow->setPosition(pos);
+	uiWindow->setScale(0.8);
 	uiLayer->addChild(uiWindow);
 	//cocos2d::Sprite* pace;
 

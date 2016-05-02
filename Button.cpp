@@ -35,6 +35,10 @@ void Button::onTouchEnded(Touch* touch, Event* event) {
 
 	this->setOpacity(200.0f);
 	log("button exit");
+	atkCommnad->ViewCommand(1);
 
+}
+void Button::setCommand(Command* command) {
+	atkCommnad = command;
 }
 

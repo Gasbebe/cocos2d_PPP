@@ -9,7 +9,7 @@ using namespace cocos2d;
 class Command : public cocos2d::Sprite {
 public:
 	Command();
-	int count = 1;
+	int count;
 	bool bOnActive;
 
 	//true¸é  atk  false¸é  sheild
@@ -32,4 +32,3 @@ public:
 };
 
 #endif
-#pragma once

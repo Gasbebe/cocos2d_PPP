@@ -22,6 +22,7 @@ public:
 	cocos2d::Action* stopAim;
 
 	//player state ui
+	cocos2d::Sprite* bodyColl;
 	cocos2d::Sprite* hpBar;
 	cocos2d::Sprite* uiWindow;
 	cocos2d::Sprite* pace;

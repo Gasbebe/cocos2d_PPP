@@ -2,7 +2,7 @@
 #include "HelloWorldScene.h"
 
 Command::Command() {
-	
+	count = 1;
 
 	bool bOk = initWithTexture(nullptr, Rect::ZERO);
 	if (bOk) {
@@ -96,7 +96,7 @@ void Command::ViewCommand(int number) {
 										DelayTime::create(1.0f), CallFunc::create(CC_CALLBACK_0(Command::setOnActive, this)), nullptr);
 			this->runAction(seq);
 		}
-		count = count + 1;
+		count++;
 	}
 	else {
 		log("¾È´­¸²");

@@ -29,6 +29,8 @@ public:
 	
 	virtual void onEnter();
 	virtual void onExit();
+	//shooting
+	void shooting();
 
 	//touch
 	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
@@ -42,7 +44,6 @@ public:
 
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype,
 						 Sprite* spriteName, int type);
-
 	b2World* _world;
 	GLESDebugDraw* m_debugDraw;
 
@@ -50,7 +51,7 @@ public:
 	b2Body* dragBody;
 	b2MouseJoint* mouseJoint;
 	b2Body *gbody;
-
+	
 	//button
 	Button* atkBtn;
 	Button* shelidBtn;
@@ -61,13 +62,19 @@ public:
 
 	//Player
 	Player* player1;
-	b2Body* playerBody;
+	b2Body* player1Body;
 	Player* player2;
+	b2Body* player2Body;
 	Player* player3;
+	b2Body* player3Body;
 
 	//Monster
 	Monster* monster;
 	
+	//Bullet
+	cocos2d::Sprite* arrow;
+	cocos2d::Sprite* bullet;
+
 	//animation SpriteFrameCahe createWithTexture
 	cocos2d::SpriteFrameCache *cache;
 	void setCharectorAnimations();
