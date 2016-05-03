@@ -19,6 +19,8 @@ bool HelloWorld::init()
 		return false;
 	}
 
+	b_bullet = false;
+
 	winSize = Director::getInstance()->getWinSize();
 	texture = Director::getInstance()->
 		getTextureCache()->
@@ -37,11 +39,11 @@ bool HelloWorld::init()
 	//atkBtn->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	//this->addChild(atkBtn);
 
-	shelidBtn = new Button();
-	shelidBtn->setTexture("button/button1_100px.png");
-	shelidBtn->setPosition(Vec2(winSize.width / 2 - 200, winSize.height / 2));
-	shelidBtn->setCommand(command);
-	this->addChild(shelidBtn);
+	//shelidBtn = new Button();
+	//shelidBtn->setTexture("button/button1_100px.png");
+	//shelidBtn->setPosition(Vec2(winSize.width / 2 - 200, winSize.height / 2));
+	//shelidBtn->setCommand(command);
+	//this->addChild(shelidBtn);
 	
 	setCharectorAnimations();
 	
@@ -72,7 +74,7 @@ bool HelloWorld::init()
 	
 	bg = Sprite::create("UI/bg.png");
 	bg->setPosition(Vec2(winSize.width/2, winSize.height/2));
-	bg->setZOrder(-1);
+	bg->setZOrder(-3);
 	this->addChild(bg);
 	
 
@@ -81,7 +83,7 @@ bool HelloWorld::init()
 	player2Body = addNewSprite(player2->getPosition(), Size(50, 50), b2_dynamicBody, player2, 0);
 	player3Body = addNewSprite(player3->getPosition(), Size(50, 50), b2_dynamicBody, player3, 0);
 
-	this->addNewSprite(monster->getPosition(), Size(80, 140), b2_dynamicBody, monster, 1);
+	this->addNewSprite(monsterColl->getPosition(), monsterColl->getContentSize(), b2_dynamicBody, monsterColl, 1);
 	
 	return true;
 }
@@ -142,6 +144,7 @@ HelloWorld::~HelloWorld() {
 	_world = nullptr;
 }
 
+
 void HelloWorld::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 {
 	Layer::draw(renderer, transform, flags);
@@ -150,6 +153,7 @@ void HelloWorld::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 	_customCmd.func = CC_CALLBACK_0(HelloWorld::onDraw, this, transform, flags);
 	renderer->addCommand(&_customCmd);
 }
+
 
 void HelloWorld::onDraw(const Mat4 &transform, uint32_t flags)
 {
@@ -164,6 +168,7 @@ void HelloWorld::onDraw(const Mat4 &transform, uint32_t flags)
 
 	director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
 }
+
 
 void HelloWorld::onEnter() {
 	Layer::onEnter();
@@ -217,15 +222,26 @@ void HelloWorld::tick(float dt) {
 			spriteData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
 		}
 	}
+
+	//player2 화살체크
+	for (int i = 0; i < _arrow.size(); i++) {
+		auto arrows = (Sprite*)_arrow.at(i);
+		if (arrow->boundingBox().intersectsRect(monsterColl->boundingBox())){
+			removeChild(arrow, false);
+			_arrow.erase(_arrow.begin()+i);		
+		}
+	}
+
 	//player1, 2, ,3 이 다완성 되면 for문으로 묶어 3개를 다돌린다
 	//플레이어 이동제어
+	//-----------------------------------------------------------
 	for (int i = 1; i < 4; i++) {
 		if (i == 1) {
 			if (player1->ps == player1->Run) {
 				double dis;
-				dis = monster->getPosition().x - player1->getPosition().x;
+				dis = monsterColl->getPosition().x - player1->getPosition().x;
 				if (dis > 300) {
-					log("%f", dis);
+					//log("%f", dis);
 					player1Body->ApplyForceToCenter(b2Vec2(35, 0), true);
 				}
 				else {
@@ -239,15 +255,16 @@ void HelloWorld::tick(float dt) {
 		else if (i == 2) {
 			if (player2->ps == player2->Run) {
 				double dis;
-				dis = monster->getPosition().x - player2->getPosition().x;
+				dis = monsterColl->getPosition().x - player2->getPosition().x;
 				if (dis > 300) {
-					log("%f", dis);
+					//log("%f", dis);
 					player2Body->ApplyForceToCenter(b2Vec2(35, 0), true);
 				}
 				else {
 					player2->atkAction();
-					
-					auto seq = Sequence::create(DelayTime::create(0.5), CallFunc::create(CC_CALLBACK_0(HelloWorld::shooting, this)), nullptr);
+
+					//슈팅부분
+					auto seq = Sequence::create(DelayTime::create(0.7), CallFunc::create(CC_CALLBACK_0(HelloWorld::shooting, this)), nullptr);
 					this->runAction(seq);
 				}
 			}
@@ -258,7 +275,7 @@ void HelloWorld::tick(float dt) {
 		else {
 			if (player3->ps == player3->Run) {
 				double dis;
-				dis = monster->getPosition().x - player3->getPosition().x;
+				dis = monsterColl->getPosition().x - player3->getPosition().x;
 				if (dis > 66) {
 					//log("%f", dis);
 					player3Body->ApplyForceToCenter(b2Vec2(27, 0), true);
@@ -726,11 +743,24 @@ void HelloWorld::setCharectorAnimations() {
 	auto m_AnimDie = Sequence::create(m_die_animate, nullptr);
 
 	monster->setSpriteFrame("f5_altgeneral_idle_000.png");
-	monster->setPosition(Vec2((winSize.width / 8) * 7, winSize.height / 2));
 	monster->setFlipX(true);
 	monster->setScale(1.5f);
 	monster->runAction(m_AnimIdle);
-	this->addChild(monster);
+
+	//monster->bodyColl->setPosition(Vec2(winSize.width / 8 * 7, winSize.height / 2));
+	//this->addChild(monster->bodyColl);
+
+	monsterColl = Sprite::create("collisionBox/BossCollisionBox.png");
+	monsterColl->setPosition(Vec2((winSize.width / 8) * 7, winSize.height / 2));
+	monsterColl->setZOrder(-1);
+	this->addChild(monsterColl);
+
+	auto monCollSize = monsterColl->getContentSize();
+		 
+	monster->setPosition(Vec2(monCollSize.width/2, monCollSize.height/4 * 3));
+	monsterColl->addChild(monster);
+
+	
 	
 }
 
@@ -751,13 +781,18 @@ void HelloWorld::shooting() {
 
 	arrow = Sprite::create("Skill/4080arrow.png", Rect(0, 0, 80, 40));
 	arrow->setPosition(player2->getPosition());
-	//auto pMan = Sprite::createWithTexture(texture, Rect(0, 0, 85, 121));
 	this->addChild(arrow);
 
 	auto animate = Animate::create(animation);
 	auto rep = RepeatForever::create(animate);
 
-	auto spa = Spawn::create(MoveBy::create(2, Vec2(1000, 0)), rep, nullptr);
-	//auto seq = Sequence::create(DelayTime::create(0.5), spa, nullptr);
+	auto spa = Spawn::create(MoveBy::create(4, Vec2(1000, 0)), nullptr);
+
+	arrow->runAction(rep);
 	arrow->runAction(spa);
+	
+	log("bbb");
+	b_bullet = true;
+
+	_arrow.pushBack(arrow);
 }

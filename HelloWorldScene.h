@@ -29,8 +29,6 @@ public:
 	
 	virtual void onEnter();
 	virtual void onExit();
-	//shooting
-	void shooting();
 
 	//touch
 	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
@@ -63,17 +61,26 @@ public:
 	//Player
 	Player* player1;
 	b2Body* player1Body;
+	cocos2d::Sprite* player1Coll;
+
 	Player* player2;
 	b2Body* player2Body;
+	cocos2d::Sprite* player2Coll;
+
 	Player* player3;
+	cocos2d::Sprite* player3Coll;
 	b2Body* player3Body;
 
 	//Monster
 	Monster* monster;
-	
+	cocos2d::Sprite* monsterColl;
+
 	//Bullet
 	cocos2d::Sprite* arrow;
 	cocos2d::Sprite* bullet;
+
+	bool b_bullet;
+	void shooting();
 
 	//animation SpriteFrameCahe createWithTexture
 	cocos2d::SpriteFrameCache *cache;
@@ -83,9 +90,13 @@ public:
 	cocos2d::Sprite* bg;
 	void Test(Ref* pSender);
 	void Test2(Ref* pSender);
-	protected:
+
+protected:
 		void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
 		cocos2d::CustomCommand _customCmd;
+
+private:
+	cocos2d::Vector<cocos2d::Sprite*> _arrow;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

@@ -9,10 +9,10 @@ Monster::Monster(double maxhp) {
 		this->autorelease();
 	}
 
-	bodyColl = Sprite::create("collisionBox/BossCollisionBox.png");
-	bodyColl->setPosition(Vec2(60, 45));
-	bodyColl->setZOrder(-1);
-	this->addChild(bodyColl);
+	//bodyColl = Sprite::create("collisionBox/BossCollisionBox.png");
+	//bodyColl->setPosition(Vec2(60, 45));
+	//bodyColl->setZOrder(-1);
+	//this->addChild(bodyColl);
 }
 
 void Monster::setAction(bool type) {

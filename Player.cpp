@@ -52,6 +52,9 @@ void Player::atkAction() {
 	else if (ps == Atk) {
 		this->stopAction(animAtk);
 	}
+	else if (ps == Sheild) {
+		this->stopAction(animSheild);
+	}
 
 	ps = Atk;
 	this->runAction(animAtk);
@@ -69,6 +72,9 @@ void Player::sheildAction() {
 	}
 	else if (ps == Atk) {
 		this->stopAction(animAtk);
+	}
+	else if (ps == Sheild) {
+		this->stopAction(animSheild);
 	}
 
 	//this->stopAction(animIdle);
@@ -110,6 +116,9 @@ void Player::runAction2() {
 	}
 	else if (ps == Atk) {
 		this->stopAction(animAtk);
+	}
+	else if (ps == Sheild) {
+		this->stopAction(animSheild);
 	}
 	ps = Run;
 	this->runAction(animRun);

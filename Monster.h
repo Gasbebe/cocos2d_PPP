@@ -21,7 +21,7 @@ public:
 	cocos2d::Action* animDie;
 	cocos2d::Action* stopAim;
 
-	//player state ui
+	//monster state
 	cocos2d::Sprite* bodyColl;
 	cocos2d::Sprite* hpBar;
 	cocos2d::Sprite* uiWindow;
