@@ -31,9 +31,11 @@ bool HelloWorld::init()
 	command = new Command();
 	command->setPosition(Vec2(winSize.width / 2, (winSize.height / 8) * 7));
 	this->addChild(command);
-	//
 
-	//button
+	///////////
+	//button //
+	///////////
+
 	//atkBtn = new Button();
 	//atkBtn->setTexture("button/button2_100px.png");
 	//atkBtn->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
@@ -53,14 +55,14 @@ bool HelloWorld::init()
 		"button/atk_btn.png",
 		"button/atk_btn_press.png"
 		,CC_CALLBACK_1(HelloWorld::Test, this));
-	pMenuItem->setPosition(Vec2(winSize.width / 8, winSize.height / 8));
+	pMenuItem->setPosition(Vec2(winSize.width / 8 - 30, winSize.height / 8));
 
 	
 	auto pMenuItem2 = MenuItemImage::create(
 		"button/shield_btn.png",
 		"button/shield_btn_press.png"
 		,CC_CALLBACK_1(HelloWorld::Test2, this));
-	pMenuItem2->setPosition(Vec2((winSize.width / 8) * 7, winSize.height / 8));
+	pMenuItem2->setPosition(Vec2((winSize.width / 8) * 7 + 30,winSize.height / 8));
 	
 	auto menu = Menu::create(pMenuItem, pMenuItem2, nullptr);
 	menu->setPosition(Vec2::ZERO);
@@ -70,15 +72,38 @@ bool HelloWorld::init()
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
 
-	//backgrond
-	
-	bg = Sprite::create("UI/bg.png");
-	bg->setPosition(Vec2(winSize.width/2, winSize.height/2));
-	bg->setZOrder(-3);
-	this->addChild(bg);
-	
+	///////////////
+	//backgrond ///
+	//////////////
 
-	//sprite add body 
+	
+	//auto batch = SpriteBatchNode::create("background/16.png", 10);
+	//auto texture = batch->getTexture();
+
+	//auto animation = Animation::create();
+	//animation->setDelayPerUnit(0.1f);
+
+	//for (int i = 0; i < 18; i++) {
+	//	int colum = i % 5; // 0,1,2,3,4
+	//	int row = i / 4; //0,1,2
+	//					 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
+	//	animation->addSpriteFrameWithTexture(texture, Rect(colum * 200, row * 100, 200, 100));
+	//}
+
+	//auto bg = Sprite::create("background/16.png", Rect(0, 0, 200, 100));
+
+	//bg->setScale(3.8f);
+	//bg->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	//bg->setZOrder(-3);
+	//this->addChild(bg);
+
+	//auto animate = Animate::create(animation);
+	//auto rep = RepeatForever::create(animate);
+	//bg->runAction(rep);
+	
+	////////////////////
+	//sprite add body //
+	////////////////////
 	player1Body = addNewSprite(player1->getPosition(), Size(50, 50), b2_dynamicBody, player1, 0);
 	player2Body = addNewSprite(player2->getPosition(), Size(50, 50), b2_dynamicBody, player2, 0);
 	player3Body = addNewSprite(player3->getPosition(), Size(50, 50), b2_dynamicBody, player3, 0);
@@ -245,11 +270,12 @@ void HelloWorld::tick(float dt) {
 					player1Body->ApplyForceToCenter(b2Vec2(35, 0), true);
 				}
 				else {
+					player1Body->ApplyForceToCenter(b2Vec2(0, 1000), true);
 					player1->atkAction();
 				}
 			}
 			else if (player1->ps == player1->Sheild) {
-				player1Body->ApplyForceToCenter(b2Vec2(-35, 0), true);
+				player1Body->ApplyForceToCenter(b2Vec2(-27, 0), true);
 			}
 		}
 		else if (i == 2) {
@@ -261,8 +287,10 @@ void HelloWorld::tick(float dt) {
 					player2Body->ApplyForceToCenter(b2Vec2(35, 0), true);
 				}
 				else {
-					player2->atkAction();
 
+					player2Body->ApplyForceToCenter(b2Vec2(-550, 0), true);
+					player2->atkAction();
+					
 					//슈팅부분
 					auto seq = Sequence::create(DelayTime::create(0.7), CallFunc::create(CC_CALLBACK_0(HelloWorld::shooting, this)), nullptr);
 					this->runAction(seq);
@@ -276,7 +304,7 @@ void HelloWorld::tick(float dt) {
 			if (player3->ps == player3->Run) {
 				double dis;
 				dis = monsterColl->getPosition().x - player3->getPosition().x;
-				if (dis > 66) {
+				if (dis > 70) {
 					//log("%f", dis);
 					player3Body->ApplyForceToCenter(b2Vec2(27, 0), true);
 				}
@@ -285,7 +313,7 @@ void HelloWorld::tick(float dt) {
 				}
 			}
 			else if (player3->ps == player1->Sheild) {
-				player3Body->ApplyForceToCenter(b2Vec2(-30, 0), true);
+				player3Body->ApplyForceToCenter(b2Vec2(-27, 0), true);
 			}
 		}
 	}
@@ -421,8 +449,8 @@ void HelloWorld::setCharectorAnimations() {
 	//player1 animation shield
 	Vector<SpriteFrame*> player1_animFramesShield;
 
-	for (int i = 1; i < 7; i++) {
-		sprintf(str, "f1_sunstonetemplar_run_007.png");
+	for (int i = 0; i < 5; i++) {
+		sprintf(str, "f1_sunstonetemplar_death_%003d.png", i);
 		SpriteFrame* frame = cache->getSpriteFrameByName(str);
 		player1_animFramesShield.pushBack(frame);
 	}
@@ -480,7 +508,7 @@ void HelloWorld::setCharectorAnimations() {
 	player1->animRun->retain();
 
 	player1->EndAnimation();
-	player1->setUI(Vec2((winSize.width / 8 ) * 3 - 50, winSize.height / 8), this);
+	player1->setUI(Vec2((winSize.width / 8 ) * 3 - 70, winSize.height / 8), this);
 
 	//////////////////////////
 	//player2   /////////////
@@ -519,13 +547,13 @@ void HelloWorld::setCharectorAnimations() {
 	//player2 animation shield
 	Vector<SpriteFrame*> player2_animFramesShield;
 
-	for (int i = 1; i < 7; i++) {
-		sprintf(str, "neutral_mercswornavanger_run_007.png");
+	for (int i = 0; i < 3; i++) {
+		sprintf(str, "neutral_mercswornavanger_hit_%003d.png", i);
 		SpriteFrame* frame = cache->getSpriteFrameByName(str);
 		player2_animFramesShield.pushBack(frame);
 	}
 
-	auto p2_shield_animation = Animation::createWithSpriteFrames(player2_animFramesShield, 0.1f);
+	auto p2_shield_animation = Animation::createWithSpriteFrames(player2_animFramesShield, 0.15f);
 	auto p2_shield_animate = Animate::create(p2_shield_animation);
 	auto player2_AnimShield = Sequence::create(p2_shield_animate, player2->stopAim, nullptr);
 
@@ -666,7 +694,7 @@ void HelloWorld::setCharectorAnimations() {
 	player3->animRun->retain();
 
 	player3->EndAnimation();
-	player3->setUI(Vec2((winSize.width / 8)  * 5 + 50, winSize.height / 8), this);
+	player3->setUI(Vec2((winSize.width / 8)  * 5 + 70, winSize.height / 8), this);
 
 
 
@@ -786,7 +814,7 @@ void HelloWorld::shooting() {
 	auto animate = Animate::create(animation);
 	auto rep = RepeatForever::create(animate);
 
-	auto spa = Spawn::create(MoveBy::create(4, Vec2(1000, 0)), nullptr);
+	auto spa = Spawn::create(MoveBy::create(2.5f, Vec2(1000, 0)), nullptr);
 
 	arrow->runAction(rep);
 	arrow->runAction(spa);

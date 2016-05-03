@@ -93,12 +93,13 @@ void Command::ViewCommand(int number) {
 			}
 
 			auto seq = Sequence::create(CallFunc::create(CC_CALLBACK_0(Command::setOnActive, this)), 
-										DelayTime::create(1.0f), CallFunc::create(CC_CALLBACK_0(Command::setOnActive, this)), nullptr);
+										DelayTime::create(1.2f), CallFunc::create(CC_CALLBACK_0(Command::setOnActive, this)), nullptr);
 			this->runAction(seq);
 		}
 		count++;
 	}
 	else {
+		count = 1;
 		log("¾È´­¸²");
 	}
 }

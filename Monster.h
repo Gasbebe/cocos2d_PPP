@@ -38,7 +38,7 @@ public:
 
 	void setAction(bool type);
 	void showState();
-	void Hit();
+	void Hit(double _damage);
 
 };
 #endif // __HELLOWORLD_SCENE_H__

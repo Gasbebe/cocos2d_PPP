@@ -16,10 +16,10 @@ Player::Player(double hp, double maxhp, double def){
 	//¾Ö´ÏÀÌ¼Ç ¸ØÃã »óÅÂ È®ÀÎ
 	stopAim = CallFunc::create(CC_CALLBACK_0(Player::EndAnimation,this));
 
-	bodyColl = Sprite::create("collisionBox/collisionBox.png");
-	bodyColl->setPosition(Vec2(50,40));
-	bodyColl->setZOrder(-1);
-	this->addChild(bodyColl);
+//	bodyColl = Sprite::create("collisionBox/collisionBox.png");
+//	bodyColl->setPosition(Vec2(50,40));
+//	bodyColl->setZOrder(-1);
+//	this->addChild(bodyColl);
 }
 
 bool Player::init() {
@@ -130,7 +130,7 @@ void Player::dieAction() {
 
 void Player::setUI(Vec2 pos, Layer* uiLayer) {
 
-	uiWindow = Sprite::create("UI/ui.png");
+	uiWindow = Sprite::create("UI/player_ui.png");
 	uiWindow->setPosition(pos);
 	uiWindow->setScale(0.8);
 	uiLayer->addChild(uiWindow);
@@ -139,7 +139,7 @@ void Player::setUI(Vec2 pos, Layer* uiLayer) {
 	Size ui_winSize = uiWindow->getContentSize();
 	hpBar = Sprite::create("UI/hp_bar.png");
 	hpBar->setAnchorPoint(Vec2(0, 0));
-	hpBar->setPosition(Vec2(ui_winSize.width, ui_winSize.height));
+	hpBar->setPosition(Vec2(ui_winSize.width /2 - 10, ui_winSize.height /4  * 3));
 	uiWindow->addChild(hpBar);
 
 }
