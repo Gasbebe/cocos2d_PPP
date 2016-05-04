@@ -9,6 +9,7 @@
 #include "Command.h"
 #include "Player.h"
 #include "Monster.h"
+#include "Effect.h"
 
 #define PTM_RATIO 32
 
@@ -27,13 +28,6 @@ public:
 	cocos2d::Size winSize;
 	cocos2d::Texture2D* texture;
 	
-	virtual void onEnter();
-	virtual void onExit();
-
-	//touch
-	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
-	virtual void onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event);
-	virtual void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
 
 	//Box2d
 	void tick(float dt);
@@ -53,10 +47,10 @@ public:
 	//button
 	Button* atkBtn;
 	Button* shelidBtn;
-	
+
 	//command input
 	Command* command;
-	void onAction();
+	cocos2d::Layer* UILayer;
 
 	//Player
 	Player* player1;
@@ -88,8 +82,10 @@ public:
 
 	//background
 	cocos2d::Sprite* bg;
-	void Test(Ref* pSender);
-	void Test2(Ref* pSender);
+	cocos2d::Layer* bgLayer;
+	
+	//Effect
+	Effect* effect;
 
 protected:
 		void onDraw(const cocos2d::Mat4& transform, uint32_t flags);

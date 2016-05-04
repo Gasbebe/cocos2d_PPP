@@ -19,62 +19,44 @@ bool HelloWorld::init()
 		return false;
 	}
 
+	
+
 	b_bullet = false;
 
 	winSize = Director::getInstance()->getWinSize();
 	texture = Director::getInstance()->
 		getTextureCache()->
 		addImage("blocks.png");
-	
+
+	//effect  this부분에 Backgound 레이어 만들어서 넣을것
+	effect = new Effect();
+	effect->getTypeEffect(1, Vec2(winSize.width / 2, winSize.height / 2), this);
+	effect->getTypeEffect(2, Vec2(winSize.width / 2 + 10, winSize.height / 2), this);
+	effect->getTypeEffect(3, Vec2(winSize.width / 2 + 20, winSize.height / 2), this);
+	effect->getTypeEffect(4, Vec2(winSize.width / 2 + 30, winSize.height / 2), this);
+	effect->getTypeEffect(5, Vec2(winSize.width / 2 + 40, winSize.height / 2), this);
+	effect->getTypeEffect(1, Vec2(winSize.width / 2 + 50, winSize.height / 2), this);
+	effect->getTypeEffect(1, Vec2(winSize.width / 2 + 60, winSize.height / 2), this);
+	effect->getTypeEffect(1, Vec2(winSize.width / 2 + 70, winSize.height / 2), this);
+	effect->getTypeEffect(1, Vec2(winSize.width / 2 + 80, winSize.height / 2), this);
 
 	//command 
 	command = new Command();
 	command->setPosition(Vec2(winSize.width / 2, (winSize.height / 8) * 7));
+
+	//btn
+	command->setBtnUI(Vec2(0, 0), this);
 	this->addChild(command);
-
-	///////////
-	//button //
-	///////////
-
-	//atkBtn = new Button();
-	//atkBtn->setTexture("button/button2_100px.png");
-	//atkBtn->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	//this->addChild(atkBtn);
-
-	//shelidBtn = new Button();
-	//shelidBtn->setTexture("button/button1_100px.png");
-	//shelidBtn->setPosition(Vec2(winSize.width / 2 - 200, winSize.height / 2));
-	//shelidBtn->setCommand(command);
-	//this->addChild(shelidBtn);
 	
 	setCharectorAnimations();
 	
-
-	//menuItem  atkBtn  SheildBtn 
-	auto pMenuItem = MenuItemImage::create(
-		"button/atk_btn.png",
-		"button/atk_btn_press.png"
-		,CC_CALLBACK_1(HelloWorld::Test, this));
-	pMenuItem->setPosition(Vec2(winSize.width / 8 - 30, winSize.height / 8));
-
-	
-	auto pMenuItem2 = MenuItemImage::create(
-		"button/shield_btn.png",
-		"button/shield_btn_press.png"
-		,CC_CALLBACK_1(HelloWorld::Test2, this));
-	pMenuItem2->setPosition(Vec2((winSize.width / 8) * 7 + 30,winSize.height / 8));
-	
-	auto menu = Menu::create(pMenuItem, pMenuItem2, nullptr);
-	menu->setPosition(Vec2::ZERO);
-	this->addChild(menu);
-
 	if (createBox2dWorld(true)) {
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
-
+	
 	///////////////
 	//backgrond ///
-	//////////////
+	///////////////
 
 	
 	//auto batch = SpriteBatchNode::create("background/16.png", 10);
@@ -104,6 +86,7 @@ bool HelloWorld::init()
 	////////////////////
 	//sprite add body //
 	////////////////////
+
 	player1Body = addNewSprite(player1->getPosition(), Size(50, 50), b2_dynamicBody, player1, 0);
 	player2Body = addNewSprite(player2->getPosition(), Size(50, 50), b2_dynamicBody, player2, 0);
 	player3Body = addNewSprite(player3->getPosition(), Size(50, 50), b2_dynamicBody, player3, 0);
@@ -169,7 +152,6 @@ HelloWorld::~HelloWorld() {
 	_world = nullptr;
 }
 
-
 void HelloWorld::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 {
 	Layer::draw(renderer, transform, flags);
@@ -178,7 +160,6 @@ void HelloWorld::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 	_customCmd.func = CC_CALLBACK_0(HelloWorld::onDraw, this, transform, flags);
 	renderer->addCommand(&_customCmd);
 }
-
 
 void HelloWorld::onDraw(const Mat4 &transform, uint32_t flags)
 {
@@ -192,43 +173,6 @@ void HelloWorld::onDraw(const Mat4 &transform, uint32_t flags)
 	CHECK_GL_ERROR_DEBUG();
 
 	director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-}
-
-
-void HelloWorld::onEnter() {
-	Layer::onEnter();
-
-	Device::setAccelerometerEnabled(true);
-	auto listener = EventListenerTouchOneByOne::create();
-	auto listener2 = EventListenerAcceleration::create(CC_CALLBACK_2(HelloWorld::onAcceleration, this));
-
-	listener->setSwallowTouches(true);
-
-	listener->onTouchBegan = CC_CALLBACK_2(HelloWorld::onTouchBegan, this);
-	listener->onTouchMoved = CC_CALLBACK_2(HelloWorld::onTouchMoved, this);
-	listener->onTouchEnded = CC_CALLBACK_2(HelloWorld::onTouchEnded, this);
-
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener2, this);
-
-}
-
-void HelloWorld::onExit() {
-	_eventDispatcher->removeEventListenersForType(EventListener::Type::TOUCH_ONE_BY_ONE);
-	//Device::setAccelerometerEnabled(false);
-	Layer::onExit();
-}
-
-bool HelloWorld::onTouchBegan(Touch *touch, Event *event) {
-	return true;
-}
-
-void HelloWorld::onTouchMoved(Touch *touch, Event *event) {
-
-}
-
-void HelloWorld::onTouchEnded(Touch *touch, Event *event) {
-
 }
 
 void HelloWorld::tick(float dt) {
@@ -270,7 +214,8 @@ void HelloWorld::tick(float dt) {
 					player1Body->ApplyForceToCenter(b2Vec2(35, 0), true);
 				}
 				else {
-					player1Body->ApplyForceToCenter(b2Vec2(0, 1000), true);
+					//힐을 할때 뒤로 밀려난다
+					player1Body->ApplyForceToCenter(b2Vec2(-400, 0), true);
 					player1->atkAction();
 				}
 			}
@@ -280,14 +225,15 @@ void HelloWorld::tick(float dt) {
 		}
 		else if (i == 2) {
 			if (player2->ps == player2->Run) {
+
 				double dis;
 				dis = monsterColl->getPosition().x - player2->getPosition().x;
-				if (dis > 300) {
-					//log("%f", dis);
+
+				if (dis > 200) {
 					player2Body->ApplyForceToCenter(b2Vec2(35, 0), true);
 				}
 				else {
-
+					//활을 쏠때 뒤로밀려난다
 					player2Body->ApplyForceToCenter(b2Vec2(-550, 0), true);
 					player2->atkAction();
 					
@@ -317,6 +263,7 @@ void HelloWorld::tick(float dt) {
 			}
 		}
 	}
+	player3->UpdateState();
 }
 
 b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, Sprite* sprtie, int type) {
@@ -344,51 +291,10 @@ b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, Spr
 		fixtureDef.filter.groupIndex = -1;
 		fixtureDef.filter.categoryBits = 0x0001;
 	}
-	//fixtureDef.
 
 	body->CreateFixture(&fixtureDef);
 
 	return body;
-}
-
-//atk btn 이름 나중에 바꾸기
-void HelloWorld::Test(Ref* pSender) {
-	log("test");
-	//1 이면 빨강색 버튼 2이면 파랑색버튼
-	command->ViewCommand(1); 
-	//int count;
-
-	//커맨드 3칸이 넘으면 
-	//count = command->count;
-	if (command->count > 3) {
-		onAction();
-	}
-}
-
-//sheild btn 이름 나중에 바꾸기
-void HelloWorld::Test2(Ref* pSender) {
-	log("test2");
-	command->ViewCommand(2);
-
-	//count = command->count;
-	if (command->count > 3) {
-		onAction();
-	}
-	//player1->showState();
-	//player2->showState();
-}
-
-//Commnad클래스에서 트루 값을 받아온다 플레이어 액션 실행하는곳
-void HelloWorld::onAction() {
-	bool bAction;
-	bAction = command->playingAction();
-
-	if (bAction) {
-		player1->setAction(command->getActionType(0));
-		player2->setAction(command->getActionType(1));
-		player3->setAction(command->getActionType(2));
-	}
-
 }
 
 void HelloWorld::setCharectorAnimations() {
@@ -608,7 +514,7 @@ void HelloWorld::setCharectorAnimations() {
 	/////////////////////
 
 	//player3 애니메이션 정의
-	player3 = new Player(10, 20, 30);
+	player3 = new Player(100, 100, 30);
 	player3->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 
 	//player3 animation idle
@@ -697,6 +603,7 @@ void HelloWorld::setCharectorAnimations() {
 	player3->setUI(Vec2((winSize.width / 8)  * 5 + 70, winSize.height / 8), this);
 
 
+	command->setPlayerAction(player1, player2, player3);
 
 
 	//////////////////////////////

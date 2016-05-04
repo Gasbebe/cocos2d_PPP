@@ -82,7 +82,7 @@ void Command::ViewCommand(int number) {
 				bAction[2] = false;
 			}
 			
-			//atk  shield action 확인하는 값   true면 atk  false면 shield
+			//atk  shield action 확인하는 로그  true면 atk  false면 shield
 			for (int i = 0; i < 3; i++) {
 				if (bAction[i]) {
 					log("true");
@@ -91,6 +91,8 @@ void Command::ViewCommand(int number) {
 					log("false");
 				}
 			}
+			//플레이어 액션실행
+			playerAction();
 
 			auto seq = Sequence::create(CallFunc::create(CC_CALLBACK_0(Command::setOnActive, this)), 
 										DelayTime::create(1.2f), CallFunc::create(CC_CALLBACK_0(Command::setOnActive, this)), nullptr);
@@ -102,6 +104,7 @@ void Command::ViewCommand(int number) {
 		count = 1;
 		log("안눌림");
 	}
+	log("count = %d ", count);
 }
 
 //버튼 눌릴지 말지 정하는곳
@@ -140,5 +143,42 @@ bool Command::getActionType(int num) {
 bool Command::playingAction() {
 	return true;
 }
-	
+void Command::pressAtkBtn(Ref* pSender) {
+	ViewCommand(1);
+	p3->Hit();
+}
+void Command::pressShieldBtn(Ref* pSender) {
+	ViewCommand(2);
+}
 
+void Command::setBtnUI(Vec2 pos, Layer* layer) {
+
+	auto pMenuItem = MenuItemImage::create(
+		"button/atk_btn.png",
+		"button/atk_btn_press.png"
+		, CC_CALLBACK_1(Command::pressAtkBtn, this));
+	pMenuItem->setPosition(Vec2(commandSize.width/ 2 - 270, commandSize.height / 8 - 230));
+
+	auto pMenuItem2 = MenuItemImage::create(
+		"button/shield_btn.png",
+		"button/shield_btn_press.png"
+		, CC_CALLBACK_1(Command::pressShieldBtn, this));
+	pMenuItem2->setPosition(Vec2(commandSize.width /2 + 270, commandSize.height /8 - 230));
+
+	auto menu = Menu::create(pMenuItem, pMenuItem2, nullptr);
+	menu->setPosition(pos);
+	this->addChild(menu);
+}
+
+void Command::setPlayerAction(Player *_p1, Player *_p2, Player *_p3) {
+
+	p1 = _p1;
+	p2 = _p2;
+	p3 = _p3;
+}
+
+void Command::playerAction() {
+	p1->setAction(getActionType(0));
+	p2->setAction(getActionType(1));
+	p3->setAction(getActionType(2));
+}

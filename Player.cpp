@@ -132,14 +132,29 @@ void Player::setUI(Vec2 pos, Layer* uiLayer) {
 
 	uiWindow = Sprite::create("UI/player_ui.png");
 	uiWindow->setPosition(pos);
-	uiWindow->setScale(0.8);
+	uiWindow->setScale(0.9);
 	uiLayer->addChild(uiWindow);
 	//cocos2d::Sprite* pace;
 
 	Size ui_winSize = uiWindow->getContentSize();
 	hpBar = Sprite::create("UI/hp_bar.png");
-	hpBar->setAnchorPoint(Vec2(0, 0));
+	hpBar->setAnchorPoint(Vec2(0, 0.5));
 	hpBar->setPosition(Vec2(ui_winSize.width /2 - 10, ui_winSize.height /4  * 3));
 	uiWindow->addChild(hpBar);
 
+}
+
+//체력 게이지
+void Player::UpdateState() {
+	double scale = (playerHp / playerMaxhp);
+	log("scale %f", scale);
+
+}
+
+void Player::Hit() {
+
+	auto act = ScaleTo::create(0.1f, playerHp / playerMaxhp, 1);
+	hpBar->runAction(act);
+
+	playerHp = playerHp - 10;
 }
