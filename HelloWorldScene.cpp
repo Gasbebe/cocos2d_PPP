@@ -31,14 +31,16 @@ bool HelloWorld::init()
 	//effect  this부분에 Backgound 레이어 만들어서 넣을것
 	effect = new Effect();
 	effect->getTypeEffect(1, Vec2(winSize.width / 2, winSize.height / 2), this);
-	effect->getTypeEffect(2, Vec2(winSize.width / 2 + 10, winSize.height / 2), this);
-	effect->getTypeEffect(3, Vec2(winSize.width / 2 + 20, winSize.height / 2), this);
-	effect->getTypeEffect(4, Vec2(winSize.width / 2 + 30, winSize.height / 2), this);
-	effect->getTypeEffect(5, Vec2(winSize.width / 2 + 40, winSize.height / 2), this);
-	effect->getTypeEffect(1, Vec2(winSize.width / 2 + 50, winSize.height / 2), this);
-	effect->getTypeEffect(1, Vec2(winSize.width / 2 + 60, winSize.height / 2), this);
-	effect->getTypeEffect(1, Vec2(winSize.width / 2 + 70, winSize.height / 2), this);
-	effect->getTypeEffect(1, Vec2(winSize.width / 2 + 80, winSize.height / 2), this);
+	effect->getTypeEffect(2, Vec2(winSize.width / 2 + 20, winSize.height / 2), this);
+	effect->getTypeEffect(3, Vec2(winSize.width / 2 + 40, winSize.height / 2), this);
+	effect->getTypeEffect(4, Vec2(winSize.width / 2 + 60, winSize.height / 2), this);
+	effect->getTypeEffect(5, Vec2(winSize.width / 2 + 80, winSize.height / 2), this);
+	effect->getTypeEffect(6, Vec2(winSize.width / 2 + 100, winSize.height / 2), this);
+	effect->getTypeEffect(7, Vec2(winSize.width / 2 + 120, winSize.height / 2), this);
+	effect->getTypeEffect(8, Vec2(winSize.width / 2 + 140, winSize.height / 2), this);
+	effect->getTypeEffect(9, Vec2(winSize.width / 2 + 160, winSize.height / 2), this);
+	effect->getTypeEffect(9, Vec2(winSize.width / 2 + 180, winSize.height / 2), this);
+	effect->getTypeEffect(9, Vec2(winSize.width / 2 + 200, winSize.height / 2), this);
 
 	//command 
 	command = new Command();
@@ -59,29 +61,29 @@ bool HelloWorld::init()
 	///////////////
 
 	
-	//auto batch = SpriteBatchNode::create("background/16.png", 10);
-	//auto texture = batch->getTexture();
+	auto batch = SpriteBatchNode::create("background/16.png", 10);
+	auto texture = batch->getTexture();
 
-	//auto animation = Animation::create();
-	//animation->setDelayPerUnit(0.1f);
+	auto animation = Animation::create();
+	animation->setDelayPerUnit(0.1f);
 
-	//for (int i = 0; i < 18; i++) {
-	//	int colum = i % 5; // 0,1,2,3,4
-	//	int row = i / 4; //0,1,2
-	//					 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
-	//	animation->addSpriteFrameWithTexture(texture, Rect(colum * 200, row * 100, 200, 100));
-	//}
+	for (int i = 0; i < 18; i++) {
+		int colum = i % 5; // 0,1,2,3,4
+		int row = i / 4; //0,1,2
+						 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
+		animation->addSpriteFrameWithTexture(texture, Rect(colum * 200, row * 100, 200, 100));
+	}
 
-	//auto bg = Sprite::create("background/16.png", Rect(0, 0, 200, 100));
+	auto bg = Sprite::create("background/16.png", Rect(0, 0, 200, 100));
 
-	//bg->setScale(3.8f);
-	//bg->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	//bg->setZOrder(-3);
-	//this->addChild(bg);
+	bg->setScale(3.8f);
+	bg->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	bg->setZOrder(-3);
+	this->addChild(bg);
 
-	//auto animate = Animate::create(animation);
-	//auto rep = RepeatForever::create(animate);
-	//bg->runAction(rep);
+	auto animate = Animate::create(animation);
+	auto rep = RepeatForever::create(animate);
+	bg->runAction(rep);
 	
 	////////////////////
 	//sprite add body //
@@ -196,6 +198,7 @@ void HelloWorld::tick(float dt) {
 	for (int i = 0; i < _arrow.size(); i++) {
 		auto arrows = (Sprite*)_arrow.at(i);
 		if (arrow->boundingBox().intersectsRect(monsterColl->boundingBox())){
+			effect->getTypeEffect(3, Vec2(arrow->getPosition()), this);
 			removeChild(arrow, false);
 			_arrow.erase(_arrow.begin()+i);		
 		}
@@ -263,7 +266,6 @@ void HelloWorld::tick(float dt) {
 			}
 		}
 	}
-	player3->UpdateState();
 }
 
 b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, Sprite* sprtie, int type) {
@@ -394,7 +396,7 @@ void HelloWorld::setCharectorAnimations() {
 
 	auto p1_die_animation = Animation::createWithSpriteFrames(player1_animFramesDie, 0.1f);
 	auto p1_die_animate = Animate::create(p1_die_animation);
-	auto player1_AnimDie = Sequence::create(p1_die_animate, player1->stopAim, nullptr);
+	auto player1_AnimDie = Sequence::create(p1_die_animate, nullptr);
 
 
 	//player1  idle 스프라이트
@@ -412,6 +414,9 @@ void HelloWorld::setCharectorAnimations() {
 
 	player1->animRun = player1_AnimRun;
 	player1->animRun->retain();
+
+	player1->animDie = player1_AnimDie;
+	player1->animDie->retain();
 
 	player1->EndAnimation();
 	player1->setUI(Vec2((winSize.width / 8 ) * 3 - 70, winSize.height / 8), this);
@@ -487,7 +492,7 @@ void HelloWorld::setCharectorAnimations() {
 
 	auto p2_die_animation = Animation::createWithSpriteFrames(player2_animFramesDie, 0.1f);
 	auto p2_die_animate = Animate::create(p2_die_animation);
-	auto player2_AnimDie = Sequence::create(p2_die_animate, player2->stopAim, nullptr);
+	auto player2_AnimDie = Sequence::create(p2_die_animate, nullptr);
 
 
 	//player2  idle 스프라이트
@@ -505,6 +510,9 @@ void HelloWorld::setCharectorAnimations() {
 
 	player2->animRun = player2_AnimRun;
 	player2->animRun->retain();
+
+	player2->animDie = player2_AnimDie;
+	player2->animDie->retain();
 
 	player2->EndAnimation();
 	player2->setUI(Vec2(winSize.width / 2, winSize.height / 8), this);
@@ -580,7 +588,7 @@ void HelloWorld::setCharectorAnimations() {
 
 	auto p3_die_animation = Animation::createWithSpriteFrames(player3_animFramesDie, 0.1f);
 	auto p3_die_animate = Animate::create(p3_die_animation);
-	auto player3_AnimDie = Sequence::create(p3_die_animate, player3->stopAim, nullptr);
+	auto player3_AnimDie = Sequence::create(p3_die_animate, nullptr);
 
 
 	//player3  idle 스프라이트
@@ -598,6 +606,9 @@ void HelloWorld::setCharectorAnimations() {
 
 	player3->animRun = player3_AnimRun;
 	player3->animRun->retain();
+
+	player3->animDie = player3_AnimDie;
+	player3->animDie->retain();
 
 	player3->EndAnimation();
 	player3->setUI(Vec2((winSize.width / 8)  * 5 + 70, winSize.height / 8), this);

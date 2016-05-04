@@ -175,6 +175,7 @@ void Command::setPlayerAction(Player *_p1, Player *_p2, Player *_p3) {
 	p1 = _p1;
 	p2 = _p2;
 	p3 = _p3;
+
 }
 
 void Command::playerAction() {

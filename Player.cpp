@@ -16,9 +16,9 @@ Player::Player(double hp, double maxhp, double def){
 	//애니이션 멈춤 상태 확인
 	stopAim = CallFunc::create(CC_CALLBACK_0(Player::EndAnimation,this));
 
-//	bodyColl = Sprite::create("collisionBox/collisionBox.png");
-//	bodyColl->setPosition(Vec2(50,40));
-//	bodyColl->setZOrder(-1);
+	//bodyColl = Sprite::create("collisionBox/collisionBox.png");
+	//bodyColl->setPosition(Vec2(50,40));
+	//bodyColl->setZOrder(-1);
 //	this->addChild(bodyColl);
 }
 
@@ -27,18 +27,18 @@ bool Player::init() {
 }
 
 void Player::setAction(bool type) {
-	if (ps == Idle  || ps == Run || ps == Atk) {
-		if (type) {
-			runAction2();
-			//atkAction();
-		}
-		else {
-			sheildAction();
+	if (ps != Die) {
+		if (ps == Idle || ps == Run || ps == Atk) {
+			if (type) {
+				runAction2();
+				//atkAction();
+			}
+			else {
+				sheildAction();
+			}
 		}
 	}
-	else {
-		return;
-	}
+	
 }
 //Repeatforever 애니메이션은 예외처리
 void Player::atkAction() {
@@ -54,6 +54,9 @@ void Player::atkAction() {
 	}
 	else if (ps == Sheild) {
 		this->stopAction(animSheild);
+	}
+	else if (ps == Die) {
+		return;
 	}
 
 	ps = Atk;
@@ -76,6 +79,9 @@ void Player::sheildAction() {
 	else if (ps == Sheild) {
 		this->stopAction(animSheild);
 	}
+	else if (ps == Die) {
+		return;
+	}
 
 	//this->stopAction(animIdle);
 	ps = Sheild;
@@ -94,7 +100,6 @@ void Player::showState() {
 
 //기본상태로 돌아가기 위한 함수
 void Player::EndAnimation() {
-	
 	idleAction();
 }
 
@@ -120,11 +125,31 @@ void Player::runAction2() {
 	else if (ps == Sheild) {
 		this->stopAction(animSheild);
 	}
+	else if (ps == Die) {
+		return;
+	}
 	ps = Run;
 	this->runAction(animRun);
 }
 
 void Player::dieAction() {
+	if (ps == Idle) {
+		this->stopAction(animIdle);
+	}
+	else if (ps == Run) {
+		this->stopAction(animRun);
+	}
+	else if (ps == Atk) {
+		this->stopAction(animAtk);
+	}
+	else if (ps == Sheild) {
+		this->stopAction(animSheild);
+	}
+	else if (ps == Die) {
+		this->stopAction(animDie);
+	}
+
+	ps = Die;
 	this->runAction(animDie);
 }
 
@@ -134,6 +159,7 @@ void Player::setUI(Vec2 pos, Layer* uiLayer) {
 	uiWindow->setPosition(pos);
 	uiWindow->setScale(0.9);
 	uiLayer->addChild(uiWindow);
+
 	//cocos2d::Sprite* pace;
 
 	Size ui_winSize = uiWindow->getContentSize();
@@ -147,14 +173,26 @@ void Player::setUI(Vec2 pos, Layer* uiLayer) {
 //체력 게이지
 void Player::UpdateState() {
 	double scale = (playerHp / playerMaxhp);
-	log("scale %f", scale);
+	//log("scale %f", scale);
 
 }
 
 void Player::Hit() {
+	if (ps != Die) {
+		playerHp = playerHp - 10;
 
-	auto act = ScaleTo::create(0.1f, playerHp / playerMaxhp, 1);
-	hpBar->runAction(act);
+		if (playerHp < 0) {
+			if (ps == Die) {
+				return;
+			}
+			dieAction();
+			playerHp = 0;
+		}
 
-	playerHp = playerHp - 10;
+		auto act = ScaleTo::create(0.1f, playerHp / playerMaxhp, 1);
+		hpBar->runAction(act);
+	}
+	else {
+		return;
+	}
 }

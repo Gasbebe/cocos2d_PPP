@@ -44,10 +44,6 @@ public:
 	b2MouseJoint* mouseJoint;
 	b2Body *gbody;
 	
-	//button
-	Button* atkBtn;
-	Button* shelidBtn;
-
 	//command input
 	Command* command;
 	cocos2d::Layer* UILayer;

@@ -5,10 +5,22 @@ Effect::Effect() {
 	if (bOk) {
 		this->autorelease();
 	}
+	cache = SpriteFrameCache::getInstance();
+	//검사 공격
+	cache->addSpriteFramesWithFile("Skill/fx_bladestorm.plist");
+	//방어
+	cache->addSpriteFramesWithFile("Skill/fx_defense.plist");
+	//화살 터질때
+	cache->addSpriteFramesWithFile("Skill/fx_explosionorangesmoke.plist");
+	//힐러
+	cache->addSpriteFramesWithFile("Skill/fx_teleportrecall2.plist");
+	//
+	cache->addSpriteFramesWithFile("Skill/fx_whiteexplosion.plist");
 }
 
-//number 1~ 10 : fire type   number 2 : explo  type number3 : smoke type
+//number 1~ 5 : fire type   number 2 : explo  type number3 : smoke type
 void Effect::getTypeEffect(int number, Vec2 pos, Layer *layer) {
+	char str[100] = { 0 };
 	if (number == 1) {
 		auto sprite = Sprite::create("Skill/fire1.png");
 		auto texture = sprite->getTexture();
@@ -118,5 +130,78 @@ void Effect::getTypeEffect(int number, Vec2 pos, Layer *layer) {
 		auto animate = Animate::create(animation);
 		auto rep = RepeatForever::create(animate);
 		effect->runAction(rep);
+	}
+	else if (number == 6) {
+
+		Vector<SpriteFrame*> effect_frame;
+
+		for (int i = 0; i < 12; i++) {
+			sprintf(str, "fx_bladestorm_%003d.png", i);
+			SpriteFrame* frame = cache->getSpriteFrameByName(str);
+			effect_frame.pushBack(frame);
+		}
+
+		auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.1f);
+		auto effect_animate = Animate::create(effect_animation);
+		auto act = RepeatForever::create(effect_animate);
+
+		auto effect = Sprite::createWithSpriteFrameName("fx_bladestorm_000.png");
+		effect->setPosition(pos);
+		layer->addChild(effect);
+		effect->runAction(act);
+	}
+	else if (number == 7) {
+		Vector<SpriteFrame*> effect_frame;
+
+		for (int i = 0; i < 5; i++) {
+			sprintf(str, "fx_floatingshield_%003d.png", i);
+			SpriteFrame* frame = cache->getSpriteFrameByName(str);
+			effect_frame.pushBack(frame);
+		}
+
+		auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.1f);
+		auto effect_animate = Animate::create(effect_animation);
+		auto act = RepeatForever::create(effect_animate);
+
+		auto effect = Sprite::createWithSpriteFrameName("fx_floatingshield_000.png");
+		effect->setPosition(pos);
+		layer->addChild(effect);
+		effect->runAction(act);
+	}
+	else if (number == 8) {
+		Vector<SpriteFrame*> effect_frame;
+
+		for (int i = 0; i < 9; i++) {
+			sprintf(str, "fx_forcefield_%003d.png", i);
+			SpriteFrame* frame = cache->getSpriteFrameByName(str);
+			effect_frame.pushBack(frame);
+		}
+
+		auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.1f);
+		auto effect_animate = Animate::create(effect_animation);
+		auto act = RepeatForever::create(effect_animate);
+
+		auto effect = Sprite::createWithSpriteFrameName("fx_forcefield_000.png");
+		effect->setPosition(pos);
+		layer->addChild(effect);
+		effect->runAction(act);
+	}
+	else if (number == 9) {
+		Vector<SpriteFrame*> effect_frame;
+
+		for (int i = 0; i < 6; i++) {
+			sprintf(str, "fx_explosionorangesmoke_%003d.png", i);
+			SpriteFrame* frame = cache->getSpriteFrameByName(str);
+			effect_frame.pushBack(frame);
+		}
+
+		auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.1f);
+		auto effect_animate = Animate::create(effect_animation);
+		auto act = RepeatForever::create(effect_animate);
+
+		auto effect = Sprite::createWithSpriteFrameName("fx_explosionorangesmoke_000.png");
+		effect->setPosition(pos);
+		layer->addChild(effect);
+		effect->runAction(act);
 	}
 }
