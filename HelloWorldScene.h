@@ -64,6 +64,7 @@ public:
 	//Monster
 	Monster* monster;
 	cocos2d::Sprite* monsterColl;
+	b2Body* monsterBody;
 
 	//Bullet
 	cocos2d::Sprite* arrow;

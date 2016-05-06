@@ -19,8 +19,6 @@ bool HelloWorld::init()
 		return false;
 	}
 
-	
-
 	b_bullet = false;
 
 	winSize = Director::getInstance()->getWinSize();
@@ -87,9 +85,9 @@ bool HelloWorld::init()
 	//sprite add body //
 	////////////////////
 
-	player1Body = addNewSprite(player1->getPosition(), Size(50, 50), b2_dynamicBody, player1, 0);
-	player2Body = addNewSprite(player2->getPosition(), Size(50, 50), b2_dynamicBody, player2, 0);
-	player3Body = addNewSprite(player3->getPosition(), Size(50, 50), b2_dynamicBody, player3, 0);
+	player1Body = addNewSprite(player1Coll->getPosition(), Size(50, 50), b2_dynamicBody, player1Coll, 0);
+	player2Body = addNewSprite(player2Coll->getPosition(), Size(50, 50), b2_dynamicBody, player2Coll, 0);
+	player3Body = addNewSprite(player3Coll->getPosition(), Size(45, 50), b2_dynamicBody, player3Coll, 0);
 
 	this->addNewSprite(monsterColl->getPosition(), monsterColl->getContentSize(), b2_dynamicBody, monsterColl, 1);
 	
@@ -197,7 +195,7 @@ void HelloWorld::tick(float dt) {
 	for (int i = 0; i < _arrow.size(); i++) {
 		auto arrows = (Sprite*)_arrow.at(i);
 		if (arrow->boundingBox().intersectsRect(monsterColl->boundingBox())){
-			effect->getTypeEffect(8, Vec2(arrow->getPosition()), this);
+			//effect->getTypeEffect(8, Vec2(arrow->getPosition()), this);
 			effect->getTypeEffect(9, Vec2(arrow->getPosition()), this);
 			removeChild(arrow, false);
 			_arrow.erase(_arrow.begin()+i);		
@@ -211,7 +209,7 @@ void HelloWorld::tick(float dt) {
 		if (i == 1) {
 			if (player1->ps == player1->Run) {
 				double dis;
-				dis = monsterColl->getPosition().x - player1->getPosition().x;
+				dis = monsterColl->getPosition().x - player1Coll->getPosition().x;
 				if (dis > 300) {
 					//log("%f", dis);
 					player1Body->ApplyForceToCenter(b2Vec2(35, 0), true);
@@ -230,7 +228,7 @@ void HelloWorld::tick(float dt) {
 			if (player2->ps == player2->Run) {
 
 				double dis;
-				dis = monsterColl->getPosition().x - player2->getPosition().x;
+				dis = monsterColl->getPosition().x - player2Coll->getPosition().x;
 
 				if (dis > 200) {
 					player2Body->ApplyForceToCenter(b2Vec2(35, 0), true);
@@ -252,18 +250,18 @@ void HelloWorld::tick(float dt) {
 		else {
 			if (player3->ps == player3->Run) {
 				double dis;
-				dis = monsterColl->getPosition().x - player3->getPosition().x;
+				dis = monsterColl->getPosition().x - player3Coll->getPosition().x;
 				if (dis > 70) {
 					//log("%f", dis);
 					player3Body->ApplyForceToCenter(b2Vec2(27, 0), true);
 				}
 				else {
-					effect->getTypeEffect(6, Vec2(player3->getPosition()), this);
+					effect->getTypeEffect(6, player3Coll->getPosition(), this);
 					player3->atkAction();
 				}
 			}
 			else if (player3->ps == player1->Sheild) {
-				player3Body->ApplyForceToCenter(b2Vec2(-27, 0), true);
+				player3Body->ApplyForceToCenter(b2Vec2(-25, 0), true);
 			}
 		}
 	}
@@ -307,8 +305,8 @@ void HelloWorld::setCharectorAnimations() {
 	
 
 	//player1 애니메이션 정의
-	player1 = new Player(10, 20, 30);
-	player1->setPosition(Vec2(winSize.width / 8, winSize.height / 2));
+	player1 = new Player(10, 20, 30, 1);
+	
 
 	//animation cache 추가
 	cache = SpriteFrameCache::getInstance();
@@ -402,7 +400,7 @@ void HelloWorld::setCharectorAnimations() {
 
 	//player1  idle 스프라이트
 	player1->setSpriteFrame("f1_sunstonetemplar_idle_001.png"); //vector의 처음으로 들어간 데이터
-	this->addChild(player1);
+	//this->addChild(player1);
 
 	player1->animAtk = player1_AnimAtk;
 	player1->animAtk->retain();
@@ -422,13 +420,23 @@ void HelloWorld::setCharectorAnimations() {
 	player1->EndAnimation();
 	player1->setUI(Vec2((winSize.width / 8 ) * 3 - 70, winSize.height / 8), this);
 
+	player1Coll = Sprite::create("collisionBox/collisionBox.png");
+	player1Coll->setPosition(Vec2((winSize.width / 8), winSize.height / 2));
+	player1Coll->setZOrder(-1);
+	//player1Coll->setOpacity(0);
+	this->addChild(player1Coll);
+
+	
+	auto p1CollSize = player1Coll->getContentSize();
+	player1->setPosition(Vec2(p1CollSize.width / 2, p1CollSize.height / 2));
+	player1Coll->addChild(player1);
+
 	//////////////////////////
 	//player2   /////////////
 	/////////////////////////
 
 	//player2 애니메이션 정의
-	player2 = new Player(10, 20, 30);
-	player2->setPosition(Vec2(winSize.width / 4, winSize.height / 2));
+	player2 = new Player(10, 20, 30, 2);
 
 	//player2 animation idle
 	Vector<SpriteFrame*> player2_animFramesIdle;
@@ -498,7 +506,6 @@ void HelloWorld::setCharectorAnimations() {
 
 	//player2  idle 스프라이트
 	player2->setSpriteFrame("neutral_mercswornavanger_idle_001.png"); //vector의 처음으로 들어간 데이터
-	this->addChild(player2);
 
 	player2->animAtk = player2_AnimAtk;
 	player2->animAtk->retain();
@@ -518,13 +525,23 @@ void HelloWorld::setCharectorAnimations() {
 	player2->EndAnimation();
 	player2->setUI(Vec2(winSize.width / 2, winSize.height / 8), this);
 
+	player2Coll = Sprite::create("collisionBox/collisionBox.png");
+	player2Coll->setPosition(Vec2((winSize.width / 8 * 3), winSize.height / 2));
+	player2Coll->setZOrder(-1);
+	//player1Coll->setOpacity(0);
+	this->addChild(player2Coll);
+
+
+	auto p2CollSize = player2Coll->getContentSize();
+	player2->setPosition(Vec2(p2CollSize.width / 2, p2CollSize.height / 2));
+	player2Coll->addChild(player2);
+
 	//////////////////////
 	//player3  ///////////
 	/////////////////////
 
 	//player3 애니메이션 정의
-	player3 = new Player(100, 100, 30);
-	player3->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	player3 = new Player(100, 100, 30, 3);
 
 	//player3 animation idle
 	Vector<SpriteFrame*> player3_animFramesIdle;
@@ -594,7 +611,6 @@ void HelloWorld::setCharectorAnimations() {
 
 	//player3  idle 스프라이트
 	player3->setSpriteFrame("f1_elyxstormblade_idle_001.png"); //vector의 처음으로 들어간 데이터
-	this->addChild(player3);
 
 	player3->animAtk = player3_AnimAtk;
 	player3->animAtk->retain();
@@ -614,6 +630,20 @@ void HelloWorld::setCharectorAnimations() {
 	player3->EndAnimation();
 	player3->setUI(Vec2((winSize.width / 8)  * 5 + 70, winSize.height / 8), this);
 
+	player3Coll = Sprite::create("collisionBox/collisionBox2.png");
+	player3Coll->setPosition(Vec2((winSize.width / 8) * 4, winSize.height / 2));
+	player3Coll->setZOrder(-1);
+	//player1Coll->setOpacity(0);
+	this->addChild(player3Coll);
+
+
+	auto p3CollSize = player3Coll->getContentSize();
+	player3->setPosition(Vec2(p3CollSize.width / 2, p3CollSize.height / 2));
+	player3Coll->addChild(player3);
+
+	////////////
+	//command///
+	////////////
 
 	command->setPlayerAction(player1, player2, player3);
 
@@ -688,27 +718,68 @@ void HelloWorld::setCharectorAnimations() {
 	auto m_die_animation = Animation::createWithSpriteFrames(monster_animFramesDie, 0.1f);
 	auto m_die_animate = Animate::create(m_die_animation);
 	auto m_AnimDie = Sequence::create(m_die_animate, nullptr);
+	
+	//monster animation casting
+	Vector<SpriteFrame*> monster_animFramesCasting;
+
+	for (int i = 0; i < 14; i++) {
+		sprintf(str, "f5_altgeneral_casting_%003d.png", i);
+		SpriteFrame* frame = cache->getSpriteFrameByName(str);
+		monster_animFramesCasting.pushBack(frame);
+	}
+
+	auto m_casting_animation = Animation::createWithSpriteFrames(monster_animFramesCasting, 0.1f);
+	auto m_casting_animate = Animate::create(m_casting_animation);
+	auto m_AnimCasting = Sequence::create(m_casting_animate, nullptr);
+
+	//monster anumation castLoop
+	Vector<SpriteFrame*> monster_animFramesCastLoop;
+
+	for (int i = 0; i < 8; i++) {
+		sprintf(str, "f5_altgeneral_castloop_%003d.png", i);
+		SpriteFrame* frame = cache->getSpriteFrameByName(str);
+		monster_animFramesCastLoop.pushBack(frame);
+	}
+
+	auto m_cast_loop_animation = Animation::createWithSpriteFrames(monster_animFramesCastLoop, 0.1f);
+	auto m_cast_loop_animate = Animate::create(m_cast_loop_animation);
+	auto m_AnimCastLoop = Sequence::create(m_cast_loop_animate, nullptr);
+
+	monster->animAtk = m_AnimAtk;
+	monster->animAtk->retain();
+
+	monster->animCasting = m_AnimCasting;
+	monster->animCasting->retain();
+
+	monster->animDie = m_AnimDie;
+	monster->animDie->retain();
+
+	monster->animRun = m_AnimRun;
+	monster->animRun->retain();
+
+	monster->animCastLoop = m_AnimCastLoop;
+	monster->animCastLoop->retain();
+
+	monster->animIdle = m_AnimIdle;
+	monster->animIdle->retain();
 
 	monster->setSpriteFrame("f5_altgeneral_idle_000.png");
 	monster->setFlipX(true);
 	monster->setScale(1.5f);
 	monster->runAction(m_AnimIdle);
 
-	//monster->bodyColl->setPosition(Vec2(winSize.width / 8 * 7, winSize.height / 2));
-	//this->addChild(monster->bodyColl);
-
+	//----
 	monsterColl = Sprite::create("collisionBox/BossCollisionBox.png");
 	monsterColl->setPosition(Vec2((winSize.width / 8) * 7, winSize.height / 2));
 	monsterColl->setZOrder(-1);
+	monsterColl->setOpacity(0);
 	this->addChild(monsterColl);
 
-	auto monCollSize = monsterColl->getContentSize();
-		 
+	auto monCollSize = monsterColl->getContentSize();		 
 	monster->setPosition(Vec2(monCollSize.width/2, monCollSize.height/4 * 3));
 	monsterColl->addChild(monster);
 
-	
-	
+	monster->setUI(Vec2((winSize.width / 8) * 7 + 10, (winSize.height / 8) * 7 - 15), this);
 }
 
 void HelloWorld::shooting() {
@@ -727,7 +798,7 @@ void HelloWorld::shooting() {
 	}
 
 	arrow = Sprite::create("Skill/4080arrow.png", Rect(0, 0, 80, 40));
-	arrow->setPosition(player2->getPosition());
+	arrow->setPosition(player2Coll->getPosition());
 	this->addChild(arrow);
 
 	auto animate = Animate::create(animation);

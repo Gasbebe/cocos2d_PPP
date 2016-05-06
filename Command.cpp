@@ -145,7 +145,6 @@ bool Command::playingAction() {
 }
 void Command::pressAtkBtn(Ref* pSender) {
 	ViewCommand(1);
-	p3->Hit();
 }
 void Command::pressShieldBtn(Ref* pSender) {
 	ViewCommand(2);

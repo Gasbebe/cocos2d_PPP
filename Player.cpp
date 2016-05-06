@@ -2,10 +2,13 @@
 
 USING_NS_CC;
 //생성될때 초기화
-Player::Player(double hp, double maxhp, double def){
+Player::Player(double hp, double maxhp, double def, int type){
+	effect = new Effect();
+	effect->retain();
 	playerHp = hp;
 	playerMaxhp = maxhp;
 	playerDef = def;
+	effectType = type;
 
 	bool bOk = initWithTexture(nullptr, Rect::ZERO);
 	if (bOk) {
@@ -20,6 +23,9 @@ Player::Player(double hp, double maxhp, double def){
 	//bodyColl->setPosition(Vec2(50,40));
 	//bodyColl->setZOrder(-1);
 //	this->addChild(bodyColl);
+}
+Player::~Player() {
+	delete effect;
 }
 
 bool Player::init() {
@@ -84,6 +90,7 @@ void Player::sheildAction() {
 	}
 
 	//this->stopAction(animIdle);
+	setEffect(effectType);
 	ps = Sheild;
 	log("방어");
 	this->runAction(animSheild);
@@ -194,5 +201,19 @@ void Player::Hit() {
 	}
 	else {
 		return;
+	}
+}
+
+
+void Player::setEffect(int number) {
+	if (number == 1) {
+		
+	}
+	else if (number == 2) {
+
+	}
+	else if (number == 3) {
+		effect->getTypePlayerEffect(1, Vec2(50, 27), this);
+		//effect->getTypePlayerEffect(2, Vec2(50, 30), this);
 	}
 }

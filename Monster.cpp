@@ -86,7 +86,7 @@ void Monster::dieAction() {
 
 void Monster::setUI(Vec2 pos, Layer* uiLayer) {
 
-	uiWindow = Sprite::create("UI/player_ui.png");
+	uiWindow = Sprite::create("boss/boss.png");
 	uiWindow->setPosition(pos);
 	uiLayer->addChild(uiWindow);
 	//cocos2d::Sprite* pace;

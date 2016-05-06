@@ -19,6 +19,8 @@ public:
 	cocos2d::Action* animIdle;
 	cocos2d::Action* animRun;
 	cocos2d::Action* animDie;
+	cocos2d::Action* animCastLoop;
+	cocos2d::Action* animCasting;
 	cocos2d::Action* stopAim;
 
 	//monster state
@@ -35,6 +37,8 @@ public:
 	void dieAction();
 	void EndAnimation();
 	void StartAnimation();
+	void castingAction();
+	void castLoopAction();
 
 	void setAction(bool type);
 	void showState();

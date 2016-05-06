@@ -18,6 +18,7 @@ public:
 	//cocos2d::Vector<SpriteFrame*> effect_frame[10];
 	cocos2d::SpriteFrame* frame;
 	void getTypeEffect(int numbers, cocos2d::Vec2 pos, cocos2d::Layer *layer);
+	void getTypePlayerEffect(int numbers, cocos2d::Vec2 pos, cocos2d::Sprite* player);
 };
 
 #endif
