@@ -179,7 +179,9 @@ void Command::setPlayerAction(Player *_p1, Player *_p2, Player *_p3) {
 }
 
 void Command::playerAction() {
+
 	p1->setAction(getActionType(0));
 	p2->setAction(getActionType(1));
 	p3->setAction(getActionType(2));
+
 }

@@ -24,12 +24,10 @@ bool HelloWorld::init()
 	b_bullet = false;
 
 	winSize = Director::getInstance()->getWinSize();
-	texture = Director::getInstance()->
-		getTextureCache()->
-		addImage("blocks.png");
 
 	//effect  this부분에 Backgound 레이어 만들어서 넣을것
 	effect = new Effect();
+	effect->retain();
 	effect->getTypeEffect(1, Vec2(winSize.width / 2, winSize.height / 2), this);
 	effect->getTypeEffect(2, Vec2(winSize.width / 2 + 20, winSize.height / 2), this);
 	effect->getTypeEffect(3, Vec2(winSize.width / 2 + 40, winSize.height / 2), this);
@@ -38,9 +36,9 @@ bool HelloWorld::init()
 	effect->getTypeEffect(6, Vec2(winSize.width / 2 + 100, winSize.height / 2), this);
 	effect->getTypeEffect(7, Vec2(winSize.width / 2 + 120, winSize.height / 2), this);
 	effect->getTypeEffect(8, Vec2(winSize.width / 2 + 140, winSize.height / 2), this);
-	effect->getTypeEffect(9, Vec2(winSize.width / 2 + 160, winSize.height / 2), this);
-	effect->getTypeEffect(9, Vec2(winSize.width / 2 + 180, winSize.height / 2), this);
-	effect->getTypeEffect(9, Vec2(winSize.width / 2 + 200, winSize.height / 2), this);
+	effect->getTypeEffect(8, Vec2(winSize.width / 2 + 160, winSize.height / 2), this);
+	effect->getTypeEffect(8, Vec2(winSize.width / 2 + 180, winSize.height / 2), this);
+	effect->getTypeEffect(8, Vec2(winSize.width / 2 + 200, winSize.height / 2), this);
 
 	//command 
 	command = new Command();
@@ -61,29 +59,29 @@ bool HelloWorld::init()
 	///////////////
 
 	
-	auto batch = SpriteBatchNode::create("background/16.png", 10);
-	auto texture = batch->getTexture();
+	//auto batch = SpriteBatchNode::create("background/16.png", 10);
+	//auto texture = batch->getTexture();
 
-	auto animation = Animation::create();
-	animation->setDelayPerUnit(0.1f);
+	//auto animation = Animation::create();
+	//animation->setDelayPerUnit(0.1f);
 
-	for (int i = 0; i < 18; i++) {
-		int colum = i % 5; // 0,1,2,3,4
-		int row = i / 4; //0,1,2
-						 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
-		animation->addSpriteFrameWithTexture(texture, Rect(colum * 200, row * 100, 200, 100));
-	}
+	//for (int i = 0; i < 18; i++) {
+	//	int colum = i % 5; // 0,1,2,3,4
+	//	int row = i / 4; //0,1,2
+	//					 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
+	//	animation->addSpriteFrameWithTexture(texture, Rect(colum * 200, row * 100, 200, 100));
+	//}
 
-	auto bg = Sprite::create("background/16.png", Rect(0, 0, 200, 100));
+	//auto bg = Sprite::create("background/16.png", Rect(0, 0, 200, 100));
 
-	bg->setScale(3.8f);
-	bg->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	bg->setZOrder(-3);
-	this->addChild(bg);
+	//bg->setScale(3.8f);
+	//bg->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	//bg->setZOrder(-3);
+	//this->addChild(bg);
 
-	auto animate = Animate::create(animation);
-	auto rep = RepeatForever::create(animate);
-	bg->runAction(rep);
+	//auto animate = Animate::create(animation);
+	//auto rep = RepeatForever::create(animate);
+	//bg->runAction(rep);
 	
 	////////////////////
 	//sprite add body //
@@ -149,6 +147,7 @@ HelloWorld::~HelloWorld() {
 	delete player2;
 	delete player3;
 	delete monster;
+	delete effect;
 
 	delete _world;
 	_world = nullptr;
@@ -198,7 +197,8 @@ void HelloWorld::tick(float dt) {
 	for (int i = 0; i < _arrow.size(); i++) {
 		auto arrows = (Sprite*)_arrow.at(i);
 		if (arrow->boundingBox().intersectsRect(monsterColl->boundingBox())){
-			effect->getTypeEffect(3, Vec2(arrow->getPosition()), this);
+			effect->getTypeEffect(8, Vec2(arrow->getPosition()), this);
+			effect->getTypeEffect(9, Vec2(arrow->getPosition()), this);
 			removeChild(arrow, false);
 			_arrow.erase(_arrow.begin()+i);		
 		}
@@ -258,6 +258,7 @@ void HelloWorld::tick(float dt) {
 					player3Body->ApplyForceToCenter(b2Vec2(27, 0), true);
 				}
 				else {
+					effect->getTypeEffect(6, Vec2(player3->getPosition()), this);
 					player3->atkAction();
 				}
 			}
