@@ -19,10 +19,6 @@ Player::Player(double hp, double maxhp, double def, int type){
 	//애니이션 멈춤 상태 확인
 	stopAim = CallFunc::create(CC_CALLBACK_0(Player::EndAnimation,this));
 
-	//bodyColl = Sprite::create("collisionBox/collisionBox.png");
-	//bodyColl->setPosition(Vec2(50,40));
-	//bodyColl->setZOrder(-1);
-//	this->addChild(bodyColl);
 }
 Player::~Player() {
 	delete effect;
@@ -66,6 +62,7 @@ void Player::atkAction() {
 	}
 
 	ps = Atk;
+	setEffect(effectType);
 	this->runAction(animAtk);
 	log("공격");
 }
@@ -164,7 +161,7 @@ void Player::setUI(Vec2 pos, Layer* uiLayer) {
 
 	uiWindow = Sprite::create("UI/player_ui.png");
 	uiWindow->setPosition(pos);
-	uiWindow->setScale(0.9);
+	//uiWindow->setScale(0.9);
 	uiLayer->addChild(uiWindow);
 
 	//cocos2d::Sprite* pace;
@@ -172,8 +169,16 @@ void Player::setUI(Vec2 pos, Layer* uiLayer) {
 	Size ui_winSize = uiWindow->getContentSize();
 	hpBar = Sprite::create("UI/hp_bar.png");
 	hpBar->setAnchorPoint(Vec2(0, 0.5));
-	hpBar->setPosition(Vec2(ui_winSize.width /2 - 10, ui_winSize.height /4  * 3));
+	hpBar->setPosition(Vec2(ui_winSize.width / 2 - 4, ui_winSize.height / 4 * 3));
+	hpBar->setScaleX(0.35f);
 	uiWindow->addChild(hpBar);
+
+	Size hp_bar_size = hpBar->getContentSize();
+	hpGauge = Sprite::create("UI/hp_gauge.png");
+	hpGauge->setAnchorPoint(Vec2(0, 0.5));
+	hpGauge->setPosition(Vec2(8, hp_bar_size.height / 2));
+
+	hpBar->addChild(hpGauge);
 
 }
 
@@ -197,7 +202,7 @@ void Player::Hit() {
 		}
 
 		auto act = ScaleTo::create(0.1f, playerHp / playerMaxhp, 1);
-		hpBar->runAction(act);
+		hpGauge->runAction(act);
 	}
 	else {
 		return;
@@ -207,12 +212,15 @@ void Player::Hit() {
 
 void Player::setEffect(int number) {
 	if (number == 1) {
-		
+		//플레이어가 성직자 일때 이펙트
+		effect->getTypePlayerEffect(3, Vec2(40, 40), this);
 	}
 	else if (number == 2) {
-
+		//플레이어가 궁수 일때 이펙트
+		//effect->getTypePlayerEffect(3, Vec2(50, 27), this);
 	}
 	else if (number == 3) {
+		//플레이어가 검사 일떄 이펙트
 		effect->getTypePlayerEffect(1, Vec2(50, 27), this);
 		//effect->getTypePlayerEffect(2, Vec2(50, 30), this);
 	}

@@ -80,9 +80,14 @@ public:
 	//background
 	cocos2d::Sprite* bg;
 	cocos2d::Layer* bgLayer;
+	cocos2d::Layer* uiLayer;
+	cocos2d::Layer* EffectLayer;
 	
 	//Effect
 	Effect* effect;
+
+	//flag
+	bool flag;
 
 protected:
 		void onDraw(const cocos2d::Mat4& transform, uint32_t flags);

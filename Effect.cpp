@@ -12,7 +12,7 @@ Effect::Effect() {
 	//방어
 	effec_cache->addSpriteFramesWithFile("Skill/fx_defense.plist");
 	//화살 터질때
-	//effec_cache->addSpriteFramesWithFile("Skill/fx_explosionorangesmoke.plist");
+	effec_cache->addSpriteFramesWithFile("Skill/fx_blood_explosion.plist");
 	//힐러
 	effec_cache->addSpriteFramesWithFile("Skill/fx_teleportrecall2.plist");
 	//
@@ -20,6 +20,7 @@ Effect::Effect() {
 }
 
 //number 1~ 5 : fire type   number 6, 7, 8  : shield  type number3 : smoke type
+//background용 이펙트
 void Effect::getTypeEffect(int number, Vec2 pos, Layer *layer) {
 	char str[100] = { 0 };
 	if (number == 1) {
@@ -223,8 +224,53 @@ void Effect::getTypeEffect(int number, Vec2 pos, Layer *layer) {
 		effect->runAction(seq);
 
 	}
+	else if (number == 10) {
+		Vector<SpriteFrame*> effect_frame;
+
+		for (int i = 0; i < 15; i++) {
+			sprintf(str, "fx_bloodbig_%003d.png", i);
+			SpriteFrame* frame = effec_cache->getSpriteFrameByName(str);
+			effect_frame.pushBack(frame);
+		}
+
+		auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.05f);
+		auto effect_animate = Animate::create(effect_animation);
+		auto act = RepeatForever::create(effect_animate);
+
+		auto effect = Sprite::createWithSpriteFrameName("fx_bloodbig_000.png");
+		effect->setPosition(pos);
+		layer->addChild(effect);
+		//effect->runAction(act);
+
+		auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, layer, effect, false));
+		auto seq = Sequence::create(effect_animate, removeAction, nullptr);
+		effect->runAction(seq);
+	}
+	else if (number == 11) {
+		Vector<SpriteFrame*> effect_frame;
+
+		for (int i = 0; i < 10; i++) {
+			sprintf(str, "fx_bloodmedium_%003d.png", i);
+			SpriteFrame* frame = effec_cache->getSpriteFrameByName(str);
+			effect_frame.pushBack(frame);
+		}
+
+		auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.05f);
+		auto effect_animate = Animate::create(effect_animation);
+		auto act = RepeatForever::create(effect_animate);
+
+		auto effect = Sprite::createWithSpriteFrameName("fx_bloodmedium_000.png");
+		effect->setPosition(pos);
+		layer->addChild(effect);
+		//effect->runAction(act);
+
+		auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, layer, effect, false));
+		auto seq = Sequence::create(effect_animate, removeAction, nullptr);
+		effect->runAction(seq);
+	}
 }
 
+//플에이어용 이펙트
 void Effect::getTypePlayerEffect(int number, cocos2d::Vec2 pos, cocos2d::Sprite* player) {
 		char str[100] = { 0 };
 		if (number == 1) {
@@ -238,12 +284,10 @@ void Effect::getTypePlayerEffect(int number, cocos2d::Vec2 pos, cocos2d::Sprite*
 
 			auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.1f);
 			auto effect_animate = Animate::create(effect_animation);
-			//auto act = RepeatForever::create(effect_animate);
 
 			auto effect = Sprite::createWithSpriteFrameName("fx_floatingshield_000.png");
 			effect->setPosition(pos);
 			player->addChild(effect);
-			//effect->runAction(act);
 
 			auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, player, effect, false));
 			auto seq = Sequence::create(effect_animate, removeAction, nullptr);
@@ -262,17 +306,80 @@ void Effect::getTypePlayerEffect(int number, cocos2d::Vec2 pos, cocos2d::Sprite*
 
 			auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.1f);
 			auto effect_animate = Animate::create(effect_animation);
-			//auto act = RepeatForever::create(effect_animate);
 
 			auto effect = Sprite::createWithSpriteFrameName("fx_forcefield_000.png");
 			effect->setPosition(pos);
 			player->addChild(effect);
-			//effect->runAction(act);
 
 			auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, player, effect, false));
 			auto seq = Sequence::create(effect_animate, removeAction, nullptr);
 	
 			effect->runAction(seq);
 
+		}
+		else if (number == 3) {
+			Vector<SpriteFrame*> effect_frame;
+
+			for (int i = 0; i < 14; i++) {
+				sprintf(str, "fx_teleportrecall2_%003d.png", i);
+				SpriteFrame* frame = effec_cache->getSpriteFrameByName(str);
+				effect_frame.pushBack(frame);
+			}
+
+			auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.1f);
+			auto effect_animate = Animate::create(effect_animation);
+
+			auto effect = Sprite::createWithSpriteFrameName("fx_forcefield_000.png");
+			effect->setPosition(pos);
+			player->addChild(effect);
+
+			auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, player, effect, false));
+			auto seq = Sequence::create(effect_animate, removeAction, nullptr);
+
+			effect->runAction(seq);
+		}
+		else if (number == 10) {
+			Vector<SpriteFrame*> effect_frame;
+
+			for (int i = 0; i < 15; i++) {
+				sprintf(str, "fx_bloodbig_%003d.png", i);
+				SpriteFrame* frame = effec_cache->getSpriteFrameByName(str);
+				effect_frame.pushBack(frame);
+			}
+
+			auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.05f);
+			auto effect_animate = Animate::create(effect_animation);
+			auto act = RepeatForever::create(effect_animate);
+
+			auto effect = Sprite::createWithSpriteFrameName("fx_bloodbig_000.png");
+			effect->setPosition(pos);
+			player->addChild(effect);
+			//effect->runAction(act);
+
+			auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, player, effect, false));
+			auto seq = Sequence::create(effect_animate, removeAction, nullptr);
+			effect->runAction(seq);
+		}
+		else if (number == 11) {
+			Vector<SpriteFrame*> effect_frame;
+
+			for (int i = 0; i < 10; i++) {
+				sprintf(str, "fx_bloodmedium_%003d.png", i);
+				SpriteFrame* frame = effec_cache->getSpriteFrameByName(str);
+				effect_frame.pushBack(frame);
+			}
+
+			auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.05f);
+			auto effect_animate = Animate::create(effect_animation);
+			auto act = RepeatForever::create(effect_animate);
+
+			auto effect = Sprite::createWithSpriteFrameName("fx_bloodmedium_000.png");
+			effect->setPosition(pos);
+			player->addChild(effect);
+			//effect->runAction(act);
+
+			auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, player, effect, false));
+			auto seq = Sequence::create(effect_animate, removeAction, nullptr);
+			effect->runAction(seq);
 		}
 }

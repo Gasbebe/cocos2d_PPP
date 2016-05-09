@@ -2,14 +2,16 @@
 #define __MONSTER_H__
 
 #include "cocos2d.h"
+#include "Box2D/Box2D.h"
+#include "Effect.h"
 
 using namespace cocos2d;
 
 class Monster : public cocos2d::Sprite {
 public:
 	Monster(double maxhp);
-
-	enum monsterState { Idle, Atk, Sheild, Die, Run };
+	~Monster();
+	enum monsterState { Idle, Atk, Sheild, Die, Run, Cast, CastLoop };
 	monsterState ms;
 	double monsterHp, monsterMaxhp;
 
@@ -22,12 +24,17 @@ public:
 	cocos2d::Action* animCastLoop;
 	cocos2d::Action* animCasting;
 	cocos2d::Action* stopAim;
+	cocos2d::Action* delayHit;
 
 	//monster state
 	cocos2d::Sprite* bodyColl;
 	cocos2d::Sprite* hpBar;
+	cocos2d::Sprite* hpGauge;
 	cocos2d::Sprite* uiWindow;
 	cocos2d::Sprite* pace;
+
+	//effect
+	Effect* effect;
 
 	void setUI(cocos2d::Vec2 pos, cocos2d::Layer* uiLayer);
 	void atkAction();
@@ -39,10 +46,14 @@ public:
 	void StartAnimation();
 	void castingAction();
 	void castLoopAction();
-
-	void setAction(bool type);
+	
+	//monster AI
+	void monsterAI(float dt);
+	//void setAction(bool type);
 	void showState();
 	void Hit(double _damage);
+
+	//Skill
 
 };
 #endif // __HELLOWORLD_SCENE_H__
