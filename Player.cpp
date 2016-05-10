@@ -1,7 +1,7 @@
-#include "Player.h"
+ï»¿#include "Player.h"
 
 USING_NS_CC;
-//»ý¼ºµÉ¶§ ÃÊ±âÈ­
+//ìƒì„±ë ë•Œ ì´ˆê¸°í™”
 Player::Player(double hp, double maxhp, double def, int type){
 	effect = new Effect();
 	effect->retain();
@@ -16,7 +16,7 @@ Player::Player(double hp, double maxhp, double def, int type){
 	}
 	ps = Idle;
 
-	//¾Ö´ÏÀÌ¼Ç ¸ØÃã »óÅÂ È®ÀÎ
+	//ì• ë‹ˆì´ì…˜ ë©ˆì¶¤ ìƒíƒœ í™•ì¸
 	stopAim = CallFunc::create(CC_CALLBACK_0(Player::EndAnimation,this));
 
 }
@@ -42,7 +42,7 @@ void Player::setAction(bool type) {
 	}
 	
 }
-//Repeatforever ¾Ö´Ï¸ÞÀÌ¼ÇÀº ¿¹¿ÜÃ³¸®
+//Repeatforever ì• ë‹ˆë©”ì´ì…˜ì€ ì˜ˆì™¸ì²˜ë¦¬
 void Player::atkAction() {
 	//runAction
 	if (ps == Idle) {
@@ -62,9 +62,9 @@ void Player::atkAction() {
 	}
 
 	ps = Atk;
-	setEffect(effectType);
 	this->runAction(animAtk);
-	log("°ø°Ý");
+	log("ê³µê²©");
+	setEffect(effectType);
 }
 
 void Player::sheildAction() {
@@ -87,14 +87,15 @@ void Player::sheildAction() {
 	}
 
 	//this->stopAction(animIdle);
-	setEffect(effectType);
+	
 	ps = Sheild;
-	log("¹æ¾î");
+	log("ë°©ì–´");
 	this->runAction(animSheild);
+	setEffect(effectType);
 }
 
 
-//»óÅÂº¸±â
+//ìƒíƒœë³´ê¸°
 void Player::showState() {
 	
 	log("%f",playerHp);
@@ -102,7 +103,7 @@ void Player::showState() {
 	log("%f", playerDef);
 }
 
-//±âº»»óÅÂ·Î µ¹¾Æ°¡±â À§ÇÑ ÇÔ¼ö
+//ê¸°ë³¸ìƒíƒœë¡œ ëŒì•„ê°€ê¸° ìœ„í•œ í•¨ìˆ˜
 void Player::EndAnimation() {
 	idleAction();
 }
@@ -182,7 +183,7 @@ void Player::setUI(Vec2 pos, Layer* uiLayer) {
 
 }
 
-//Ã¼·Â °ÔÀÌÁö
+//ì²´ë ¥ ê²Œì´ì§€
 void Player::UpdateState() {
 	double scale = (playerHp / playerMaxhp);
 	//log("scale %f", scale);
@@ -190,6 +191,12 @@ void Player::UpdateState() {
 }
 
 void Player::Hit() {
+
+	auto act_hit = TintBy::create(0.2f, 0, 255, 255);
+	auto act_hit2 = TintTo::create(0.2f, 255, 255, 255);
+	auto seq = Sequence::create(act_hit, act_hit2, nullptr);
+	this->runAction(seq);
+
 	if (ps != Die) {
 		playerHp = playerHp - 10;
 
@@ -212,16 +219,34 @@ void Player::Hit() {
 
 void Player::setEffect(int number) {
 	if (number == 1) {
-		//ÇÃ·¹ÀÌ¾î°¡ ¼ºÁ÷ÀÚ ÀÏ¶§ ÀÌÆåÆ®
-		effect->getTypePlayerEffect(3, Vec2(40, 40), this);
+		//í”Œë ˆì´ì–´ê°€ ì„±ì§ìž ì¼ë•Œ ì´íŽ™íŠ¸
+		//ížëŸ¬
+		if (ps == Atk) {
+			effect->getTypePlayerEffect(3, Vec2(40, 40), this);
+		}
+		else if (ps == Sheild) {
+			effect->getTypePlayerEffect(1, Vec2(50, 27), this);
+		}
+	
 	}
 	else if (number == 2) {
-		//ÇÃ·¹ÀÌ¾î°¡ ±Ã¼ö ÀÏ¶§ ÀÌÆåÆ®
-		//effect->getTypePlayerEffect(3, Vec2(50, 27), this);
+		//í”Œë ˆì´ì–´ê°€ ê¶ìˆ˜ ì¼ë•Œ ì´íŽ™íŠ¸
+		//ë°©íŒ¨
+		if (ps == Atk) {
+			effect->getTypePlayerEffect(3, Vec2(40, 40), this);
+		}
+		else if (ps == Sheild) {
+			
+		}
 	}
 	else if (number == 3) {
-		//ÇÃ·¹ÀÌ¾î°¡ °Ë»ç ÀÏ‹š ÀÌÆåÆ®
-		effect->getTypePlayerEffect(1, Vec2(50, 27), this);
-		//effect->getTypePlayerEffect(2, Vec2(50, 30), this);
+		//í”Œë ˆì´ì–´ê°€ ê²€ì‚¬ ì¼ë–„ ì´íŽ™íŠ¸
+		if (ps == Atk) {
+			effect->getTypePlayerEffect(3, Vec2(40, 40), this);
+		}
+		else if (ps == Sheild) {
+			effect->getTypePlayerEffect(2, Vec2(50, 30), this);
+			effect->getTypePlayerEffect(1, Vec2(50, 27), this);
+		}
 	}
 }

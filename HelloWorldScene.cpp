@@ -18,7 +18,8 @@ bool HelloWorld::init()
 	{
 		return false;
 	}
-
+	//this->addChild(bgLayer);
+	//bgLayer->setZOrder(-3);
 	b_bullet = false;
 	flag = true;
 	winSize = Director::getInstance()->getWinSize();
@@ -79,6 +80,11 @@ bool HelloWorld::init()
 	//auto animate = Animate::create(animation);
 	//auto rep = RepeatForever::create(animate);
 	//bg->runAction(rep);
+
+	auto rock = Sprite::create("background/rock.png");
+	rock->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	rock->setZOrder(-3);
+	this->addChild(rock);
 	
 	////////////////////
 	//sprite add body //
@@ -89,6 +95,16 @@ bool HelloWorld::init()
 	player3Body = addNewSprite(player3Coll->getPosition(), Size(45, 50), b2_dynamicBody, player3Coll, 0);
 
 	this->addNewSprite(monsterColl->getPosition(), monsterColl->getContentSize(), b2_dynamicBody, monsterColl, 1);
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+	//flags method  playing action(히트 함수를  시간의 따라 연속으로 불릴수있는 갯수정하기)////
+	///////////////////////////////////////////////////////////////////////////////////////////
+
+	auto delay = DelayTime::create(0.3f);
+	auto seq = Sequence::create(delay, CallFunc::create(CC_CALLBACK_0(HelloWorld::setFlag, this)), nullptr);
+	act_flag = seq;
+	act_flag->retain();
+
 	
 	return true;
 }
@@ -191,12 +207,12 @@ void HelloWorld::tick(float dt) {
 	}
 
 	//player2 화살체크
-	for (int i = 0; i < _arrow.size(); i++) {
-		auto arrows = (Sprite*)_arrow.at(i);
-		if (arrow->boundingBox().intersectsRect(monsterColl->boundingBox())){
-			effect->getTypeEffect(9, Vec2(arrow->getPosition()), this);
-			removeChild(arrow, false);
-			_arrow.erase(_arrow.begin()+i);
+	for (int i = 0; i <_arrow.size(); i++) {
+		auto arrows = (Sprite*)_arrow[i];
+		if (arrows->boundingBox().intersectsRect(monsterColl->boundingBox())){
+			effect->getTypeEffect(9, Vec2(arrows->getPosition()), this);
+			removeChild(arrows, false);
+			_arrow.erase(_arrow.begin() + i);
 			monster->Hit(10);
 		}
 	}
@@ -235,8 +251,10 @@ void HelloWorld::tick(float dt) {
 					player2Body->ApplyForceToCenter(b2Vec2(-550, 0), true);
 					player2->atkAction();
 					
-					//슈팅부분
-					auto seq = Sequence::create(DelayTime::create(0.7), CallFunc::create(CC_CALLBACK_0(HelloWorld::shooting, this)), nullptr);
+					//슈팅부분 0.7;
+					auto seq = Sequence::create(DelayTime::create(0.7), 
+												CallFunc::create(CC_CALLBACK_0(HelloWorld::shooting, this)), 
+												nullptr);
 					this->runAction(seq);
 				}
 			}
@@ -268,6 +286,7 @@ void HelloWorld::tick(float dt) {
 						//flag = false;
 						monster->Hit(10);
 						flag = false;
+						this->runAction(act_flag);
 					}
 					
 				}
@@ -819,7 +838,7 @@ void HelloWorld::shooting() {
 	auto texture = batch->getTexture();
 
 	auto animation = Animation::create();
-	animation->setDelayPerUnit(0.1f);
+	animation->setDelayPerUnit(0.05f);
 
 	for (int i = 0; i < 4; i++) {
 		int colum = i % 4; // 0,1,2,3,4
@@ -828,7 +847,7 @@ void HelloWorld::shooting() {
 		animation->addSpriteFrameWithTexture(texture, Rect(colum * 80, row * 40, 80, 40));
 	}
 
-	arrow = Sprite::create("Skill/4080arrow.png", Rect(0, 0, 80, 40));
+	auto arrow = Sprite::create("Skill/4080arrow.png", Rect(0, 0, 80, 40));
 	arrow->setPosition(player2Coll->getPosition());
 	this->addChild(arrow);
 
@@ -840,8 +859,12 @@ void HelloWorld::shooting() {
 	arrow->runAction(rep);
 	arrow->runAction(spa);
 	
-	log("bbb");
+	log("allow");
 	b_bullet = true;
 
-	_arrow.pushBack(arrow);
+	_arrow.push_back(arrow);
+}
+
+void HelloWorld::setFlag() {
+	flag = true;
 }

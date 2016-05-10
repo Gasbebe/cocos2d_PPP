@@ -1,4 +1,4 @@
-#ifndef __GAME_PLAYER_H__
+ï»¿#ifndef __GAME_PLAYER_H__
 #define __GAME_PLAYER_H__
 
 #include "cocos2d.h"
@@ -16,11 +16,11 @@ public:
 	~Player();
 	double playerHp, playerMaxhp, playerDef;
 
-	//ÀÌÆåÆ®
+	//ì´í™íŠ¸
 	Effect* effect;
 	int effectType;
 
-	//¾Ö´Ï¸ŞÀÌ¼Ç
+	//ì• ë‹ˆë©”ì´ì…˜
 	cocos2d::Action* animAtk;
 	cocos2d::Action* animSheild;
 	cocos2d::Action* animIdle;
@@ -37,7 +37,7 @@ public:
 	cocos2d::Sprite* pace;
 	virtual bool init();
 
-	//¾Ö´Ï¸ŞÀÌ¼Å ½ÇÇàÇÔ¼ö
+	//ì• ë‹ˆë©”ì´ì…” ì‹¤í–‰í•¨ìˆ˜
 	void setUI(cocos2d::Vec2 pos, cocos2d::Layer* uiLayer);
 	void atkAction();
 	void sheildAction();

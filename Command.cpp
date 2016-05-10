@@ -1,4 +1,4 @@
-#include "Command.h"
+ï»¿#include "Command.h"
 #include "HelloWorldScene.h"
 
 Command::Command() {
@@ -16,7 +16,7 @@ Command::Command() {
 	atk = Sprite::create("button/button2_100px.png");
 	sheild = Sprite::create("button/button1_100px.png");
 
-	//ÀÌ¹ÌÁö ³ªÁß¿¡ ¹Ù²Ù±â
+	//ì´ë¯¸ì§€ ë‚˜ì¤‘ì— ë°”ê¾¸ê¸°
 	sprite1 = Sprite::create("button/button2_100px.png");
 	sprite1->setPosition(Vec2(commandSize.width/2 - 100, commandSize.height / 2));
 	sprite1->setScale(0.5f);
@@ -43,8 +43,8 @@ void Command::Test() {
 
 
 void Command::ViewCommand(int number) {
-	//¿¹¿ÜÃ³¸®  bOnActive È­¸é¿¡ ³ª¿ÍÀÖÀ»¶§¸¸ ´©¸£´Â°Ô °¡´ÉÇÏ´Ù
-	//count 1 2 3 Àº °¢°¢ ¹öÆ°ÀÇ À§Ä¡
+	//ì˜ˆì™¸ì²˜ë¦¬  bOnActive í™”ë©´ì— ë‚˜ì™€ìˆì„ë•Œë§Œ ëˆ„ë¥´ëŠ”ê²Œ ê°€ëŠ¥í•˜ë‹¤
+	//count 1 2 3 ì€ ê°ê° ë²„íŠ¼ì˜ ìœ„ì¹˜
 	if (bOnActive) {
 		if (count == 1) {
 			if (number == 1) {
@@ -82,7 +82,7 @@ void Command::ViewCommand(int number) {
 				bAction[2] = false;
 			}
 			
-			//atk  shield action È®ÀÎÇÏ´Â ·Î±×  true¸é atk  false¸é shield
+			//atk  shield action í™•ì¸í•˜ëŠ” ë¡œê·¸  trueë©´ atk  falseë©´ shield
 			for (int i = 0; i < 3; i++) {
 				if (bAction[i]) {
 					log("true");
@@ -91,7 +91,7 @@ void Command::ViewCommand(int number) {
 					log("false");
 				}
 			}
-			//ÇÃ·¹ÀÌ¾î ¾×¼Ç½ÇÇà
+			//í”Œë ˆì´ì–´ ì•¡ì…˜ì‹¤í–‰
 			playerAction();
 
 			auto seq = Sequence::create(CallFunc::create(CC_CALLBACK_0(Command::setOnActive, this)), 
@@ -102,12 +102,12 @@ void Command::ViewCommand(int number) {
 	}
 	else {
 		count = 1;
-		log("¾È´­¸²");
+		log("ì•ˆëˆŒë¦¼");
 	}
 	log("count = %d ", count);
 }
 
-//¹öÆ° ´­¸±Áö ¸»Áö Á¤ÇÏ´Â°÷
+//ë²„íŠ¼ ëˆŒë¦´ì§€ ë§ì§€ ì •í•˜ëŠ”ê³³
 void Command::setOnActive() {
 
 	if (bOnActive) {
@@ -124,7 +124,7 @@ void Command::setOnActive() {
 
 }
 
-//¹öÆ° ´Ê°Ô ¼û±æ·Á°í ¾²´Â°Å
+//ë²„íŠ¼ ëŠ¦ê²Œ ìˆ¨ê¸¸ë ¤ê³  ì“°ëŠ”ê±°
 void Command::hideCommand() {
 
 	sprite1->setOpacity(0.0f);
@@ -134,12 +134,12 @@ void Command::hideCommand() {
 
 }
 
-//ÇÃ·¹ÀÌ¾î ÄÉ¸¯ÅÍµé¿¡°Ô ¾×¼Ç Å¸ÀÔ ³Ñ°ÜÁÜ
+//í”Œë ˆì´ì–´ ì¼€ë¦­í„°ë“¤ì—ê²Œ ì•¡ì…˜ íƒ€ì… ë„˜ê²¨ì¤Œ
 bool Command::getActionType(int num) {
 	return bAction[num];
 }
 
-//helloWorld¿¡ ÀÖ´Â onAction½ÇÇà½ÃÅ°±â À§ÇØ¼­ »ç¿ë
+//helloWorldì— ìˆëŠ” onActionì‹¤í–‰ì‹œí‚¤ê¸° ìœ„í•´ì„œ ì‚¬ìš©
 bool Command::playingAction() {
 	return true;
 }

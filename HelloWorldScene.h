@@ -67,7 +67,7 @@ public:
 	b2Body* monsterBody;
 
 	//Bullet
-	cocos2d::Sprite* arrow;
+	//cocos2d::Sprite* arrow;
 	cocos2d::Sprite* bullet;
 
 	bool b_bullet;
@@ -87,14 +87,16 @@ public:
 	Effect* effect;
 
 	//flag
+	cocos2d::Action* act_flag;
 	bool flag;
+	void setFlag();
 
 protected:
 		void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
 		cocos2d::CustomCommand _customCmd;
 
 private:
-	cocos2d::Vector<cocos2d::Sprite*> _arrow;
+	std::vector<cocos2d::Sprite*> _arrow;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

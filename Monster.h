@@ -1,4 +1,4 @@
-#ifndef __MONSTER_H__
+﻿#ifndef __MONSTER_H__
 #define __MONSTER_H__
 
 #include "cocos2d.h"
@@ -15,7 +15,7 @@ public:
 	monsterState ms;
 	double monsterHp, monsterMaxhp;
 
-	//�ִϸ��̼�
+	//애니메이션
 	cocos2d::Action* animAtk;
 	cocos2d::Action* animSheild;
 	cocos2d::Action* animIdle;

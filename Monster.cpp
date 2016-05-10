@@ -1,4 +1,4 @@
-#include "Monster.h"
+ï»¿#include "Monster.h"
 
 Monster::Monster(double maxhp) {
 	effect = new Effect;
@@ -20,7 +20,7 @@ Monster::~Monster() {
 	delete effect;
 }
 
-//Repeatforever ¾Ö´Ï¸ÞÀÌ¼ÇÀº ¿¹¿ÜÃ³¸®
+//Repeatforever ì• ë‹ˆë©”ì´ì…˜ì€ ì˜ˆì™¸ì²˜ë¦¬
 void Monster::atkAction() {
 
 	if (ms == Idle) {
@@ -47,7 +47,7 @@ void Monster::atkAction() {
 
 	ms = Atk;
 	this->runAction(animAtk);
-	log("°ø°Ý");
+	log("ê³µê²©");
 }
 
 void Monster::sheildAction() {
@@ -76,22 +76,22 @@ void Monster::sheildAction() {
 
 	this->stopAction(animIdle);
 	ms = Sheild;
-	log("¹æ¾î");
+	log("ë°©ì–´");
 	this->runAction(animSheild);
 }
 
 
-//»óÅÂº¸±â
+//ìƒíƒœë³´ê¸°
 void Monster::showState() {
 	log("%f", monsterHp);
 	log("%f", monsterMaxhp);
 }
 
-//±âº»»óÅÂ·Î µ¹¾Æ°¡±â À§ÇÑ ÇÔ¼ö
+//ê¸°ë³¸ìƒíƒœë¡œ ëŒì•„ê°€ê¸° ìœ„í•œ í•¨ìˆ˜
 void Monster::EndAnimation() {
 	idleAction();
 }
-//Ã³À½ ½ÃÀÛ µÉ‹š ½ÇÇàÇÒ ¾Ö´Ï¸ÞÀÌ¼Ç ÇÔ¼ö
+//ì²˜ìŒ ì‹œìž‘ ë ë–„ ì‹¤í–‰í•  ì• ë‹ˆë©”ì´ì…˜ í•¨ìˆ˜
 void Monster::StartAnimation() {
 	idleAction();
 }
@@ -247,7 +247,15 @@ void Monster::setUI(Vec2 pos, Layer* uiLayer) {
 }
 
 void Monster::Hit(double _damage) {
+	auto act_hit = TintBy::create(0.2f, 0, 255, 255);
+	auto act_hit2 = TintTo::create(0.2f, 255, 255, 255);
+	auto seq = Sequence::create(act_hit, act_hit2, nullptr);
+	this->runAction(seq);
+
+	int pos = rand() % 20 + -10;
 	if (ms != Die) {
+
+		log("monster hp : %f", monsterHp);
 		monsterHp = monsterHp - _damage;
 
 		if (monsterHp < 0) {
@@ -260,24 +268,24 @@ void Monster::Hit(double _damage) {
 			monsterHp = 0;
 		}
 
-		//Ã¼·Â¹Ù ÁÙ¾îµå´Â ¾×¼Ç
+		//ì²´ë ¥ë°” ì¤„ì–´ë“œëŠ” ì•¡ì…˜
 		auto act = ScaleTo::create(0.1f, monsterHp / monsterMaxhp, 1);
 
-		//ÇÇÆ¢±â´Â ÀÌÆåÆ®
-		effect->getTypePlayerEffect(10, Vec2(70, 50), this);
-		effect->getTypePlayerEffect(11, Vec2(70, 70), this);
+		//í”¼íŠ€ê¸°ëŠ” ì´íŽ™íŠ¸
+		effect->getTypePlayerEffect(10, Vec2(80 + pos, 50 + pos), this);
+		effect->getTypePlayerEffect(11, Vec2(70 + pos, 60 + pos), this);
 
 		hpGauge->runAction(act);
 	}
 	else {
 		return;
 	}
-	log("monster hp : %f", monsterHp);
+
 }
 
 void Monster::monsterAI(float dt) {
 	int atk_number = rand() % 3 + 1;
-	log("½ÇÇà  :  %d" , atk_number);
+	log("ì‹¤í–‰  :  %d" , atk_number);
 	switch (atk_number) {
 	case 1:
 		atkAction();

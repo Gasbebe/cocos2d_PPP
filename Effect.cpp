@@ -1,4 +1,4 @@
-#include "Effect.h"
+Ôªø#include "Effect.h"
 
 Effect::Effect() {
 	b_effect[0] = false;
@@ -7,20 +7,20 @@ Effect::Effect() {
 		this->autorelease();
 	}
 	effec_cache = SpriteFrameCache::getInstance();
-	//∞ÀªÁ ∞¯∞›
+	//Í≤ÄÏÇ¨ Í≥µÍ≤©
 	effec_cache->addSpriteFramesWithFile("Skill/fx_bladestorm.plist");
-	//πÊæÓ
+	//Î∞©Ïñ¥
 	effec_cache->addSpriteFramesWithFile("Skill/fx_defense.plist");
-	//»≠ªÏ ≈Õ¡˙∂ß
+	//ÌôîÏÇ¥ ÌÑ∞ÏßàÎïå
 	effec_cache->addSpriteFramesWithFile("Skill/fx_blood_explosion.plist");
-	//»˙∑Ø
+	//ÌûêÎü¨
 	effec_cache->addSpriteFramesWithFile("Skill/fx_teleportrecall2.plist");
 	//
 	effec_cache->addSpriteFramesWithFile("Skill/fx_whiteexplosion.plist");
 }
 
 //number 1~ 5 : fire type   number 6, 7, 8  : shield  type number3 : smoke type
-//backgroundøÎ ¿Ã∆Â∆Æ
+//backgroundÏö© Ïù¥ÌéôÌä∏
 void Effect::getTypeEffect(int number, Vec2 pos, Layer *layer) {
 	char str[100] = { 0 };
 	if (number == 1) {
@@ -32,7 +32,7 @@ void Effect::getTypeEffect(int number, Vec2 pos, Layer *layer) {
 		for (int i = 0; i < 4; i++) {
 			int colum = i % 4; // 0,1,2,3,4
 			int row = i / 4; //0,1,2
-							 // x,y ¡¬«• x∑Œ æÛ∏∂∏∏≈≠  y∑Œ æÛ∏∂∏∏≈≠
+							 // x,y Ï¢åÌëú xÎ°ú ÏñºÎßàÎßåÌÅº  yÎ°ú ÏñºÎßàÎßåÌÅº
 			animation->addSpriteFrameWithTexture(texture, Rect(colum * 11, row * 11, 11, 11));
 		}
 
@@ -54,7 +54,7 @@ void Effect::getTypeEffect(int number, Vec2 pos, Layer *layer) {
 		for (int i = 4; i < 8; i++) {
 			int colum = i % 4; // 0,1,2,3,4
 			int row = i / 4; //0,1,2
-							 // x,y ¡¬«• x∑Œ æÛ∏∂∏∏≈≠  y∑Œ æÛ∏∂∏∏≈≠
+							 // x,y Ï¢åÌëú xÎ°ú ÏñºÎßàÎßåÌÅº  yÎ°ú ÏñºÎßàÎßåÌÅº
 			animation->addSpriteFrameWithTexture(texture, Rect(colum * 11, row * 11, 11, 11));
 		}
 
@@ -76,7 +76,7 @@ void Effect::getTypeEffect(int number, Vec2 pos, Layer *layer) {
 		for (int i = 0; i < 8; i++) {
 			int colum = i % 8; // 0,1,2,3,4
 			int row = i / 8; //0,1,2
-							 // x,y ¡¬«• x∑Œ æÛ∏∂∏∏≈≠  y∑Œ æÛ∏∂∏∏≈≠
+							 // x,y Ï¢åÌëú xÎ°ú ÏñºÎßàÎßåÌÅº  yÎ°ú ÏñºÎßàÎßåÌÅº
 			animation->addSpriteFrameWithTexture(texture, Rect(colum * 22, row * 22, 22, 22));
 		}
 
@@ -99,7 +99,7 @@ void Effect::getTypeEffect(int number, Vec2 pos, Layer *layer) {
 		for (int i = 8; i < 16; i++) {
 			int colum = i % 8; // 0,1,2,3,4
 			int row = i / 8; //0,1,2
-							 // x,y ¡¬«• x∑Œ æÛ∏∂∏∏≈≠  y∑Œ æÛ∏∂∏∏≈≠
+							 // x,y Ï¢åÌëú xÎ°ú ÏñºÎßàÎßåÌÅº  yÎ°ú ÏñºÎßàÎßåÌÅº
 			animation->addSpriteFrameWithTexture(texture, Rect(colum * 22, row * 22, 22, 22));
 		}
 
@@ -121,7 +121,7 @@ void Effect::getTypeEffect(int number, Vec2 pos, Layer *layer) {
 		for (int i = 16; i < 24; i++) {
 			int colum = i % 8; // 0,1,2,3,4
 			int row = i / 8; //0,1,2
-							 // x,y ¡¬«• x∑Œ æÛ∏∂∏∏≈≠  y∑Œ æÛ∏∂∏∏≈≠
+							 // x,y Ï¢åÌëú xÎ°ú ÏñºÎßàÎßåÌÅº  yÎ°ú ÏñºÎßàÎßåÌÅº
 			animation->addSpriteFrameWithTexture(texture, Rect(colum * 22, row * 22, 22, 22));
 		}
 
@@ -208,7 +208,7 @@ void Effect::getTypeEffect(int number, Vec2 pos, Layer *layer) {
 		for (int i = 0; i < 6; i++) {
 			int colum = i % 2; // 0, 1, 0 , 1, 0, 1
 			int row = i / 2; //0,1,2,3,
-							 // x,y ¡¬«• x∑Œ æÛ∏∂∏∏≈≠  y∑Œ æÛ∏∂∏∏≈≠
+							 // x,y Ï¢åÌëú xÎ°ú ÏñºÎßàÎßåÌÅº  yÎ°ú ÏñºÎßàÎßåÌÅº
 			animation->addSpriteFrameWithTexture(texture, Rect(colum * 58, row * 44, 58, 44));
 		}
 
@@ -270,7 +270,7 @@ void Effect::getTypeEffect(int number, Vec2 pos, Layer *layer) {
 	}
 }
 
-//«√ø°¿ÃæÓøÎ ¿Ã∆Â∆Æ
+//ÌîåÏóêÏù¥Ïñ¥Ïö© Ïù¥ÌéôÌä∏
 void Effect::getTypePlayerEffect(int number, cocos2d::Vec2 pos, cocos2d::Sprite* player) {
 		char str[100] = { 0 };
 		if (number == 1) {
@@ -347,7 +347,7 @@ void Effect::getTypePlayerEffect(int number, cocos2d::Vec2 pos, cocos2d::Sprite*
 				effect_frame.pushBack(frame);
 			}
 
-			auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.05f);
+			auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.02f);
 			auto effect_animate = Animate::create(effect_animation);
 			auto act = RepeatForever::create(effect_animate);
 
@@ -369,7 +369,7 @@ void Effect::getTypePlayerEffect(int number, cocos2d::Vec2 pos, cocos2d::Sprite*
 				effect_frame.pushBack(frame);
 			}
 
-			auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.05f);
+			auto effect_animation = Animation::createWithSpriteFrames(effect_frame, 0.02f);
 			auto effect_animate = Animate::create(effect_animation);
 			auto act = RepeatForever::create(effect_animate);
 
