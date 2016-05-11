@@ -10,9 +10,8 @@ Monster::Monster(double maxhp) {
 	if (bOk) {
 		this->autorelease();
 	}
-	this->schedule(schedule_selector(Monster::monsterAI), 3.0f);
+	this->schedule(schedule_selector(Monster::monsterAI), 4.5f);
 	stopAim = CallFunc::create(CC_CALLBACK_0(Monster::EndAnimation, this));
-	//delayHit = CallFunc::create(CC_CALLBACK_0(Monster::Hit, this));
 
 }
 
@@ -199,6 +198,7 @@ void Monster::castLoopAction() {
 	ms = CastLoop;
 	this->runAction(animCastLoop);
 }
+
 void Monster::dieAction() {
 	if (ms == Idle) {
 		this->stopAction(animIdle);
@@ -247,6 +247,8 @@ void Monster::setUI(Vec2 pos, Layer* uiLayer) {
 }
 
 void Monster::Hit(double _damage) {
+
+	//맞을떄 빨강색으로 변함
 	auto act_hit = TintBy::create(0.2f, 0, 255, 255);
 	auto act_hit2 = TintTo::create(0.2f, 255, 255, 255);
 	auto seq = Sequence::create(act_hit, act_hit2, nullptr);
@@ -284,19 +286,48 @@ void Monster::Hit(double _damage) {
 }
 
 void Monster::monsterAI(float dt) {
-	int atk_number = rand() % 3 + 1;
-	log("실행  :  %d" , atk_number);
-	switch (atk_number) {
-	case 1:
-		atkAction();
-		break;
-	case 2:
-		castingAction();
-		break;
-	case 3:
-		castLoopAction();
-		break;
-	default:
-		break;
+	if (ms != Die) {
+		//스킬 쓰기전 딜레이 애니메션 만들기
+		auto sprite = Sprite::create("Skill/skill_loading.png");
+		auto texture = sprite->getTexture();
+		auto animation = Animation::create();
+		animation->setDelayPerUnit(0.07f);
+
+		for (int i = 0; i < 27; i++) {
+			int colum = i % 6; // 0,1,2,3,4
+			int row = i / 6; //0,1,2
+							 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
+			animation->addSpriteFrameWithTexture(texture, Rect(colum * 100, row * 33, 100, 33));
+		}
+
+		auto act_loading = Sprite::create("Skill/skill_loading.png", Rect(0, 0, 100, 33));
+		auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, this, act_loading, false));
+		auto animate = Animate::create(animation);
+
+		act_loading->setScale(0.5f);
+		act_loading->setPosition(Vec2(65, 100));
+
+		//랜덤 숫자를 설정해 숫자의 해당하는 공격패턴이 나감
+		int atk_number = rand() % 3 + 1;
+		log("실행  :  %d", atk_number);
+
+		if (atk_number == 1) {
+			auto seq = Sequence::create(animate, removeAction, CCCallFunc::create(CC_CALLBACK_0(Monster::atkAction, this)), nullptr);
+			this->addChild(act_loading);
+			act_loading->runAction(seq);
+			//atkAction();
+		}
+		else if (atk_number == 2) {
+			auto seq = Sequence::create(animate, removeAction, CCCallFunc::create(CC_CALLBACK_0(Monster::castingAction, this)), nullptr);
+			this->addChild(act_loading);
+			act_loading->runAction(seq);
+			//castingAction();
+		}
+		else if (atk_number == 3) {
+			auto seq = Sequence::create(animate, removeAction, CCCallFunc::create(CC_CALLBACK_0(Monster::castLoopAction, this)), nullptr);
+			this->addChild(act_loading);
+			act_loading->runAction(seq);
+			//castLoopAction();
+		}
 	}
 }

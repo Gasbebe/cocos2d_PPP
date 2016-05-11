@@ -68,9 +68,8 @@ public:
 
 	//Bullet
 	//cocos2d::Sprite* arrow;
-	cocos2d::Sprite* bullet;
-
-	bool b_bullet;
+	//cocos2d::Sprite* bullet;
+	//bool b_bullet;
 	void shooting();
 
 	//animation SpriteFrameCahe createWithTexture
@@ -91,12 +90,21 @@ public:
 	bool flag;
 	void setFlag();
 
+	cocos2d::Action* act_flag2;
+	bool flag2;
+	void setFlag2();
+
+	//monsterskill
+	void MonsterSkill();
+	void MonsterSkill2();
+	void MonsterSkill3();
 protected:
 		void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
 		cocos2d::CustomCommand _customCmd;
 
 private:
 	std::vector<cocos2d::Sprite*> _arrow;
+	std::vector<cocos2d::Sprite*> _skill;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

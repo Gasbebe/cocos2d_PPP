@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "Player.h"
+#define COMMAND_INIT_NUMBER 1
 
 using namespace cocos2d;
 
@@ -23,6 +24,8 @@ public:
 	cocos2d::Sprite *sprite1;
 	cocos2d::Sprite *sprite2;
 	cocos2d::Sprite *sprite3;
+
+	cocos2d::LabelTTF* label;
 
 	Player* p1;
 	Player* p2;

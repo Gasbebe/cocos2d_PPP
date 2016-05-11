@@ -12,6 +12,7 @@ public:
 
 	virtual bool init();
 
+	bool flag;
 	CREATE_FUNC(IntroScene);
 	cocos2d::Size winSize;
 	void startGame(cocos2d::Ref* pSender);

@@ -20,8 +20,9 @@ bool HelloWorld::init()
 	}
 	//this->addChild(bgLayer);
 	//bgLayer->setZOrder(-3);
-	b_bullet = false;
 	flag = true;
+	flag2 = true;
+
 	winSize = Director::getInstance()->getWinSize();
 
 	//effect  this부분에 Backgound 레이어 만들어서 넣을것
@@ -49,7 +50,7 @@ bool HelloWorld::init()
 	
 	setCharectorAnimations();
 	
-	if (createBox2dWorld(true)) {
+	if (createBox2dWorld(false)) {
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
 	
@@ -57,29 +58,29 @@ bool HelloWorld::init()
 	//backgrond ///
 	///////////////
 	
-	//auto batch = SpriteBatchNode::create("background/16.png", 10);
-	//auto texture = batch->getTexture();
+	auto batch = SpriteBatchNode::create("background/16.png", 10);
+	auto texture = batch->getTexture();
 
-	//auto animation = Animation::create();
-	//animation->setDelayPerUnit(0.1f);
+	auto animation = Animation::create();
+	animation->setDelayPerUnit(0.1f);
 
-	//for (int i = 0; i < 18; i++) {
-	//	int colum = i % 5; // 0,1,2,3,4
-	//	int row = i / 4; //0,1,2
-	//					 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
-	//	animation->addSpriteFrameWithTexture(texture, Rect(colum * 200, row * 100, 200, 100));
-	//}
+	for (int i = 0; i < 18; i++) {
+		int colum = i % 5; // 0,1,2,3,4
+		int row = i / 4; //0,1,2
+						 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
+		animation->addSpriteFrameWithTexture(texture, Rect(colum * 200, row * 100, 200, 100));
+	}
 
-	//auto bg = Sprite::create("background/16.png", Rect(0, 0, 200, 100));
+	auto bg = Sprite::create("background/16.png", Rect(0, 0, 200, 100));
 
-	//bg->setScale(3.8f);
-	//bg->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	//bg->setZOrder(-3);
-	//this->addChild(bg);
+	bg->setScale(3.8f);
+	bg->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	bg->setZOrder(-3);
+	this->addChild(bg);
 
-	//auto animate = Animate::create(animation);
-	//auto rep = RepeatForever::create(animate);
-	//bg->runAction(rep);
+	auto animate = Animate::create(animation);
+	auto rep = RepeatForever::create(animate);
+	bg->runAction(rep);
 
 	auto rock = Sprite::create("background/rock.png");
 	rock->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
@@ -94,18 +95,22 @@ bool HelloWorld::init()
 	player2Body = addNewSprite(player2Coll->getPosition(), Size(50, 50), b2_dynamicBody, player2Coll, 0);
 	player3Body = addNewSprite(player3Coll->getPosition(), Size(45, 50), b2_dynamicBody, player3Coll, 0);
 
-	this->addNewSprite(monsterColl->getPosition(), monsterColl->getContentSize(), b2_dynamicBody, monsterColl, 1);
+	this->addNewSprite(monsterColl->getPosition(), monsterColl->getContentSize(), b2_staticBody, monsterColl, 1);
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//flags method  playing action(히트 함수를  시간의 따라 연속으로 불릴수있는 갯수정하기)////
 	///////////////////////////////////////////////////////////////////////////////////////////
 
-	auto delay = DelayTime::create(0.3f);
+	auto delay = DelayTime::create(0.4f);
 	auto seq = Sequence::create(delay, CallFunc::create(CC_CALLBACK_0(HelloWorld::setFlag, this)), nullptr);
 	act_flag = seq;
 	act_flag->retain();
 
-	
+	auto delay2 = DelayTime::create(1.5f);
+	auto seq2 = Sequence::create(delay2, CallFunc::create(CC_CALLBACK_0(HelloWorld::setFlag2, this)), nullptr);
+	act_flag2 = seq2;
+	act_flag2->retain();
+
 	return true;
 }
 
@@ -280,10 +285,6 @@ void HelloWorld::tick(float dt) {
 			else if (player3->ps == player3->Atk) {
 				if (player3Coll->boundingBox().intersectsRect(monsterColl->boundingBox())) {
 					if (flag) {
-						//auto delay = DelayTime::create(0.2f);
-						//auto seq = Sequence::create(delay, monster->delayHit, delay, monster->delayHit, nullptr);
-						//runAction(seq);
-						//flag = false;
 						monster->Hit(10);
 						flag = false;
 						this->runAction(act_flag);
@@ -301,14 +302,19 @@ void HelloWorld::tick(float dt) {
 
 		}
 		else if (monster->ms == monster->Cast) {
-			if (player1->ps != player1->Sheild) {
-				player1Body->ApplyForceToCenter(b2Vec2(-25, 40), true);
-			}
-			if (player2->ps != player2->Sheild) {
-				player2Body->ApplyForceToCenter(b2Vec2(-25, 40), true);
-			}
-			if (player3->ps != player3->Sheild) {
-				player3Body->ApplyForceToCenter(b2Vec2(-25, 40), true);
+			if (flag2) {
+				if (player1->ps != player1->Sheild) {
+					player1Body->ApplyForceToCenter(b2Vec2(1200, 0), true);
+				}
+				if (player2->ps != player2->Sheild) {
+					player2Body->ApplyForceToCenter(b2Vec2(1200, 0), true);
+				}
+				if (player3->ps != player3->Sheild) {
+					player3Body->ApplyForceToCenter(b2Vec2(1200, 0), true);
+				}
+				flag2 = false;
+				monster->runAction(act_flag2);
+				MonsterSkill2();
 			}
 		}
 		else if (monster->ms == monster->CastLoop) {
@@ -480,6 +486,7 @@ void HelloWorld::setCharectorAnimations() {
 	auto p1CollSize = player1Coll->getContentSize();
 	player1->setPosition(Vec2(p1CollSize.width / 2, p1CollSize.height / 2));
 	player1Coll->addChild(player1);
+	player1Coll->setOpacity(0);
 
 	//////////////////////////
 	//player2   /////////////
@@ -585,6 +592,7 @@ void HelloWorld::setCharectorAnimations() {
 	auto p2CollSize = player2Coll->getContentSize();
 	player2->setPosition(Vec2(p2CollSize.width / 2, p2CollSize.height / 2));
 	player2Coll->addChild(player2);
+	player2Coll->setOpacity(0);
 
 	//////////////////////
 	//player3  ///////////
@@ -690,6 +698,7 @@ void HelloWorld::setCharectorAnimations() {
 	auto p3CollSize = player3Coll->getContentSize();
 	player3->setPosition(Vec2(p3CollSize.width / 2, p3CollSize.height / 2));
 	player3Coll->addChild(player3);
+	player3Coll->setOpacity(0);
 
 	////////////
 	//command///
@@ -820,7 +829,7 @@ void HelloWorld::setCharectorAnimations() {
 
 	//충돌 체크할 스프라이트추가
 	monsterColl = Sprite::create("collisionBox/BossCollisionBox.png");
-	monsterColl->setPosition(Vec2((winSize.width / 8) * 7, winSize.height / 2));
+	monsterColl->setPosition(Vec2((winSize.width / 8) * 7, winSize.height / 2 - 40));
 	monsterColl->setZOrder(-1);
 	monsterColl->setOpacity(0);
 	this->addChild(monsterColl);
@@ -833,7 +842,6 @@ void HelloWorld::setCharectorAnimations() {
 }
 
 void HelloWorld::shooting() {
-	//bullet
 	auto batch = SpriteBatchNode::create("Skill/4080arrow.png", 10);
 	auto texture = batch->getTexture();
 
@@ -859,12 +867,49 @@ void HelloWorld::shooting() {
 	arrow->runAction(rep);
 	arrow->runAction(spa);
 	
-	log("allow");
-	b_bullet = true;
-
 	_arrow.push_back(arrow);
 }
 
 void HelloWorld::setFlag() {
-	flag = true;
+	if (!flag) {
+		flag = true;
+	}
+}
+
+void HelloWorld::setFlag2() {
+	if (!flag2) {
+		flag2 = true;
+	}
+}
+
+void HelloWorld::MonsterSkill2() {
+	auto batch = SpriteBatchNode::create("Skill/monster_skill2.png", 10);
+	auto texture = batch->getTexture();
+
+	auto animation = Animation::create();
+	animation->setDelayPerUnit(0.1f);
+
+	for (int i = 0; i < 26; i++) {
+		int colum = i % 6; // 0,1,2,3,4
+		int row = i / 6; //0,1,2
+						 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
+		animation->addSpriteFrameWithTexture(texture, Rect(colum * 160, row * 450, 160, 450));
+	}
+
+	auto skill = Sprite::create("Skill/monster_skill2.png", Rect(0, 0, 160, 450));
+	skill->setPosition(Vec2(monsterColl->getPositionX() - 100, monsterColl->getPositionY() + 150));
+	this->addChild(skill);
+
+	auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, this, skill, false));
+
+	auto animate = Animate::create(animation);
+	//auto rep = RepeatForever::create(animate);
+
+	auto seq = Sequence::create(animate, removeAction, nullptr);
+	//auto spa = Spawn::create(MoveBy::create(2.5f, Vec2(1000, 0)), nullptr);
+
+	skill->runAction(seq);
+	//skill->runAction(spa);
+
+	_skill.push_back(skill);
 }
