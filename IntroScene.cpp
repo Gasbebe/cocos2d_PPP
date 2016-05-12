@@ -47,19 +47,26 @@ bool IntroScene::init(){
 	auto rep = RepeatForever::create(animate);
 	bg->runAction(rep);
 
-	auto rock3 = Sprite::create("background/rock3.png");
-	rock3->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	this->addChild(rock3);
-	
-	auto act_rock = MoveBy::create(1.0f, Vec2(50, 0));
-	auto seq2 = Sequence::create(act_rock, act_rock->reverse(), nullptr);
-	auto rep2 = RepeatForever::create(seq2);
+	//rock
+	//auto rock3 = Sprite::create("background/rock3.png");
+	//rock3->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	//this->addChild(rock3);
+	//
+	//auto act_rock3 = MoveBy::create(2.0f, Vec2(0, 30));
+	//auto seq2 = Sequence::create(act_rock3, act_rock3->reverse(), nullptr);
+	//auto rep2 = RepeatForever::create(seq2);
 
-	rock3->runAction(rep2);
+	//rock3->runAction(rep2);
 
 	auto rock4 = Sprite::create("background/rock4.png");
 	rock4->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(rock4);
+
+	auto act_rock4 = MoveBy::create(1.0f, Vec2(0, 10));
+	auto seq3 = Sequence::create(act_rock4, act_rock4->reverse(), nullptr);
+	auto rep3 = RepeatForever::create(seq3);
+
+	rock4->runAction(rep3);
 
 	auto rock = Sprite::create("background/rock.png");
 	rock->setPosition(Vec2(winSize.width / 2, winSize.height / 2));

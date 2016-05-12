@@ -84,20 +84,30 @@ public:
 	
 	//Effect
 	Effect* effect;
+	cocos2d::SpriteBatchNode* effect_batch;
 
 	//flag
 	cocos2d::Action* act_flag;
 	bool flag;
 	void setFlag();
 
+	//monster skill
 	cocos2d::Action* act_flag2;
 	bool flag2;
 	void setFlag2();
 
+	cocos2d::Action* act_flag3;
+	bool flag3;
+	void setFlag3();
+
+	cocos2d::Action* act_flag4;
+	bool flag4;
+	void setFlag4();
+
 	//monsterskill
 	void MonsterSkill();
 	void MonsterSkill2();
-	void MonsterSkill3();
+	void MonsterSkill3(float dt);
 protected:
 		void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
 		cocos2d::CustomCommand _customCmd;

@@ -20,8 +20,14 @@ bool HelloWorld::init()
 	}
 	//this->addChild(bgLayer);
 	//bgLayer->setZOrder(-3);
+
+	effect_batch = SpriteBatchNode::create("background/batch.png");
+	this->addChild(effect_batch);
+
 	flag = true;
 	flag2 = true;
+	flag3 = true;
+	flag4 = true;
 
 	winSize = Director::getInstance()->getWinSize();
 
@@ -42,10 +48,10 @@ bool HelloWorld::init()
 
 	//command 
 	command = new Command();
-	command->setPosition(Vec2(winSize.width / 2, (winSize.height / 8) * 7));
+	command->setPosition(Vec2(winSize.width / 2, (winSize.height / 8)));
 
 	//btn
-	command->setBtnUI(Vec2(0, 0), this);
+	command->setBtnUI(Vec2(0, (winSize.height) - 100), this);
 	this->addChild(command);
 	
 	setCharectorAnimations();
@@ -82,17 +88,40 @@ bool HelloWorld::init()
 	auto rep = RepeatForever::create(animate);
 	bg->runAction(rep);
 
-	auto rock = Sprite::create("background/rock.png");
-	rock->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	rock->setZOrder(-3);
-	this->addChild(rock);
+	auto bottom = Sprite::create("background/bottom11.png");
+	bottom->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	bottom->setZOrder(-3);
+	this->addChild(bottom);
+
+	auto sky_rock = Sprite::create("background/sky_rock.png");
+	sky_rock->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	sky_rock->setZOrder(-3);
+	this->addChild(sky_rock);
+	
+	//sky_rock move act
+	auto act_rock3 = MoveBy::create(4.0f, Vec2(0, 10));
+	auto seq5 = Sequence::create(act_rock3, act_rock3->reverse(), nullptr);
+	auto rep5 = RepeatForever::create(seq5);
+	sky_rock->runAction(rep5);
+
+
+	auto sky_rock2 = Sprite::create("background/sky_rock2.png");
+	sky_rock2->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	sky_rock2->setZOrder(-3);
+	this->addChild(sky_rock2);
+
+	//sky_rock move act
+	auto act_rock4 = MoveBy::create(3.0f, Vec2(0, 30));
+	auto seq6 = Sequence::create(act_rock4, act_rock4->reverse(), nullptr);
+	auto rep6 = RepeatForever::create(seq6);
+	sky_rock2->runAction(rep6);
 	
 	////////////////////
 	//sprite add body //
 	////////////////////
 
-	player1Body = addNewSprite(player1Coll->getPosition(), Size(50, 50), b2_dynamicBody, player1Coll, 0);
-	player2Body = addNewSprite(player2Coll->getPosition(), Size(50, 50), b2_dynamicBody, player2Coll, 0);
+	player1Body = addNewSprite(player1Coll->getPosition(), Size(45, 50), b2_dynamicBody, player1Coll, 0);
+	player2Body = addNewSprite(player2Coll->getPosition(), Size(45, 50), b2_dynamicBody, player2Coll, 0);
 	player3Body = addNewSprite(player3Coll->getPosition(), Size(45, 50), b2_dynamicBody, player3Coll, 0);
 
 	this->addNewSprite(monsterColl->getPosition(), monsterColl->getContentSize(), b2_staticBody, monsterColl, 1);
@@ -110,6 +139,16 @@ bool HelloWorld::init()
 	auto seq2 = Sequence::create(delay2, CallFunc::create(CC_CALLBACK_0(HelloWorld::setFlag2, this)), nullptr);
 	act_flag2 = seq2;
 	act_flag2->retain();
+
+	auto delay3 = DelayTime::create(2.0f);
+	auto seq3 = Sequence::create(delay3, CallFunc::create(CC_CALLBACK_0(HelloWorld::setFlag3, this)), nullptr);
+	act_flag3 = seq3;
+	act_flag3->retain();
+
+	auto delay4 = DelayTime::create(3.0f);
+	auto seq4 = Sequence::create(delay4, CallFunc::create(CC_CALLBACK_0(HelloWorld::setFlag4, this)), nullptr);
+	act_flag4 = seq4;
+	act_flag4->retain();
 
 	return true;
 }
@@ -296,10 +335,14 @@ void HelloWorld::tick(float dt) {
 	}
 	
 
-	//monster 
+	//monster skill
 	if (monster->ms != monster->Die) {
 		if (monster->ms == monster->Atk) {
-
+			if (flag3) {
+				flag3 = false;
+				monster->runAction(act_flag3);
+				MonsterSkill();
+			}
 		}
 		else if (monster->ms == monster->Cast) {
 			if (flag2) {
@@ -318,6 +361,17 @@ void HelloWorld::tick(float dt) {
 			}
 		}
 		else if (monster->ms == monster->CastLoop) {
+
+			if (flag4) {
+				this->schedule(schedule_selector(HelloWorld::MonsterSkill3), 0.1);
+				flag4 = false;
+				monster->runAction(act_flag4);
+			}
+
+		}
+		else if (monster->ms == monster->Idle) {
+
+			this->unschedule(schedule_selector(HelloWorld::MonsterSkill3));
 
 		}
 	}
@@ -882,6 +936,51 @@ void HelloWorld::setFlag2() {
 	}
 }
 
+void HelloWorld::setFlag3() {
+	if (!flag3) {
+		flag3 = true;
+	}
+}
+
+void HelloWorld::setFlag4() {
+	if (!flag4) {
+		flag4 = true;
+	}
+}
+
+void HelloWorld::MonsterSkill() {
+	auto batch = SpriteBatchNode::create("Skill/monster_skill.png", 10);
+	auto texture = batch->getTexture();
+
+	auto animation = Animation::create();
+	animation->setDelayPerUnit(0.1f);
+
+	for (int i = 0; i < 16; i++) {
+		int colum = i % 4; // 0,1,2,3,4
+		int row = i / 4; //0,1,2
+						 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
+		animation->addSpriteFrameWithTexture(texture, Rect(colum * 100, row * 100, 100, 100));
+	}
+
+	auto skill = Sprite::create("Skill/monster_skill2.png", Rect(0, 0, 100, 100));
+	skill->setPosition(Vec2(monsterColl->getPositionX() - 100, monsterColl->getPositionY()));
+	skill->setScale(1.5f);
+	this->addChild(skill);
+
+	auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, this, skill, false));
+
+	auto animate = Animate::create(animation);
+	//auto rep = RepeatForever::create(animate);
+
+	auto seq = Sequence::create(animate, removeAction, nullptr);
+	//auto spa = Spawn::create(MoveBy::create(2.5f, Vec2(1000, 0)), nullptr);
+
+	skill->runAction(seq);
+	//skill->runAction(spa);
+
+	_skill.push_back(skill);
+}
+
 void HelloWorld::MonsterSkill2() {
 	auto batch = SpriteBatchNode::create("Skill/monster_skill2.png", 10);
 	auto texture = batch->getTexture();
@@ -910,6 +1009,44 @@ void HelloWorld::MonsterSkill2() {
 
 	skill->runAction(seq);
 	//skill->runAction(spa);
+
+	_skill.push_back(skill);
+}
+
+void HelloWorld::MonsterSkill3(float dt) {
+
+	auto batch = SpriteBatchNode::create("Skill/monster_skill3.png", 10);
+	auto texture = batch->getTexture();
+
+	auto animation = Animation::create();
+	animation->setDelayPerUnit(0.1f);
+
+	for (int i = 0; i < 4; i++) {
+		int colum = i % 2; // 0,1,2,3,4
+		int row = i / 2; //0,1,2
+						 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
+		animation->addSpriteFrameWithTexture(texture, Rect(colum * 110, row * 39, 110, 39));
+	}
+
+	auto skill = Sprite::create("Skill/monster_skill2.png", Rect(0, 0, 110, 39));
+
+	int posY = rand() % 70 + -50;
+
+	skill->setPosition(Vec2(monsterColl->getPositionX() + 200, monsterColl->getPositionY() + posY));
+	skill->setAnchorPoint(Vec2(0, 0.5));
+	skill->setFlippedX(true);
+	skill->setScale(1.5f);
+
+	auto act = MoveBy::create(2.0f, Vec2(-1000, 0));
+	this->addChild(skill);
+	
+	auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, this, skill, false));
+	auto animate = Animate::create(animation);
+	auto rep = RepeatForever::create(animate);
+	auto seq = Sequence::create(act, removeAction, nullptr);
+
+	skill->runAction(rep);
+	skill->runAction(seq);
 
 	_skill.push_back(skill);
 }
