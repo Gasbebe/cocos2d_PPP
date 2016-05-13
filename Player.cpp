@@ -3,6 +3,7 @@
 USING_NS_CC;
 //생성될때 초기화
 Player::Player(double hp, double maxhp, double def, int type){
+	hpPer = 1.0f;
 	effect = new Effect();
 	effect->retain();
 	playerHp = hp;
@@ -190,17 +191,21 @@ void Player::UpdateState() {
 
 }
 
-void Player::Hit() {
+void Player::Hit(double damage) {
 
 	auto act_hit = TintBy::create(0.2f, 0, 255, 255);
 	auto act_hit2 = TintTo::create(0.2f, 255, 255, 255);
 	auto seq = Sequence::create(act_hit, act_hit2, nullptr);
 	this->runAction(seq);
 
-	if (ps != Die) {
-		playerHp = playerHp - 10;
+	int pos = rand() % 20 + -10;
 
-		if (playerHp < 0) {
+	if (ps != Die) {
+		playerHp = playerHp - damage;
+
+		//플레이어 체력이 0이하면 죽음 액션을 취하고 상태를 다이로 바꿈
+		//이미 죽어 있는 상태이면 리턴
+		if (playerHp <= 0) {
 			if (ps == Die) {
 				return;
 			}
@@ -209,6 +214,27 @@ void Player::Hit() {
 		}
 
 		auto act = ScaleTo::create(0.1f, playerHp / playerMaxhp, 1);
+		hpPer = playerHp / playerMaxhp;
+		hpGauge->runAction(act);
+		effect->getTypePlayerEffect(10, Vec2(40 + pos, 40 + pos), this);
+		effect->getTypePlayerEffect(11, Vec2(40 + pos, 40 + pos), this);
+	}
+	else {
+		return;
+	}
+}
+
+void Player::Heal() {
+	effect->getTypePlayerEffect(3, Vec2(40, 40), this);
+
+	if (ps != Die) {
+		playerHp = playerHp + 10;
+
+		if (playerMaxhp < playerHp) {
+			playerHp = playerMaxhp;
+		}
+		auto act = ScaleTo::create(0.1f, playerHp / playerMaxhp, 1);
+		hpPer = playerHp / playerMaxhp;
 		hpGauge->runAction(act);
 	}
 	else {
@@ -222,10 +248,12 @@ void Player::setEffect(int number) {
 		//플레이어가 성직자 일때 이펙트
 		//힐러
 		if (ps == Atk) {
-			effect->getTypePlayerEffect(3, Vec2(40, 40), this);
+			//effect->getTypePlayerEffect(3, Vec2(40, 40), this);
 		}
 		else if (ps == Sheild) {
 			effect->getTypePlayerEffect(1, Vec2(50, 27), this);
+			//힐 이펙트
+			effect->getTypePlayerEffect(3, Vec2(40, 40), this);
 		}
 	
 	}
@@ -233,7 +261,7 @@ void Player::setEffect(int number) {
 		//플레이어가 궁수 일때 이펙트
 		//방패
 		if (ps == Atk) {
-			effect->getTypePlayerEffect(3, Vec2(40, 40), this);
+			
 		}
 		else if (ps == Sheild) {
 			
@@ -242,7 +270,7 @@ void Player::setEffect(int number) {
 	else if (number == 3) {
 		//플레이어가 검사 일떄 이펙트
 		if (ps == Atk) {
-			effect->getTypePlayerEffect(3, Vec2(40, 40), this);
+			
 		}
 		else if (ps == Sheild) {
 			effect->getTypePlayerEffect(2, Vec2(50, 30), this);

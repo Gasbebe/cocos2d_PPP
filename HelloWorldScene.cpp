@@ -6,6 +6,7 @@ Scene* HelloWorld::createScene()
 {
 	auto scene = Scene::create();
 	auto layer = HelloWorld::create();
+
 	scene->addChild(layer);
 
 	return scene;
@@ -18,16 +19,21 @@ bool HelloWorld::init()
 	{
 		return false;
 	}
-	//this->addChild(bgLayer);
-	//bgLayer->setZOrder(-3);
+	
+	bgLayer = Layer::create();
+	bgLayer->setZOrder(BGLAYER);
+	addChild(bgLayer);
 
-	effect_batch = SpriteBatchNode::create("background/batch.png");
-	this->addChild(effect_batch);
+	UILayer = Layer::create();
+	UILayer->setZOrder(UILAYER);
+	addChild(UILayer);
 
 	flag = true;
 	flag2 = true;
 	flag3 = true;
 	flag4 = true;
+	flag5 = true;
+	heal_skill = true;
 
 	winSize = Director::getInstance()->getWinSize();
 
@@ -51,12 +57,12 @@ bool HelloWorld::init()
 	command->setPosition(Vec2(winSize.width / 2, (winSize.height / 8)));
 
 	//btn
-	command->setBtnUI(Vec2(0, (winSize.height) - 100), this);
-	this->addChild(command);
+	command->setBtnUI(Vec2(0, (winSize.height) - 100), UILayer);
+	UILayer->addChild(command);
 	
 	setCharectorAnimations();
 	
-	if (createBox2dWorld(false)) {
+	if (createBox2dWorld(true)) {
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
 	
@@ -82,7 +88,7 @@ bool HelloWorld::init()
 	bg->setScale(3.8f);
 	bg->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	bg->setZOrder(-3);
-	this->addChild(bg);
+	bgLayer->addChild(bg);
 
 	auto animate = Animate::create(animation);
 	auto rep = RepeatForever::create(animate);
@@ -91,12 +97,12 @@ bool HelloWorld::init()
 	auto bottom = Sprite::create("background/bottom11.png");
 	bottom->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	bottom->setZOrder(-3);
-	this->addChild(bottom);
+	bgLayer->addChild(bottom);
 
 	auto sky_rock = Sprite::create("background/sky_rock.png");
 	sky_rock->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	sky_rock->setZOrder(-3);
-	this->addChild(sky_rock);
+	bgLayer->addChild(sky_rock);
 	
 	//sky_rock move act
 	auto act_rock3 = MoveBy::create(4.0f, Vec2(0, 10));
@@ -108,7 +114,7 @@ bool HelloWorld::init()
 	auto sky_rock2 = Sprite::create("background/sky_rock2.png");
 	sky_rock2->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	sky_rock2->setZOrder(-3);
-	this->addChild(sky_rock2);
+	bgLayer->addChild(sky_rock2);
 
 	//sky_rock move act
 	auto act_rock4 = MoveBy::create(3.0f, Vec2(0, 30));
@@ -149,6 +155,11 @@ bool HelloWorld::init()
 	auto seq4 = Sequence::create(delay4, CallFunc::create(CC_CALLBACK_0(HelloWorld::setFlag4, this)), nullptr);
 	act_flag4 = seq4;
 	act_flag4->retain();
+
+	auto delay5 = DelayTime::create(3.0f);
+	auto delay5_sep = Sequence::create(delay5, CallFunc::create(CC_CALLBACK_0(HelloWorld::setFlag5, this)), nullptr);
+	act_flag5= delay5_sep;
+	act_flag5->retain();
 
 	return true;
 }
@@ -261,6 +272,86 @@ void HelloWorld::tick(float dt) {
 		}
 	}
 
+	//몬스터 화살 체크
+	for (int i = 0; i < _monster_arrow.size(); i++) {
+		auto arrows = (Sprite*)_monster_arrow.at(i);
+		//플레이어 수만큼 체크
+		for (int j = 1; j < 4; j++) {
+			if (j == 1) {
+				if (player1->ps != player1->Die) {
+					if (arrows->boundingBox().intersectsRect(player1Coll->boundingBox())) {
+						//effect->getTypeEffect(9, Vec2(arrows->getPosition()), this);
+						removeChild(arrows, false);
+						_monster_arrow.eraseObject(arrows);
+						player1->Hit(MONSTER_SKILL3);
+					}
+				}
+			}
+			else if (j == 2) {
+				if (player2->ps != player2->Die) {
+					if (arrows->boundingBox().intersectsRect(player2Coll->boundingBox())) {
+						//effect->getTypeEffect(9, Vec2(arrows->getPosition()), this);
+						removeChild(arrows, false);
+						//remove_arrow.pushBack(arrows);
+						_monster_arrow.eraseObject(arrows);
+						player2->Hit(MONSTER_SKILL3);
+					}
+				}
+			}
+			else if (j == 3) {
+				if (player3->ps != player3->Die) {
+					if (arrows->boundingBox().intersectsRect(player3Coll->boundingBox())) {
+						//effect->getTypeEffect(9, Vec2(arrows->getPosition()), this);
+						removeChild(arrows, false);
+						//remove_arrow.pushBack(arrows);
+						_monster_arrow.eraseObject(arrows);
+						player3->Hit(MONSTER_SKILL3);
+					}
+				}
+			}
+		}
+	}
+
+	//몬스터 관통 스킬 체크
+	for (int i = 0; i < _skill.size(); i++) {
+		auto skill = (Sprite*)_skill[i];
+		//플레이어 수만큼 체크
+		if (flag5) {
+			for (int j = 1; j < 4; j++) {
+				if (j == 1) {
+					if (player1->ps != player1->Die) {
+						if (skill->boundingBox().intersectsRect(player1Coll->boundingBox())) {
+							//effect->getTypeEffect(9, Vec2(arrows->getPosition()), this);
+							//_skill.erase(_skill.begin() + i);
+							player1->Hit(MONSTER_SKILL2);
+						}
+					}
+				}
+				else if (j == 2) {
+					if (player2->ps != player2->Die) {
+						if (skill->boundingBox().intersectsRect(player2Coll->boundingBox())) {
+							//effect->getTypeEffect(9, Vec2(arrows->getPosition()), this);
+							//_skill.erase(_skill.begin() + i);
+							player2->Hit(MONSTER_SKILL2);
+						}
+					}
+				}
+				else if (j == 3) {
+					if (player3->ps != player3->Die) {
+						if (skill->boundingBox().intersectsRect(player3Coll->boundingBox())) {
+							//effect->getTypeEffect(9, Vec2(arrows->getPosition()), this);
+							//_skill.erase(_skill.begin() + i);
+							player3->Hit(MONSTER_SKILL2);
+						}
+					}
+				}	
+			}
+			flag5 = false;
+			monster->runAction(act_flag5);
+			_skill.erase(_skill.begin() + i);
+		}
+	}
+
 	//player1, 2, ,3 이 다완성 되면 for문으로 묶어 3개를 다돌린다
 	//플레이어 이동제어
 	for (int i = 1; i < 4; i++) {
@@ -268,17 +359,27 @@ void HelloWorld::tick(float dt) {
 			if (player1->ps == player1->Run) {
 				double dis;
 				dis = monsterColl->getPosition().x - player1Coll->getPosition().x;
-				if (dis > 300) {
+				if (dis > 340) {
 					player1Body->ApplyForceToCenter(b2Vec2(35, 0), true);
 				}
 				else {
 					//힐을 할때 뒤로 밀려난다
 					player1Body->ApplyForceToCenter(b2Vec2(-400, 0), true);
 					player1->atkAction();
+
 				}
 			}
 			else if (player1->ps == player1->Sheild) {
 				player1Body->ApplyForceToCenter(b2Vec2(-27, 0), true);
+				if (heal_skill) {
+					auto seq = Sequence::create(DelayTime::create(0.7),
+						CallFunc::create(CC_CALLBACK_0(HelloWorld::heal, this)), nullptr);
+					this->runAction(seq);
+					heal_skill = false;
+				}
+			}
+			else if (player1->ps == player1->Idle) {
+				heal_skill = true;;
 			}
 		}
 		else if (i == 2) {
@@ -287,7 +388,7 @@ void HelloWorld::tick(float dt) {
 				double dis;
 				dis = monsterColl->getPosition().x - player2Coll->getPosition().x;
 
-				if (dis > 400) {
+				if (dis > 270) {
 					player2Body->ApplyForceToCenter(b2Vec2(35, 0), true);
 				}
 				else {
@@ -347,17 +448,16 @@ void HelloWorld::tick(float dt) {
 		else if (monster->ms == monster->Cast) {
 			if (flag2) {
 				if (player1->ps != player1->Sheild) {
-					player1Body->ApplyForceToCenter(b2Vec2(1200, 0), true);
+					player1Body->ApplyForceToCenter(b2Vec2(1100, 0), true);
 				}
 				if (player2->ps != player2->Sheild) {
-					player2Body->ApplyForceToCenter(b2Vec2(1200, 0), true);
+					player2Body->ApplyForceToCenter(b2Vec2(1100, 0), true);
 				}
 				if (player3->ps != player3->Sheild) {
-					player3Body->ApplyForceToCenter(b2Vec2(1200, 0), true);
+					player3Body->ApplyForceToCenter(b2Vec2(1100, 0), true);
 				}
 				flag2 = false;
 				monster->runAction(act_flag2);
-				MonsterSkill2();
 			}
 		}
 		else if (monster->ms == monster->CastLoop) {
@@ -374,6 +474,9 @@ void HelloWorld::tick(float dt) {
 			this->unschedule(schedule_selector(HelloWorld::MonsterSkill3));
 
 		}
+	}
+	else {
+		this->unschedule(schedule_selector(HelloWorld::MonsterSkill3));
 	}
 }
 
@@ -934,6 +1037,7 @@ void HelloWorld::setFlag2() {
 	if (!flag2) {
 		flag2 = true;
 	}
+	MonsterSkill2();
 }
 
 void HelloWorld::setFlag3() {
@@ -945,6 +1049,12 @@ void HelloWorld::setFlag3() {
 void HelloWorld::setFlag4() {
 	if (!flag4) {
 		flag4 = true;
+	}
+}
+
+void HelloWorld::setFlag5() {
+	if (!flag5) {
+		flag5 = true;
 	}
 }
 
@@ -1048,5 +1158,28 @@ void HelloWorld::MonsterSkill3(float dt) {
 	skill->runAction(rep);
 	skill->runAction(seq);
 
-	_skill.push_back(skill);
+	_monster_arrow.pushBack(skill);
+}
+
+void HelloWorld::heal() {
+	//플레이어 체력 퍼센트로 힐 스킬를 씀
+	Player* heal_target[3];
+	Player* heal;
+
+	heal_target[0] = player1;
+	heal_target[1] = player2;
+	heal_target[2] = player3;
+
+	double player_hpPer = 2.0f;
+
+	for (int i = 0; i < 3; i++) {
+		if (heal_target[i]->ps != heal_target[i]->Die) {
+			if (player_hpPer > heal_target[i]->hpPer) {
+				player_hpPer = heal_target[i]->hpPer;
+				heal = heal_target[i];
+			}
+		}
+	}
+
+	heal->Heal();
 }

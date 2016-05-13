@@ -12,6 +12,10 @@
 #include "Effect.h"
 
 #define PTM_RATIO 32
+#define BGLAYER -10
+#define UILAYER 10
+#define MONSTER_SKILL2 10
+#define MONSTER_SKILL3 3
 
 using namespace cocos2d;
 
@@ -79,8 +83,13 @@ public:
 	//background
 	cocos2d::Sprite* bg;
 	cocos2d::Layer* bgLayer;
-	cocos2d::Layer* uiLayer;
+	//cocos2d::Layer* uiLayer;
 	cocos2d::Layer* EffectLayer;
+
+	//player skill
+	void heal();
+	bool heal_skill;
+
 	
 	//Effect
 	Effect* effect;
@@ -104,7 +113,11 @@ public:
 	bool flag4;
 	void setFlag4();
 
-	//monsterskill
+	cocos2d::Action* act_flag5;
+	bool flag5;
+	void setFlag5();
+
+	//monster skill
 	void MonsterSkill();
 	void MonsterSkill2();
 	void MonsterSkill3(float dt);
@@ -115,6 +128,8 @@ protected:
 private:
 	std::vector<cocos2d::Sprite*> _arrow;
 	std::vector<cocos2d::Sprite*> _skill;
+	Vector<cocos2d::Sprite*> _monster_arrow;
+	Vector<cocos2d::Sprite*> remove_arrow;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

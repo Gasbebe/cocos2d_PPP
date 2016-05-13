@@ -15,6 +15,7 @@ public:
 	Player(double hp, double maxhp, double def, int type);
 	~Player();
 	double playerHp, playerMaxhp, playerDef;
+	double hpPer;
 
 	//이펙트
 	Effect* effect;
@@ -51,7 +52,8 @@ public:
 	void setEffect(int number);
 	void showState();
 	void UpdateState();
-	void Hit();
+	void Hit(double damage);
+	void Heal();
 
 };
 
