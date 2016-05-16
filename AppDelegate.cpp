@@ -37,8 +37,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto glview = director->getOpenGLView();
 
     if(!glview) {
-        glview = GLViewImpl::create("ResolutionEx");
-		//glview = GLViewImpl::createWithRect("ResolutionEx", Rect(0, 0, 800, 480));
+        //glview = GLViewImpl::create("ResolutionEx");
+		glview = GLViewImpl::createWithRect("ResolutionEx", Rect(0, 0, 640, 360));
         director->setOpenGLView(glview);
     }
 
@@ -50,7 +50,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
     glview->setDesignResolutionSize(designResolutionSize.width,
 									designResolutionSize.height,
 									ResolutionPolicy::NO_BORDER);
-	glview->setFrameSize(640, 360);
 	//EXACR_FIT:    NO_BORDER:
 
     // create a scene. it's an autorelease object

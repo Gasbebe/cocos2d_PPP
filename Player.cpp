@@ -228,7 +228,7 @@ void Player::Heal() {
 	effect->getTypePlayerEffect(3, Vec2(40, 40), this);
 
 	if (ps != Die) {
-		playerHp = playerHp + 10;
+		playerHp = playerHp + 20;
 
 		if (playerMaxhp < playerHp) {
 			playerHp = playerMaxhp;

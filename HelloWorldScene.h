@@ -14,8 +14,10 @@
 #define PTM_RATIO 32
 #define BGLAYER -10
 #define UILAYER 10
-#define MONSTER_SKILL2 10
-#define MONSTER_SKILL3 3
+//한방 데미지
+#define MONSTER_SKILL2 20
+//화살 데미지
+#define MONSTER_SKILL3 5
 
 using namespace cocos2d;
 

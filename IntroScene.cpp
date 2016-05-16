@@ -1,5 +1,7 @@
 #include "IntroScene.h"
+#include "MainScene.h"
 #include "HelloWorldScene.h"
+
 
 USING_NS_CC;
 
@@ -80,8 +82,8 @@ bool IntroScene::init(){
 	logo->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(logo);
 
-	auto startBtn = MenuItemImage::create("button/shield_btn.png",
-										 "button/shield_btn_press.png",
+	auto startBtn = MenuItemImage::create("UI/touch_Screen.png",
+										 "UI/touch_Screen.png",
 										  CC_CALLBACK_1(IntroScene::startGame, this));
 	startBtn->setPosition(Vec2(0, 0));
 
@@ -94,7 +96,7 @@ bool IntroScene::init(){
 
 void IntroScene::startGame(Ref* pSender) {
 	if (flag) {
-		auto pScene = HelloWorld::createScene();
+		auto pScene = MainScene::createScene();
 		Director::getInstance()->replaceScene(pScene);
 		flag = false;
 	}

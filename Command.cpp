@@ -15,26 +15,26 @@ Command::Command() {
 	commandSize = this->getTextureRect().size;
 
 	
-	atk = Sprite::create("button/button2_100px.png");
-	sheild = Sprite::create("button/button1_100px.png");
+	//atk = Sprite::create("button/button2_100px.png");
+	//sheild = Sprite::create("button/button1_100px.png");
 
 	//이미지 나중에 바꾸기
-	sprite1 = Sprite::create("button/button2_100px.png");
-	sprite1->setPosition(Vec2(commandSize.width/2 - 100, commandSize.height / 2));
+	sprite1 = Sprite::create("UI/state_ui.png");
+	sprite1->setPosition(Vec2(commandSize.width/2 - 120, commandSize.height / 4));
 	sprite1->setScale(0.5f);
-	sprite1->setOpacity(0.0f);
+	//sprite1->setOpacity(0.0f);
 	this->addChild(sprite1);
 
-	sprite2 = Sprite::create("button/button2_100px.png");
-	sprite2->setPosition(Vec2(commandSize.width / 2, commandSize.height / 2));
+	sprite2 = Sprite::create("UI/state_ui.png");
+	sprite2->setPosition(Vec2(commandSize.width / 2 + 30, commandSize.height / 4));
 	sprite2->setScale(0.5f);
-	sprite2->setOpacity(0.0f);
+	//sprite2->setOpacity(0.0f);
 	this->addChild(sprite2);
 
-	sprite3 = Sprite::create("button/button2_100px.png");
-	sprite3->setPosition(Vec2(commandSize.width / 2 + 100 , commandSize.height / 2));
+	sprite3 = Sprite::create("UI/state_ui.png");
+	sprite3->setPosition(Vec2(commandSize.width / 2 + 180 , commandSize.height / 4));
 	sprite3->setScale(0.5f);
-	sprite3->setOpacity(0.0f);
+	//sprite3->setOpacity(0.0f);
 	this->addChild(sprite3);
 
 	label = LabelTTF::create("ooooo", "Arial", 34,
@@ -44,7 +44,7 @@ Command::Command() {
 									 //pLabel->setAnchorPoint(Vec2(0, 0.5));
 
 									 //레이블의 위치 지정
-	label->setPosition(Vec2(0, 0));
+	label->setPosition(Vec2(commandSize.width/2, commandSize.height/2 + 200));
 
 	//레이블의 투명도 지정  0~255
 	label->setOpacity(100.0);
@@ -65,36 +65,36 @@ void Command::ViewCommand(int number) {
 	if (bOnActive) {
 		if (count == 1) {
 			if (number == 1) {
-				sprite1->setTexture("button/button2_100px.png");
+				sprite1->setTexture("UI/atk_state_ui.png");
 				sprite1->setOpacity(250.0f);
 				bAction[0] = true;
 			}
 			else {
-				sprite1->setTexture("button/button1_100px.png");
+				sprite1->setTexture("UI/shield_state_ui.png");
 				sprite1->setOpacity(250.0f);
 				bAction[0] = false;
 			}
 		}
 		else if (count == 2) {
 			if (number == 1) {
-				sprite2->setTexture("button/button2_100px.png");
+				sprite2->setTexture("UI/atk_state_ui.png");
 				sprite2->setOpacity(250.0f);
 				bAction[1] = true;
 			}
 			else {
-				sprite2->setTexture("button/button1_100px.png");
+				sprite2->setTexture("UI/shield_state_ui.png");
 				sprite2->setOpacity(250.0f);
 				bAction[1] = false;
 			}
 		}
 		else if (count == 3) {
 			if (number == 1) {
-				sprite3->setTexture("button/button2_100px.png");
+				sprite3->setTexture("UI/atk_state_ui.png");
 				sprite3->setOpacity(250.0f);
 				bAction[2] = true;
 			}
 			else {
-				sprite3->setTexture("button/button1_100px.png");
+				sprite3->setTexture("UI/shield_state_ui.png");
 				sprite3->setOpacity(250.0f);
 				bAction[2] = false;
 			}
@@ -138,6 +138,16 @@ void Command::setOnActive() {
 	else {
 		bOnActive = true;
 		this->setOpacity(250.0f);
+		
+		//초기상태 이미지로 되돌린다
+		sprite1->setOpacity(250.0f);
+		sprite1->setTexture("UI/state_ui.png");
+
+		sprite2->setOpacity(250.0f);
+		sprite2->setTexture("UI/state_ui.png");
+
+		sprite3->setOpacity(250.0f);
+		sprite3->setTexture("UI/state_ui.png");
 		label->setString("커맨드 생성");
 	}
 
@@ -149,6 +159,7 @@ void Command::hideCommand() {
 	sprite1->setOpacity(0.0f);
 	sprite2->setOpacity(0.0f);
 	sprite3->setOpacity(0.0f);
+
 	this->setOpacity(0.0f);
 
 }

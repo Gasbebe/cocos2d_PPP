@@ -280,32 +280,42 @@ void HelloWorld::tick(float dt) {
 			if (j == 1) {
 				if (player1->ps != player1->Die) {
 					if (arrows->boundingBox().intersectsRect(player1Coll->boundingBox())) {
+
 						//effect->getTypeEffect(9, Vec2(arrows->getPosition()), this);
 						removeChild(arrows, false);
 						_monster_arrow.eraseObject(arrows);
-						player1->Hit(MONSTER_SKILL3);
+
+						if (player1->ps != player1->Sheild) {
+							player1->Hit(MONSTER_SKILL3);
+						}
 					}
 				}
 			}
 			else if (j == 2) {
 				if (player2->ps != player2->Die) {
 					if (arrows->boundingBox().intersectsRect(player2Coll->boundingBox())) {
+
 						//effect->getTypeEffect(9, Vec2(arrows->getPosition()), this);
 						removeChild(arrows, false);
-						//remove_arrow.pushBack(arrows);
 						_monster_arrow.eraseObject(arrows);
-						player2->Hit(MONSTER_SKILL3);
+
+						if (player2->ps != player3->Sheild) {
+							player2->Hit(MONSTER_SKILL3);
+						}
 					}
 				}
 			}
 			else if (j == 3) {
 				if (player3->ps != player3->Die) {
 					if (arrows->boundingBox().intersectsRect(player3Coll->boundingBox())) {
+
 						//effect->getTypeEffect(9, Vec2(arrows->getPosition()), this);
 						removeChild(arrows, false);
-						//remove_arrow.pushBack(arrows);
 						_monster_arrow.eraseObject(arrows);
-						player3->Hit(MONSTER_SKILL3);
+
+						if (player3->ps != player3->Sheild) {
+							player3->Hit(MONSTER_SKILL3);
+						}
 					}
 				}
 			}
@@ -518,7 +528,7 @@ void HelloWorld::setCharectorAnimations() {
 	
 
 	//player1 애니메이션 정의
-	player1 = new Player(10, 20, 30, 1);
+	player1 = new Player(100, 100, 30, 1);
 	
 
 	//animation cache 추가
@@ -650,7 +660,7 @@ void HelloWorld::setCharectorAnimations() {
 	/////////////////////////
 
 	//player2 애니메이션 정의
-	player2 = new Player(10, 20, 30, 2);
+	player2 = new Player(100, 100, 30, 2);
 
 	//player2 animation idle
 	Vector<SpriteFrame*> player2_animFramesIdle;
@@ -756,7 +766,7 @@ void HelloWorld::setCharectorAnimations() {
 	/////////////////////
 
 	//player3 애니메이션 정의
-	player3 = new Player(100, 100, 30, 3);
+	player3 = new Player(200, 200, 30, 3);
 
 	//player3 animation idle
 	Vector<SpriteFrame*> player3_animFramesIdle;
@@ -1171,7 +1181,7 @@ void HelloWorld::heal() {
 	heal_target[2] = player3;
 
 	double player_hpPer = 2.0f;
-
+	//제일 적은 체력 퍼센트 플레이어를 힐 타켓으로 잡음
 	for (int i = 0; i < 3; i++) {
 		if (heal_target[i]->ps != heal_target[i]->Die) {
 			if (player_hpPer > heal_target[i]->hpPer) {
