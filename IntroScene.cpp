@@ -1,9 +1,9 @@
 #include "IntroScene.h"
 #include "MainScene.h"
-#include "HelloWorldScene.h"
-
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
+using namespace CocosDenshion;
 
 Scene* IntroScene::createScene(){
 	auto scene = Scene::create();
@@ -20,6 +20,13 @@ bool IntroScene::init(){
 	}
 	flag = true;
 	winSize = Director::getInstance()->getWinSize();
+
+
+	//인트로 오디오
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sound/music_battlemap01.ogg");
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("Sound/music_battlemap01.ogg", true);
+	SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(1.0f);
+
 
 	///////////////
 	//backgrond ///
@@ -74,9 +81,9 @@ bool IntroScene::init(){
 	rock->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(rock);
 
-	auto rock2 = Sprite::create("background/rock2.png");
-	rock2->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	this->addChild(rock2);
+	//auto rock2 = Sprite::create("background/rock2.png");
+	//rock2->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	//this->addChild(rock2);
 
 	auto logo = Sprite::create("background/logo.png");
 	logo->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
@@ -98,6 +105,7 @@ void IntroScene::startGame(Ref* pSender) {
 	if (flag) {
 		auto pScene = MainScene::createScene();
 		Director::getInstance()->replaceScene(pScene);
+		SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 		flag = false;
 	}
 }

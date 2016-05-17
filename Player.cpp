@@ -11,6 +11,9 @@ Player::Player(double hp, double maxhp, double def, int type){
 	playerDef = def;
 	effectType = type;
 
+	atk_stack = 0;
+	shield_stack = 0;
+
 	bool bOk = initWithTexture(nullptr, Rect::ZERO);
 	if (bOk) {
 		this->autorelease();
@@ -251,6 +254,7 @@ void Player::setEffect(int number) {
 			//effect->getTypePlayerEffect(3, Vec2(40, 40), this);
 		}
 		else if (ps == Sheild) {
+			//방패 이펙트
 			effect->getTypePlayerEffect(1, Vec2(50, 27), this);
 			//힐 이펙트
 			effect->getTypePlayerEffect(3, Vec2(40, 40), this);
@@ -273,7 +277,7 @@ void Player::setEffect(int number) {
 			
 		}
 		else if (ps == Sheild) {
-			effect->getTypePlayerEffect(2, Vec2(50, 30), this);
+			effect->getTypePlayerEffect(2, Vec2(50, 40), this);
 			effect->getTypePlayerEffect(1, Vec2(50, 27), this);
 		}
 	}

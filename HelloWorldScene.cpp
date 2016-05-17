@@ -62,7 +62,7 @@ bool HelloWorld::init()
 	
 	setCharectorAnimations();
 	
-	if (createBox2dWorld(true)) {
+	if (createBox2dWorld(false)) {
 		this->schedule(schedule_selector(HelloWorld::tick));
 	}
 	
@@ -488,6 +488,18 @@ void HelloWorld::tick(float dt) {
 	else {
 		this->unschedule(schedule_selector(HelloWorld::MonsterSkill3));
 	}
+
+	//플레이어 3명 죽음 체크
+	if (player1->ps == player1->Die && player2->ps == player2->Die && player3->ps == player3->Die) {
+		log("세명 다 죽었습니다");
+		Director::getInstance()->pause();
+	}
+	if (monster->ms == monster->Die) {
+		log("몬스터 가 죽었습니다");
+		Director::getInstance()->pause();
+	}
+
+
 }
 
 b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, Sprite* sprtie, int type) {

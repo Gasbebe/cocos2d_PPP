@@ -123,6 +123,14 @@ public:
 	void MonsterSkill();
 	void MonsterSkill2();
 	void MonsterSkill3(float dt);
+
+
+	//player skill 
+	//플레이어 클래스 스택을 3스택이 쌓이면 플레이어 스킬이 발동
+	void swordSkill();
+	void healerSkill();
+	void achorSkill();
+
 protected:
 		void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
 		cocos2d::CustomCommand _customCmd;

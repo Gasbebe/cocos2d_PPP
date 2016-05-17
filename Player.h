@@ -14,8 +14,12 @@ public:
 
 	Player(double hp, double maxhp, double def, int type);
 	~Player();
+
+	//플레이어 인포
 	double playerHp, playerMaxhp, playerDef;
 	double hpPer;
+	int    atk_stack;
+	int    shield_stack;
 
 	//이펙트
 	Effect* effect;

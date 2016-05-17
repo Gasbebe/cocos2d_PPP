@@ -317,6 +317,7 @@ void Effect::getTypePlayerEffect(int number, cocos2d::Vec2 pos, cocos2d::Sprite*
 			effect->runAction(seq);
 
 		}
+
 		else if (number == 3) {
 			Vector<SpriteFrame*> effect_frame;
 
@@ -338,6 +339,7 @@ void Effect::getTypePlayerEffect(int number, cocos2d::Vec2 pos, cocos2d::Sprite*
 
 			effect->runAction(seq);
 		}
+		//피튀기는 이펙트
 		else if (number == 10) {
 			Vector<SpriteFrame*> effect_frame;
 
@@ -360,6 +362,7 @@ void Effect::getTypePlayerEffect(int number, cocos2d::Vec2 pos, cocos2d::Sprite*
 			auto seq = Sequence::create(effect_animate, removeAction, nullptr);
 			effect->runAction(seq);
 		}
+		//피튀기는 이펙트2
 		else if (number == 11) {
 			Vector<SpriteFrame*> effect_frame;
 
