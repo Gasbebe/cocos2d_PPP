@@ -20,6 +20,8 @@ public:
 	double hpPer;
 	int    atk_stack;
 	int    shield_stack;
+	cocos2d::LabelAtlas* atkLabel;
+	cocos2d::LabelAtlas* shieldLabel;
 
 	//이펙트
 	Effect* effect;
@@ -42,8 +44,10 @@ public:
 	cocos2d::Sprite* pace;
 	virtual bool init();
 
-	//애니메이셔 실행함수
+	//어떤레이어 에다가 플레이어 상태창 올릴지
 	void setUI(cocos2d::Vec2 pos, cocos2d::Layer* uiLayer);
+
+	//애니메이셔 실행함수
 	void atkAction();
 	void sheildAction();
 	void idleAction();
@@ -52,12 +56,25 @@ public:
 	void EndAnimation();
 	void StartAnimation();
 
+	//액션실행
 	void setAction(bool type);
+
+	//타입에 맞는 이펙트 및 사운드
 	void setEffect(int number);
+
+	//로그 찍는거
 	void showState();
 	void UpdateState();
 	void Hit(double damage);
 	void Heal();
+
+	//스택 추가함수
+	void AddAtkStack();
+	void AddShieldStack();
+
+	//라벨 숫자 바꾸는 함수
+	void setAtkLabel();
+	void setShieldLabel();
 
 };
 

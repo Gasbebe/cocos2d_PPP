@@ -1,6 +1,11 @@
 ﻿#include "HelloWorldScene.h"
+#include "MainScene.h"
+#include "SimpleAudioEngine.h"
+
+#define MAINMUSIC "Sound/music_battlemap02.ogg"
 
 USING_NS_CC;
+using namespace CocosDenshion;
 
 Scene* HelloWorld::createScene()
 {
@@ -8,7 +13,6 @@ Scene* HelloWorld::createScene()
 	auto layer = HelloWorld::create();
 
 	scene->addChild(layer);
-
 	return scene;
 }
 
@@ -28,29 +32,42 @@ bool HelloWorld::init()
 	UILayer->setZOrder(UILAYER);
 	addChild(UILayer);
 
+
+
+	//오디오
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic(MAINMUSIC);
+	SimpleAudioEngine::getInstance()->playBackgroundMusic(MAINMUSIC, true);
+	SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(1.0f);
+
+	//스킬들 프레임당 몇번씩 실행할지 결정하는 플래그들
 	flag = true;
 	flag2 = true;
 	flag3 = true;
 	flag4 = true;
 	flag5 = true;
+
+	//힐스킬을 한번만 발동하기 위해서 힐러가 idle상태가 되면 다시 true로 바뀐다
 	heal_skill = true;
+
+	//블록이 있을떄만 충돌체크 하기위해서 
+	b_block = false;
 
 	winSize = Director::getInstance()->getWinSize();
 
 	//effect  this부분에 Backgound 레이어 만들어서 넣을것
 	effect = new Effect();
 	effect->retain();
-	effect->getTypeEffect(1, Vec2(winSize.width / 2, winSize.height / 2), this);
-	effect->getTypeEffect(2, Vec2(winSize.width / 2 + 20, winSize.height / 2), this);
-	effect->getTypeEffect(3, Vec2(winSize.width / 2 + 40, winSize.height / 2), this);
-	effect->getTypeEffect(4, Vec2(winSize.width / 2 + 60, winSize.height / 2), this);
-	effect->getTypeEffect(5, Vec2(winSize.width / 2 + 80, winSize.height / 2), this);
-	effect->getTypeEffect(6, Vec2(winSize.width / 2 + 100, winSize.height / 2), this);
-	effect->getTypeEffect(7, Vec2(winSize.width / 2 + 120, winSize.height / 2), this);
-	effect->getTypeEffect(8, Vec2(winSize.width / 2 + 140, winSize.height / 2), this);
-	effect->getTypeEffect(9, Vec2(winSize.width / 2 + 160, winSize.height / 2), this);
-	effect->getTypeEffect(10, Vec2(winSize.width / 2 + 180, winSize.height / 2), this);
-	effect->getTypeEffect(11, Vec2(winSize.width / 2 + 200, winSize.height / 2), this);
+	//effect->getTypeEffect(1, Vec2(winSize.width / 2, winSize.height / 2), this);
+	//effect->getTypeEffect(2, Vec2(winSize.width / 2 + 20, winSize.height / 2), this);
+	//effect->getTypeEffect(3, Vec2(winSize.width / 2 + 40, winSize.height / 2), this);
+	//effect->getTypeEffect(4, Vec2(winSize.width / 2 + 60, winSize.height / 2), this);
+	//effect->getTypeEffect(5, Vec2(winSize.width / 2 + 80, winSize.height / 2), this);
+	//effect->getTypeEffect(6, Vec2(winSize.width / 2 + 100, winSize.height / 2), this);
+	//effect->getTypeEffect(7, Vec2(winSize.width / 2 + 120, winSize.height / 2), this);
+	//effect->getTypeEffect(8, Vec2(winSize.width / 2 + 140, winSize.height / 2), this);
+	//effect->getTypeEffect(9, Vec2(winSize.width / 2 + 160, winSize.height / 2), this);
+	//effect->getTypeEffect(10, Vec2(winSize.width / 2 + 180, winSize.height / 2), this);
+	//effect->getTypeEffect(11, Vec2(winSize.width / 2 + 200, winSize.height / 2), this);
 
 	//command 
 	command = new Command();
@@ -93,6 +110,11 @@ bool HelloWorld::init()
 	auto animate = Animate::create(animation);
 	auto rep = RepeatForever::create(animate);
 	bg->runAction(rep);
+
+	auto castle = Sprite::create("background/castle.png");
+	castle->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	castle->setZOrder(-3);
+	bgLayer->addChild(castle);
 
 	auto bottom = Sprite::create("background/bottom11.png");
 	bottom->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
@@ -218,6 +240,9 @@ HelloWorld::~HelloWorld() {
 	delete effect;
 
 	delete _world;
+
+	this->unschedule(schedule_selector(HelloWorld::tick));
+
 	_world = nullptr;
 }
 
@@ -275,6 +300,15 @@ void HelloWorld::tick(float dt) {
 	//몬스터 화살 체크
 	for (int i = 0; i < _monster_arrow.size(); i++) {
 		auto arrows = (Sprite*)_monster_arrow.at(i);
+		//소드맨 스킬이 있을떄 충돌체크
+		if (b_block) {
+			if (arrows->boundingBox().intersectsRect(block->boundingBox())){
+				//effect->getTypeEffect(9, Vec2(arrows->getPosition()), this);
+				removeChild(arrows, false);
+				_monster_arrow.eraseObject(arrows);
+			}
+		}
+
 		//플레이어 수만큼 체크
 		for (int j = 1; j < 4; j++) {
 			if (j == 1) {
@@ -445,7 +479,6 @@ void HelloWorld::tick(float dt) {
 		}
 	}
 	
-
 	//monster skill
 	if (monster->ms != monster->Die) {
 		if (monster->ms == monster->Atk) {
@@ -489,17 +522,40 @@ void HelloWorld::tick(float dt) {
 		this->unschedule(schedule_selector(HelloWorld::MonsterSkill3));
 	}
 
+
+	//플레이어 스킬 가능 부분 공, 방 3스택이 쌓이면 스킬 실행 아처만 공스택 3 나머지 방스택 3
+	if (player1->shield_stack == 3) {
+
+		player1->shield_stack = 0;
+		healerSkill();
+		player1->setShieldLabel();
+	}
+	if (player2->atk_stack == 3) {
+
+		player2->atk_stack = 0;
+		archerSkill();
+		player2->setAtkLabel();
+	}
+	if (player3->shield_stack == 3) {
+
+		player3->shield_stack = 0;
+		swordSkill();
+		player3->setShieldLabel();
+	}
+
 	//플레이어 3명 죽음 체크
 	if (player1->ps == player1->Die && player2->ps == player2->Die && player3->ps == player3->Die) {
 		log("세명 다 죽었습니다");
-		Director::getInstance()->pause();
+		//Director::getInstance()->pause();
 	}
 	if (monster->ms == monster->Die) {
 		log("몬스터 가 죽었습니다");
-		Director::getInstance()->pause();
+		//Director::getInstance()->pause();
+		auto pScene = MainScene::createScene();
+		Director::getInstance()->replaceScene(pScene);
 	}
 
-
+	
 }
 
 b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, Sprite* sprtie, int type) {
@@ -533,6 +589,7 @@ b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, Spr
 	return body;
 }
 
+//플레이어, 보스 애니메이션 구현
 void HelloWorld::setCharectorAnimations() {
 	/////////////////////
 	//  Player       ///
@@ -658,7 +715,6 @@ void HelloWorld::setCharectorAnimations() {
 	player1Coll = Sprite::create("collisionBox/collisionBox.png");
 	player1Coll->setPosition(Vec2((winSize.width / 8), winSize.height / 2));
 	player1Coll->setZOrder(-1);
-	//player1Coll->setOpacity(0);
 	this->addChild(player1Coll);
 
 	
@@ -870,7 +926,6 @@ void HelloWorld::setCharectorAnimations() {
 	player3Coll = Sprite::create("collisionBox/collisionBox2.png");
 	player3Coll->setPosition(Vec2((winSize.width / 8) * 4, winSize.height / 2));
 	player3Coll->setZOrder(-1);
-	//player1Coll->setOpacity(0);
 	this->addChild(player3Coll);
 
 
@@ -1020,6 +1075,7 @@ void HelloWorld::setCharectorAnimations() {
 	monster->setUI(Vec2((winSize.width / 8) * 7 + 10, (winSize.height / 8) * 7 - 15), this);
 }
 
+//아처 화살
 void HelloWorld::shooting() {
 	auto batch = SpriteBatchNode::create("Skill/4080arrow.png", 10);
 	auto texture = batch->getTexture();
@@ -1049,12 +1105,14 @@ void HelloWorld::shooting() {
 	_arrow.push_back(arrow);
 }
 
+//검사 떄릴떄 프레임수 정하기
 void HelloWorld::setFlag() {
 	if (!flag) {
 		flag = true;
 	}
 }
 
+//몬스터 스킬1
 void HelloWorld::setFlag2() {
 	if (!flag2) {
 		flag2 = true;
@@ -1062,18 +1120,21 @@ void HelloWorld::setFlag2() {
 	MonsterSkill2();
 }
 
+//몬스터 스킬2
 void HelloWorld::setFlag3() {
 	if (!flag3) {
 		flag3 = true;
 	}
 }
 
+//몬스터 스킬 화살 스케쥴 한번만 실행시키기 위해서
 void HelloWorld::setFlag4() {
 	if (!flag4) {
 		flag4 = true;
 	}
 }
 
+//몬스터 관통 스킬 발동수
 void HelloWorld::setFlag5() {
 	if (!flag5) {
 		flag5 = true;
@@ -1204,4 +1265,98 @@ void HelloWorld::heal() {
 	}
 
 	heal->Heal();
+}
+
+void HelloWorld::swordSkill() {
+	auto sprite = Sprite::create("Skill/80_sword_skill.png");
+	auto texture = sprite->getTexture();
+	auto animation = Animation::create();
+	animation->setDelayPerUnit(0.1f);
+
+	for (int i = 0; i < 11; i++) {
+		int colum = i % 4; // 0,1,2,3,4
+		int row = i / 4; //0,1,2
+						 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
+		animation->addSpriteFrameWithTexture(texture, Rect(colum * 80, row * 80, 80, 80));
+	}
+
+	block = Sprite::create("Skill/80_sword_skill.png", Rect(0, 0, 80, 80));
+	block->setPosition(player3Coll->getPosition());
+	this->addChild(block);
+
+	//액션 정의
+	auto delay = DelayTime::create(2.0f);
+	auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, this, block, true));
+	auto off = CCCallFunc::create(CC_CALLBACK_0(HelloWorld::offBlock, this));
+	auto seq = Sequence::create(delay, off, removeAction, nullptr);
+	auto animate = Animate::create(animation);
+	auto rep = RepeatForever::create(animate);
+	block->runAction(rep);
+	block->runAction(seq);
+	b_block = true;
+	log("소드맨스킬");
+}
+
+void HelloWorld::healerSkill() {
+
+	auto sprite = Sprite::create("Skill/244_heal_skill.png");
+	auto texture = sprite->getTexture();
+	auto animation = Animation::create();
+	animation->setDelayPerUnit(0.1f);
+
+	for (int i = 0; i < 25; i++) {
+		int colum = i % 5; // 0,1,2,3,4
+		int row = i / 5; //0,1,2
+						 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
+		animation->addSpriteFrameWithTexture(texture, Rect(colum * 244, row * 244, 244, 244));
+	}
+
+	auto effect = Sprite::create("Skill/244_heal_skill.png", Rect(0, 0, 244, 244));
+	effect->setPosition(Vec2(player1Coll->getPositionX(), player1Coll->getPositionY() + 120));
+	effect->setScale(1.5f);
+	this->addChild(effect);
+
+	//이펙트 액션
+	auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, this, effect, true));
+	auto animate = Animate::create(animation);
+	auto seq = Sequence::create(animate, removeAction, nullptr);
+	effect->runAction(seq);
+
+	player1->Heal();
+	player2->Heal();
+	player3->Heal();
+	log("힐러 스킬");
+}
+
+void HelloWorld::archerSkill() {
+	auto sprite = Sprite::create("Skill/150_archer_skill.png");
+	auto texture = sprite->getTexture();
+	auto animation = Animation::create();
+	animation->setDelayPerUnit(0.1f);
+
+	for (int i = 0; i < 36; i++) {
+		int colum = i % 5; // 0,1,2,3,4
+		int row = i / 5; //0,1,2
+						 // x,y 좌표 x로 얼마만큼  y로 얼마만큼
+		animation->addSpriteFrameWithTexture(texture, Rect(colum * 150, row * 150, 150, 150));
+	}
+
+	auto effect = Sprite::create("Skill/244_heal_skill.png", Rect(0, 0, 150, 150));
+	effect->setPosition(winSize.width/2 ,winSize.height/2);
+	effect->setScale(2.0f);
+	this->addChild(effect);
+
+	//이펙트 액션
+	auto removeAction = CCCallFunc::create(CC_CALLBACK_0(CCNode::removeChild, this, effect, true));
+	auto animate = Animate::create(animation);
+	auto seq = Sequence::create(animate, removeAction, nullptr);
+	effect->runAction(seq);
+	log("아처맨 스킬");
+
+	monster->Hit(20);
+}
+
+//소드맨 블록 스킬 존재여부
+void HelloWorld::offBlock() {
+	b_block = false;
 }

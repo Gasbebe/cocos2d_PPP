@@ -1,6 +1,9 @@
-#include "IntroScene.h"
+﻿#include "IntroScene.h"
+
 #include "MainScene.h"
 #include "SimpleAudioEngine.h"
+
+#define INTROMUSIC "Sound/music_battlemap01.ogg"
 
 USING_NS_CC;
 using namespace CocosDenshion;
@@ -21,10 +24,9 @@ bool IntroScene::init(){
 	flag = true;
 	winSize = Director::getInstance()->getWinSize();
 
-
-	//��Ʈ�� �����
-	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sound/music_battlemap01.ogg");
-	SimpleAudioEngine::getInstance()->playBackgroundMusic("Sound/music_battlemap01.ogg", true);
+	//인트로 오디오
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic(INTROMUSIC);
+	SimpleAudioEngine::getInstance()->playBackgroundMusic(INTROMUSIC, true);
 	SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(1.0f);
 
 
@@ -56,17 +58,8 @@ bool IntroScene::init(){
 	auto rep = RepeatForever::create(animate);
 	bg->runAction(rep);
 
-	//rock
-	//auto rock3 = Sprite::create("background/rock3.png");
-	//rock3->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	//this->addChild(rock3);
-	//
-	//auto act_rock3 = MoveBy::create(2.0f, Vec2(0, 30));
-	//auto seq2 = Sequence::create(act_rock3, act_rock3->reverse(), nullptr);
-	//auto rep2 = RepeatForever::create(seq2);
 
-	//rock3->runAction(rep2);
-
+	//공중 돌 이미지 및 움직임
 	auto rock4 = Sprite::create("background/rock4.png");
 	rock4->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(rock4);
@@ -77,14 +70,14 @@ bool IntroScene::init(){
 
 	rock4->runAction(rep3);
 
+
+	//땅 바닥 돌
 	auto rock = Sprite::create("background/rock.png");
 	rock->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(rock);
 
-	//auto rock2 = Sprite::create("background/rock2.png");
-	//rock2->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
-	//this->addChild(rock2);
 
+	//픽셀 파타퐁 로고 
 	auto logo = Sprite::create("background/logo.png");
 	logo->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(logo);
@@ -104,8 +97,8 @@ bool IntroScene::init(){
 void IntroScene::startGame(Ref* pSender) {
 	if (flag) {
 		auto pScene = MainScene::createScene();
+		//SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 		Director::getInstance()->replaceScene(pScene);
-		SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 		flag = false;
 	}
 }

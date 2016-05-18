@@ -1,6 +1,14 @@
 ﻿#include "Player.h"
+#include "SimpleAudioEngine.h"
+
+#define SWORD_ATK_SOUND "Sound/sfx_f1_elyxstormblade_attack_impact"
+#define HEALER_ATK_SOUND "Sound/"
+#define ACHOR_ATK_SOUND "Sound"
+
 
 USING_NS_CC;
+using namespace CocosDenshion;
+
 //생성될때 초기화
 Player::Player(double hp, double maxhp, double def, int type){
 	hpPer = 1.0f;
@@ -19,6 +27,34 @@ Player::Player(double hp, double maxhp, double def, int type){
 		this->autorelease();
 	}
 	ps = Idle;
+
+
+	//캐릭터맵 폰트 파일 사용법
+	//itemWidth , itemHeight는 같은 크기의 이미지로 된 스프라이트시트를 이용해
+	//스프라이트 시트를 만들떄와 마찬가지로 글자 하나에 해당하는 크기를 나타낸다
+
+	atkLabel = LabelAtlas::create("0", "number/numbers.png", 64, 86, '0');  //12 ,32 픽셀로 자름    '.'아스키코드값부터 시작 9까지
+	atkLabel->setPosition(Vec2(30, 70));
+	atkLabel->setScale(0.5f);
+	atkLabel->setColor(Color3B::RED);
+	this->addChild(atkLabel);
+
+	shieldLabel = LabelAtlas::create("0", "number/numbers.png", 64, 86, '0');  //12 ,32 픽셀로 자름    '.'아스키코드값부터 시작 9까지
+	shieldLabel->setPosition(Vec2(30, 70));
+	shieldLabel->setScale(0.5f);
+	shieldLabel->setColor(Color3B::BLUE);
+	this->addChild(shieldLabel);
+
+
+	//type 1 힐러  2 활  3검  
+	//활은 공격스킬을 가지고 있어서 실드스택은 투명
+	if (type == 2) {
+		shieldLabel->setVisible(false);
+	}
+	else {
+		atkLabel->setVisible(false);
+	}
+
 
 	//애니이션 멈춤 상태 확인
 	stopAim = CallFunc::create(CC_CALLBACK_0(Player::EndAnimation,this));
@@ -67,6 +103,10 @@ void Player::atkAction() {
 
 	ps = Atk;
 	this->runAction(animAtk);
+
+	AddAtkStack();
+	setAtkLabel();
+
 	log("공격");
 	setEffect(effectType);
 }
@@ -94,6 +134,10 @@ void Player::sheildAction() {
 	
 	ps = Sheild;
 	log("방어");
+
+	AddShieldStack();
+	setShieldLabel();
+
 	this->runAction(animSheild);
 	setEffect(effectType);
 }
@@ -190,8 +234,6 @@ void Player::setUI(Vec2 pos, Layer* uiLayer) {
 //체력 게이지
 void Player::UpdateState() {
 	double scale = (playerHp / playerMaxhp);
-	//log("scale %f", scale);
-
 }
 
 void Player::Hit(double damage) {
@@ -245,9 +287,10 @@ void Player::Heal() {
 	}
 }
 
-
+//이펙트랑 사운드 설정하는곳
 void Player::setEffect(int number) {
 	if (number == 1) {
+
 		//플레이어가 성직자 일때 이펙트
 		//힐러
 		if (ps == Atk) {
@@ -262,8 +305,8 @@ void Player::setEffect(int number) {
 	
 	}
 	else if (number == 2) {
+
 		//플레이어가 궁수 일때 이펙트
-		//방패
 		if (ps == Atk) {
 			
 		}
@@ -272,6 +315,7 @@ void Player::setEffect(int number) {
 		}
 	}
 	else if (number == 3) {
+
 		//플레이어가 검사 일떄 이펙트
 		if (ps == Atk) {
 			
@@ -281,4 +325,40 @@ void Player::setEffect(int number) {
 			effect->getTypePlayerEffect(1, Vec2(50, 27), this);
 		}
 	}
+}
+
+//공방 스택 제어
+void Player::AddAtkStack() {
+	atk_stack = atk_stack + 1;
+	
+	log("atk stack : %d", atk_stack);
+	if (atk_stack > 3) {
+		atk_stack = 0;
+		setAtkLabel();
+	}
+}
+void Player::AddShieldStack() {
+
+	shield_stack = shield_stack + 1;
+
+	log("shield stack : %d", shield_stack);
+	if (shield_stack > 3) {
+		shield_stack = 0;
+		setShieldLabel();
+	}
+}
+
+void Player::setAtkLabel() {
+
+	char number[2];
+	sprintf(number, "%d", atk_stack);
+	atkLabel->setString(number);
+
+}
+void Player::setShieldLabel() {
+
+	char number[2];
+	sprintf(number, "%d", shield_stack);
+	shieldLabel->setString(number);
+
 }

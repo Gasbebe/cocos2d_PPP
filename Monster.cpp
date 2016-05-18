@@ -16,6 +16,7 @@ Monster::Monster(double maxhp) {
 }
 
 Monster::~Monster() {
+	this->unschedule(schedule_selector(Monster::monsterAI));
 	delete effect;
 }
 

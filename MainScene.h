@@ -9,7 +9,7 @@ class MainScene : public cocos2d::Layer
 {
 public:
 	static cocos2d::Scene* createScene();
-
+	~MainScene();
 	virtual bool init();
 
 	int stageNum;

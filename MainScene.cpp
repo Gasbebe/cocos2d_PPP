@@ -1,8 +1,13 @@
 #include "MainScene.h"
+#include "SimpleAudioEngine.h"
+
+//게임플레이 씬
 #include "HelloWorldScene.h"
 
+#define MAINMUSIC "Sound/music_challengemode.ogg"
 
 USING_NS_CC;
+using namespace CocosDenshion;
 
 Scene* MainScene::createScene() {
 	auto scene = Scene::create();
@@ -19,6 +24,12 @@ bool MainScene::init() {
 	}
 	winSize = Director::getInstance()->getWinSize();
 	
+	flag = true;
+
+	//시작 오디오
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic(MAINMUSIC);
+	SimpleAudioEngine::getInstance()->playBackgroundMusic(MAINMUSIC, true);
+	SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(1.0f);
 
 	//background 천둥치는 하늘
 	auto batch = SpriteBatchNode::create("background/16.png", 10);
@@ -55,15 +66,17 @@ bool MainScene::init() {
 	stageNum = 1;
 	flag = true;
 
-	//케릭터 얼굴 창 이미지
+	//케릭터 얼굴 창 이미지 아처
 	auto player_achor = Sprite::create("UI/player_achor.png");
 	player_achor->setPosition(Vec2(winSize.width/2 - 80, winSize.height/2 + 50));
 	addChild(player_achor);
 
+	//소드맨 이미지
 	auto player_sword = Sprite::create("UI/player_sword.png");
 	player_sword->setPosition(Vec2(winSize.width / 2 + 90, winSize.height / 2 + 50));
 	addChild(player_sword);
 
+	//힐러 이미지
 	auto player_healer = Sprite::create("UI/player_healer.png");
 	player_healer->setPosition(Vec2(winSize.width / 2 - 240, winSize.height / 2 + 50));
 	addChild(player_healer);
@@ -83,7 +96,7 @@ bool MainScene::init() {
 }
 
 void MainScene::selcetStage(int num) {
-
+	stageNum = num;
 }
 
 void MainScene::moveScene(Ref* pSender) {
@@ -98,3 +111,7 @@ void MainScene::moveScene(Ref* pSender) {
 		log("없는 스테이지 입니다");
 	}
 }
+MainScene::~MainScene() {
+	//SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+}
+

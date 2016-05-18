@@ -12,11 +12,15 @@
 #include "Effect.h"
 
 #define PTM_RATIO 32
+
+//레이어 z_oder
 #define BGLAYER -10
 #define UILAYER 10
-//한방 데미지
-#define MONSTER_SKILL2 20
-//화살 데미지
+
+//한방 데미지 25
+#define MONSTER_SKILL2 30
+
+//화살 데미지 5
 #define MONSTER_SKILL3 5
 
 using namespace cocos2d;
@@ -34,7 +38,6 @@ public:
 	cocos2d::Size winSize;
 	cocos2d::Texture2D* texture;
 	
-
 	//Box2d
 	void tick(float dt);
 	virtual void draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, uint32_t flags) override;
@@ -72,10 +75,7 @@ public:
 	cocos2d::Sprite* monsterColl;
 	b2Body* monsterBody;
 
-	//Bullet
-	//cocos2d::Sprite* arrow;
-	//cocos2d::Sprite* bullet;
-	//bool b_bullet;
+	//플레이어2(아처) 슈팅함수
 	void shooting();
 
 	//animation SpriteFrameCahe createWithTexture
@@ -92,7 +92,6 @@ public:
 	void heal();
 	bool heal_skill;
 
-	
 	//Effect
 	Effect* effect;
 	cocos2d::SpriteBatchNode* effect_batch;
@@ -124,12 +123,17 @@ public:
 	void MonsterSkill2();
 	void MonsterSkill3(float dt);
 
+	//player swordman skill bool
+	bool b_block;
+	void offBlock();
+	cocos2d::Sprite* block;
+
 
 	//player skill 
 	//플레이어 클래스 스택을 3스택이 쌓이면 플레이어 스킬이 발동
 	void swordSkill();
 	void healerSkill();
-	void achorSkill();
+	void archerSkill();
 
 protected:
 		void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
