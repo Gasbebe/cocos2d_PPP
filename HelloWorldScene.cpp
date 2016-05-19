@@ -46,6 +46,8 @@ bool HelloWorld::init()
 	flag4 = true;
 	flag5 = true;
 
+	scene_move = true;
+
 	//힐스킬을 한번만 발동하기 위해서 힐러가 idle상태가 되면 다시 true로 바뀐다
 	heal_skill = true;
 
@@ -547,15 +549,21 @@ void HelloWorld::tick(float dt) {
 	if (player1->ps == player1->Die && player2->ps == player2->Die && player3->ps == player3->Die) {
 		log("세명 다 죽었습니다");
 		//Director::getInstance()->pause();
+		if (scene_move) {
+			auto pScene = MainScene::createScene();
+			Director::getInstance()->replaceScene(pScene);
+			scene_move = false;
+		}
 	}
 	if (monster->ms == monster->Die) {
 		log("몬스터 가 죽었습니다");
 		//Director::getInstance()->pause();
-		auto pScene = MainScene::createScene();
-		Director::getInstance()->replaceScene(pScene);
+		if (scene_move) {
+			auto pScene = MainScene::createScene();
+			Director::getInstance()->replaceScene(pScene);
+			scene_move = false;
+		}
 	}
-
-	
 }
 
 b2Body* HelloWorld::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, Sprite* sprtie, int type) {

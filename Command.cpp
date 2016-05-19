@@ -18,23 +18,20 @@ Command::Command() {
 	//atk = Sprite::create("button/button2_100px.png");
 	//sheild = Sprite::create("button/button1_100px.png");
 
-	//이미지 나중에 바꾸기
+	//이미지 수정 완료
 	sprite1 = Sprite::create("UI/state_ui.png");
 	sprite1->setPosition(Vec2(commandSize.width/2 - 120, commandSize.height / 4));
 	sprite1->setScale(0.5f);
-	//sprite1->setOpacity(0.0f);
 	this->addChild(sprite1);
 
 	sprite2 = Sprite::create("UI/state_ui.png");
 	sprite2->setPosition(Vec2(commandSize.width / 2 + 30, commandSize.height / 4));
 	sprite2->setScale(0.5f);
-	//sprite2->setOpacity(0.0f);
 	this->addChild(sprite2);
 
 	sprite3 = Sprite::create("UI/state_ui.png");
 	sprite3->setPosition(Vec2(commandSize.width / 2 + 180 , commandSize.height / 4));
 	sprite3->setScale(0.5f);
-	//sprite3->setOpacity(0.0f);
 	this->addChild(sprite3);
 
 	label = LabelTTF::create("ooooo", "Arial", 34,

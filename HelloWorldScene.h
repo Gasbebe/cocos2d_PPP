@@ -135,6 +135,8 @@ public:
 	void healerSkill();
 	void archerSkill();
 
+	//씬 이동
+	bool scene_move;
 protected:
 		void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
 		cocos2d::CustomCommand _customCmd;
