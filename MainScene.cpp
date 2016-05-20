@@ -62,6 +62,10 @@ bool MainScene::init() {
 	bg2->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(bg2);
 
+	auto logo = Sprite::create("background/main_logo.png");
+	logo->setPosition(Vec2(winSize.width / 2, winSize.height / 2 + 30));
+	this->addChild(logo);
+
 	//스테이지 고르는 번호 
 	stageNum = 99;
 	flag = true;
@@ -81,18 +85,18 @@ bool MainScene::init() {
 	player_healer->setPosition(Vec2(winSize.width / 2 - 260, winSize.height / 2 + 50));
 	addChild(player_healer);
 
-	auto menuItem = MenuItemImage::create("button/button2_100px.png",
-										  "button/button2_100px.png",
+	auto menuItem = MenuItemImage::create("button/stagemove_btn.png",
+										  "button/stagemove_btn_press.png",
 									      CC_CALLBACK_1(MainScene::moveScene, this));
 	menuItem->setPosition(Vec2::ZERO);
 	
 	auto menu = Menu::create(menuItem, nullptr);
-	menu->setPosition(Vec2(winSize.width/2 + 200, winSize.height/2));
+	menu->setPosition(Vec2(winSize.width/2 + 250, winSize.height/2 - 110));
 	this->addChild(menu);
 	
 	
 	//테이블 생성
-	TableView* tableView1 = TableView::create(this, Size(600, 100));
+	TableView* tableView1 = TableView::create(this, Size(400, 100));
 	tableView1->setDirection(ScrollView::Direction::HORIZONTAL);
 	tableView1->setPosition(Vec2(25, 25));
 	tableView1->setDelegate(this);
