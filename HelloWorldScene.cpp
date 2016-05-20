@@ -2,7 +2,10 @@
 #include "MainScene.h"
 #include "SimpleAudioEngine.h"
 
-#define MAINMUSIC "Sound/music_battlemap02.ogg"
+#define MAINMUSIC "Sound/music_collection.ogg"
+#define HEALER_SKILL "Sound/sfx_neutral_spelljammer_attack_swing.ogg"
+#define SWORDMAN_SKILL "Sound/sfx_neutral_xho_attack_impact.ogg"
+#define ARCHER_SKILL "Sound/sfx_spell_phoenixfire.ogg"
 
 USING_NS_CC;
 using namespace CocosDenshion;
@@ -549,20 +552,12 @@ void HelloWorld::tick(float dt) {
 	if (player1->ps == player1->Die && player2->ps == player2->Die && player3->ps == player3->Die) {
 		log("세명 다 죽었습니다");
 		//Director::getInstance()->pause();
-		if (scene_move) {
-			auto pScene = MainScene::createScene();
-			Director::getInstance()->replaceScene(pScene);
-			scene_move = false;
-		}
+		//removeChild(command);
+		command->setVisible(false);
 	}
 	if (monster->ms == monster->Die) {
 		log("몬스터 가 죽었습니다");
-		//Director::getInstance()->pause();
-		if (scene_move) {
-			auto pScene = MainScene::createScene();
-			Director::getInstance()->replaceScene(pScene);
-			scene_move = false;
-		}
+		command->setVisible(false);
 	}
 }
 
@@ -1303,6 +1298,7 @@ void HelloWorld::swordSkill() {
 	block->runAction(seq);
 	b_block = true;
 	log("소드맨스킬");
+	SimpleAudioEngine::getInstance()->playEffect(SWORDMAN_SKILL);
 }
 
 void HelloWorld::healerSkill() {
@@ -1333,6 +1329,7 @@ void HelloWorld::healerSkill() {
 	player1->Heal();
 	player2->Heal();
 	player3->Heal();
+	SimpleAudioEngine::getInstance()->playEffect(HEALER_SKILL);
 	log("힐러 스킬");
 }
 
@@ -1362,6 +1359,7 @@ void HelloWorld::archerSkill() {
 	log("아처맨 스킬");
 
 	monster->Hit(20);
+	SimpleAudioEngine::getInstance()->playEffect(ARCHER_SKILL);
 }
 
 //소드맨 블록 스킬 존재여부

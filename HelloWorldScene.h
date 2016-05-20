@@ -137,6 +137,11 @@ public:
 
 	//씬 이동
 	bool scene_move;
+
+	//time score
+	double time_score;
+	void uptateTime(float dt);
+
 protected:
 		void onDraw(const cocos2d::Mat4& transform, uint32_t flags);
 		cocos2d::CustomCommand _customCmd;

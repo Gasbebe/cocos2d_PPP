@@ -1,9 +1,9 @@
 ﻿#include "Player.h"
 #include "SimpleAudioEngine.h"
 
-#define SWORD_ATK_SOUND "Sound/sfx_f1_elyxstormblade_attack_impact"
-#define HEALER_ATK_SOUND "Sound/"
-#define ACHOR_ATK_SOUND "Sound"
+#define SWORD_ATK_SOUND "Sound/sfx_f1_elyxstormblade_attack_impact.ogg"
+#define HEALER_ATK_SOUND "Sound/sfx_unit_run_magical_4.ogg"
+#define ARCHER_ATK_SOUND "Sound/sfx_neutral_makantorwarbeast_attack_impact.ogg"
 
 
 USING_NS_CC;
@@ -47,7 +47,7 @@ Player::Player(double hp, double maxhp, double def, int type){
 
 
 	//type 1 힐러  2 활  3검  
-	//활은 공격스킬을 가지고 있어서 실드스택은 투명
+	//활은 공격스킬을 가지고 있어서 실드스택은  레이블 투명지정하는곳
 	if (type == 2) {
 		shieldLabel->setVisible(false);
 	}
@@ -295,8 +295,10 @@ void Player::setEffect(int number) {
 		//힐러
 		if (ps == Atk) {
 			//effect->getTypePlayerEffect(3, Vec2(40, 40), this);
+			
 		}
 		else if (ps == Sheild) {
+			SimpleAudioEngine::getInstance()->playEffect(HEALER_ATK_SOUND);
 			//방패 이펙트
 			effect->getTypePlayerEffect(1, Vec2(50, 27), this);
 			//힐 이펙트
@@ -308,7 +310,7 @@ void Player::setEffect(int number) {
 
 		//플레이어가 궁수 일때 이펙트
 		if (ps == Atk) {
-			
+			SimpleAudioEngine::getInstance()->playEffect(ARCHER_ATK_SOUND);
 		}
 		else if (ps == Sheild) {
 			
@@ -318,7 +320,7 @@ void Player::setEffect(int number) {
 
 		//플레이어가 검사 일떄 이펙트
 		if (ps == Atk) {
-			
+			SimpleAudioEngine::getInstance()->playEffect(SWORD_ATK_SOUND);
 		}
 		else if (ps == Sheild) {
 			effect->getTypePlayerEffect(2, Vec2(50, 40), this);

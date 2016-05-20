@@ -63,7 +63,7 @@ bool MainScene::init() {
 	this->addChild(bg2);
 
 	//스테이지 고르는 번호 
-	stageNum = 1;
+	stageNum = 99;
 	flag = true;
 
 	//케릭터 얼굴 창 이미지 아처
@@ -73,12 +73,12 @@ bool MainScene::init() {
 
 	//소드맨 이미지
 	auto player_sword = Sprite::create("UI/player_sword.png");
-	player_sword->setPosition(Vec2(winSize.width / 2 + 90, winSize.height / 2 + 50));
+	player_sword->setPosition(Vec2(winSize.width / 2 + 110, winSize.height / 2 + 50));
 	addChild(player_sword);
 
 	//힐러 이미지
 	auto player_healer = Sprite::create("UI/player_healer.png");
-	player_healer->setPosition(Vec2(winSize.width / 2 - 240, winSize.height / 2 + 50));
+	player_healer->setPosition(Vec2(winSize.width / 2 - 260, winSize.height / 2 + 50));
 	addChild(player_healer);
 
 	auto menuItem = MenuItemImage::create("button/button2_100px.png",
@@ -92,13 +92,15 @@ bool MainScene::init() {
 	
 	
 	//테이블 생성
-	TableView* tableView1 = TableView::create(this, Size(300, 100));
+	TableView* tableView1 = TableView::create(this, Size(600, 100));
 	tableView1->setDirection(ScrollView::Direction::HORIZONTAL);
-	tableView1->setPosition(Vec2(50, 50));
+	tableView1->setPosition(Vec2(25, 25));
 	tableView1->setDelegate(this);
 	tableView1->setTag(100);
 	this->addChild(tableView1);
 	tableView1->reloadData();
+
+	SimpleAudioEngine::getInstance()->setEffectsVolume(1.0f);
 
 	//TableView* tableView2 = TableView::create(this, Size(60, 250));
 	//tableView2->setDirection(ScrollView::Direction::VERTICAL);
@@ -117,10 +119,10 @@ void MainScene::selcetStage(int num) {
 }
 
 void MainScene::moveScene(Ref* pSender) {
-	if (stageNum == 1) {
+	if (stageNum == 0) {
 		if (flag) {
 			auto pScene = HelloWorld::createScene();
-			Director::getInstance()->replaceScene(pScene);
+			Director::getInstance()->replaceScene(TransitionSplitRows::create(0.5f, pScene));
 			flag = false;
 		}
 	}
@@ -131,9 +133,9 @@ void MainScene::moveScene(Ref* pSender) {
 
 Size MainScene::tableCellSizeForIndex(TableView* table, ssize_t idx) {
 	if (idx == 2) {
-		return Size(100, 100);
+		return Size(110, 100);
 	}
-	return Size(60, 60);
+	return Size(110, 100);
 }
 
 TableViewCell* MainScene::tableCellAtIndex(TableView *table, ssize_t idx) {
@@ -143,7 +145,14 @@ TableViewCell* MainScene::tableCellAtIndex(TableView *table, ssize_t idx) {
 		cell = new CustomTableViewCell();
 		cell->autorelease();
 
-		auto sprite = Sprite::create("Images/boss1.png");
+		log("%d", idx);
+		if (cell->getIdx() == 0) {
+			sprite = Sprite::create("Images/boss1.png");
+		}
+		else {
+			sprite = Sprite::create("Images/offBoss.png");
+		}
+
 		sprite->setAnchorPoint(Vec2::ZERO);
 		sprite->setPosition(Vec2(0, 0));
 		cell->addChild(sprite);
@@ -155,6 +164,12 @@ TableViewCell* MainScene::tableCellAtIndex(TableView *table, ssize_t idx) {
 		cell->addChild(label);
 	}
 	else {
+		if (cell->getIdx() == 0) {
+			sprite->setTexture("Images/boss1.png");
+		}
+		else {
+			sprite->setTexture("Images/offBoss.png");
+		}
 		auto label = (LabelTTF*)cell->getChildByTag(123);
 		label->setString(string->getCString());
 	}
@@ -162,11 +177,15 @@ TableViewCell* MainScene::tableCellAtIndex(TableView *table, ssize_t idx) {
 }
 
 ssize_t MainScene::numberOfCellsInTableView(TableView* table) {
-	return 10;
+	return 4;
 }
 
 void MainScene::tableCellTouched(TableView* table, TableViewCell* cell) {
+
 	log("Tag : %d\nCell touched at index : %ld",
 		table->getTag(),
 		cell->getIdx());
+
+	selcetStage(cell->getIdx());
+
 }
