@@ -33,13 +33,13 @@ Player::Player(double hp, double maxhp, double def, int type){
 	//itemWidth , itemHeight는 같은 크기의 이미지로 된 스프라이트시트를 이용해
 	//스프라이트 시트를 만들떄와 마찬가지로 글자 하나에 해당하는 크기를 나타낸다
 
-	atkLabel = LabelAtlas::create("0", "number/numbers.png", 64, 86, '0');  //12 ,32 픽셀로 자름    '.'아스키코드값부터 시작 9까지
+	atkLabel = LabelAtlas::create("0", "number/numbers.png", 60, 86, '.');  //12 ,32 픽셀로 자름    '.'아스키코드값부터 시작 9까지
 	atkLabel->setPosition(Vec2(30, 70));
 	atkLabel->setScale(0.5f);
 	atkLabel->setColor(Color3B::RED);
 	this->addChild(atkLabel);
 
-	shieldLabel = LabelAtlas::create("0", "number/numbers.png", 64, 86, '0');  //12 ,32 픽셀로 자름    '.'아스키코드값부터 시작 9까지
+	shieldLabel = LabelAtlas::create("0", "number/numbers.png", 60, 86, '.');  //12 ,32 픽셀로 자름    '.'아스키코드값부터 시작 9까지
 	shieldLabel->setPosition(Vec2(30, 70));
 	shieldLabel->setScale(0.5f);
 	shieldLabel->setColor(Color3B::BLUE);

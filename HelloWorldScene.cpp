@@ -35,8 +35,6 @@ bool HelloWorld::init()
 	UILayer->setZOrder(UILAYER);
 	addChild(UILayer);
 
-
-
 	//오디오
 	SimpleAudioEngine::getInstance()->preloadBackgroundMusic(MAINMUSIC);
 	SimpleAudioEngine::getInstance()->playBackgroundMusic(MAINMUSIC, true);
@@ -86,6 +84,7 @@ bool HelloWorld::init()
 	
 	if (createBox2dWorld(false)) {
 		this->schedule(schedule_selector(HelloWorld::tick));
+		this->schedule(schedule_selector(HelloWorld::uptateTime), 0.1f);
 	}
 	
 	///////////////
@@ -148,6 +147,15 @@ bool HelloWorld::init()
 	auto seq6 = Sequence::create(act_rock4, act_rock4->reverse(), nullptr);
 	auto rep6 = RepeatForever::create(seq6);
 	sky_rock2->runAction(rep6);
+
+
+	//점수
+	time_score = 0.0f;
+	score = LabelAtlas::create("0", "number/numbers.png", 60, 86, '.');
+	score->setPosition(Vec2(winSize.width / 2 - 50, winSize.height / 2 + 100));
+	score->setScale(0.5f);
+	score->setColor(Color3B::GRAY);
+	this->addChild(score);
 	
 	////////////////////
 	//sprite add body //
@@ -550,13 +558,15 @@ void HelloWorld::tick(float dt) {
 
 	//플레이어 3명 죽음 체크
 	if (player1->ps == player1->Die && player2->ps == player2->Die && player3->ps == player3->Die) {
-		log("세명 다 죽었습니다");
+		//log("세명 다 죽었습니다");
 		//Director::getInstance()->pause();
 		//removeChild(command);
+		this->unschedule(schedule_selector(HelloWorld::uptateTime));
 		command->setVisible(false);
 	}
 	if (monster->ms == monster->Die) {
-		log("몬스터 가 죽었습니다");
+		//log("몬스터 가 죽었습니다");
+		this->unschedule(schedule_selector(HelloWorld::uptateTime));
 		command->setVisible(false);
 	}
 }
@@ -1365,4 +1375,15 @@ void HelloWorld::archerSkill() {
 //소드맨 블록 스킬 존재여부
 void HelloWorld::offBlock() {
 	b_block = false;
+}
+
+
+
+void HelloWorld::uptateTime(float dt) {
+	time_score = time_score + 0.1f;
+
+	char num[100];
+	sprintf(num, "%0.1f", time_score);
+
+	score->setString(num);
 }

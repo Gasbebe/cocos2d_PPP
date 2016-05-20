@@ -106,15 +106,6 @@ bool MainScene::init() {
 
 	SimpleAudioEngine::getInstance()->setEffectsVolume(1.0f);
 
-	//TableView* tableView2 = TableView::create(this, Size(60, 250));
-	//tableView2->setDirection(ScrollView::Direction::VERTICAL);
-	//tableView2->setPosition(Vec2(330, 40));
-	//tableView2->setDelegate(this);
-	//tableView2->setTag(200);
-	//tableView2->setVerticalFillOrder(TableView::VerticalFillOrder::TOP_DOWN);
-	//this->addChild(tableView2);
-	//tableView2->reloadData();
-
 	return true;
 }
 
@@ -136,9 +127,6 @@ void MainScene::moveScene(Ref* pSender) {
 }
 
 Size MainScene::tableCellSizeForIndex(TableView* table, ssize_t idx) {
-	if (idx == 2) {
-		return Size(110, 100);
-	}
 	return Size(110, 100);
 }
 

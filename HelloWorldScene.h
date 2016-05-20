@@ -21,7 +21,7 @@
 #define MONSTER_SKILL2 30
 
 //화살 데미지 5
-#define MONSTER_SKILL3 5
+#define MONSTER_SKILL3 6
 
 using namespace cocos2d;
 
@@ -139,6 +139,7 @@ public:
 	bool scene_move;
 
 	//time score
+	cocos2d::LabelAtlas* score;
 	double time_score;
 	void uptateTime(float dt);
 

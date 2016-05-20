@@ -34,20 +34,20 @@ Command::Command() {
 	sprite3->setScale(0.5f);
 	this->addChild(sprite3);
 
-	label = LabelTTF::create("ooooo", "Arial", 34,
-		Size(300, 200), TextHAlignment::CENTER,
-		TextVAlignment::CENTER);
-	label->setColor(Color3B::WHITE);// 255,0,0
-									 //pLabel->setAnchorPoint(Vec2(0, 0.5));
+	//label = LabelTTF::create("ooooo", "Arial", 34,
+	//	Size(300, 200), TextHAlignment::CENTER,
+	//	TextVAlignment::CENTER);
+	//label->setColor(Color3B::WHITE);// 255,0,0
+	//								 //pLabel->setAnchorPoint(Vec2(0, 0.5));
 
-									 //레이블의 위치 지정
-	label->setPosition(Vec2(commandSize.width/2, commandSize.height/2 + 200));
+	//								 //레이블의 위치 지정
+	//label->setPosition(Vec2(commandSize.width/2, commandSize.height/2 + 200));
 
-	//레이블의 투명도 지정  0~255
-	label->setOpacity(100.0);
+	////레이블의 투명도 지정  0~255
+	//label->setOpacity(100.0);
 
-	//레이블에 레이블 객체 추가
-	this->addChild(label);
+	////레이블에 레이블 객체 추가
+	//this->addChild(label);
 
 }
 
@@ -115,9 +115,8 @@ void Command::ViewCommand(int number) {
 		count++;
 	}
 	else {
-		//count = 1;
 		log("안눌림");
-		label->setString("안눌림");
+		//label->setString("안눌림");
 	}
 	log("count = %d ", count);
 }
@@ -145,7 +144,7 @@ void Command::setOnActive() {
 
 		sprite3->setOpacity(250.0f);
 		sprite3->setTexture("UI/state_ui.png");
-		label->setString("커맨드 생성");
+		//label->setString("커맨드 생성");
 	}
 
 }
