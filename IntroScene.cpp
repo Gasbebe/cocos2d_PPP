@@ -9,6 +9,7 @@ USING_NS_CC;
 using namespace CocosDenshion;
 
 Scene* IntroScene::createScene(){
+	log("%d", -1);
 	auto scene = Scene::create();
 	auto layer = IntroScene::create();
 	scene->addChild(layer);
@@ -17,19 +18,21 @@ Scene* IntroScene::createScene(){
 }
 
 bool IntroScene::init(){
+	int i = 0;
+	log("%d", i++);
 	if (!Layer::init())
 	{
 		return false;
 	}
 	flag = true;
 	winSize = Director::getInstance()->getWinSize();
-
+	log("%d", i++);
 	//인트로 오디오
 	SimpleAudioEngine::getInstance()->preloadBackgroundMusic(INTROMUSIC);
 	SimpleAudioEngine::getInstance()->playBackgroundMusic(INTROMUSIC, true);
 	SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(1.0f);
 
-
+	log("%d", i++);
 	///////////////
 	//backgrond ///
 	///////////////
@@ -46,18 +49,18 @@ bool IntroScene::init(){
 						 
 		animation->addSpriteFrameWithTexture(texture, Rect(colum * 200, row * 100, 200, 100));
 	}
-
+	log("%d", i++);
 	auto bg = Sprite::create("background/16.png", Rect(0, 0, 200, 100));
 
 	bg->setScale(3.8f);
 	bg->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	bg->setZOrder(-3);
 	this->addChild(bg);
-
+	log("%d", i++);
 	auto animate = Animate::create(animation);
 	auto rep = RepeatForever::create(animate);
 	bg->runAction(rep);
-
+	log("%d", i++);
 
 	//공중 돌 이미지 및 움직임
 	auto rock4 = Sprite::create("background/rock4.png");
@@ -70,7 +73,7 @@ bool IntroScene::init(){
 
 	rock4->runAction(rep3);
 
-
+	log("%d", i++);
 	//땅 바닥 돌
 	auto rock = Sprite::create("background/rock.png");
 	rock->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
@@ -81,7 +84,7 @@ bool IntroScene::init(){
 	auto logo = Sprite::create("background/logo.png");
 	logo->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(logo);
-
+	log("%d", i++);
 	auto startBtn = MenuItemImage::create("UI/touch_Screen.png",
 										 "UI/touch_Screen.png",
 										  CC_CALLBACK_1(IntroScene::startGame, this));
@@ -90,7 +93,7 @@ bool IntroScene::init(){
 	auto menu = Menu::create(startBtn, nullptr);
 	menu->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(menu);
-	
+	log("%d", i++);
 	return true;
 }
 

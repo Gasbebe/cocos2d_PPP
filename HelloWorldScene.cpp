@@ -1,6 +1,6 @@
 ﻿#include "HelloWorldScene.h"
-#include "MainScene.h"
 #include "SimpleAudioEngine.h"
+#include "ScoreScene.h"
 
 #define MAINMUSIC "Sound/music_collection.ogg"
 #define HEALER_SKILL "Sound/sfx_neutral_spelljammer_attack_swing.ogg"
@@ -566,8 +566,15 @@ void HelloWorld::tick(float dt) {
 	}
 	if (monster->ms == monster->Die) {
 		//log("몬스터 가 죽었습니다");
-		this->unschedule(schedule_selector(HelloWorld::uptateTime));
-		command->setVisible(false);
+		
+		if (scene_move) {
+			this->unschedule(schedule_selector(HelloWorld::uptateTime));
+			command->setVisible(false);
+
+			auto pScene = ScoreScene::createScene();
+			Director::getInstance()->pushScene(TransitionCrossFade::create(0.5, pScene));
+			scene_move = false;
+		}
 	}
 }
 
@@ -958,7 +965,7 @@ void HelloWorld::setCharectorAnimations() {
 	//       monster            //
 	/////////////////////////////
 
-	monster = new Monster(1000);
+	monster = new Monster(100);
 
 	//monster animation idle
 	Vector<SpriteFrame*> monster_animFramesIdle;
@@ -1377,8 +1384,7 @@ void HelloWorld::offBlock() {
 	b_block = false;
 }
 
-
-
+//시간 업데이트
 void HelloWorld::uptateTime(float dt) {
 	time_score = time_score + 0.1f;
 

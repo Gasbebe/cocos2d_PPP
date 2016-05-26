@@ -60,6 +60,7 @@ Player::Player(double hp, double maxhp, double def, int type){
 	stopAim = CallFunc::create(CC_CALLBACK_0(Player::EndAnimation,this));
 
 }
+
 Player::~Player() {
 	delete effect;
 }
@@ -141,7 +142,6 @@ void Player::sheildAction() {
 	this->runAction(animSheild);
 	setEffect(effectType);
 }
-
 
 //상태보기
 void Player::showState() {
