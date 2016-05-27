@@ -573,6 +573,7 @@ void HelloWorld::tick(float dt) {
 
 			auto pScene = ScoreScene::createScene();
 			Director::getInstance()->pushScene(TransitionCrossFade::create(0.5, pScene));
+			
 			scene_move = false;
 		}
 	}

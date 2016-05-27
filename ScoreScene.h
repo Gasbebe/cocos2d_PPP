@@ -6,6 +6,8 @@
 #include "extensions/cocos-ext.h"
 
 using namespace cocos2d;
+using namespace cocos2d::extension;
+
 
 class ScoreScene : public cocos2d::LayerColor
 {
@@ -20,8 +22,6 @@ public:
 	cocos2d::ui::EditBox* _editNum;
 	std::string txtNum;
 
-	void doLogin(Ref* pSender);
-
 	void doSendScore(Ref* pSender);
 	void doSendTime(Ref* pSender);
 
@@ -31,10 +31,6 @@ public:
 	void doShowLeaderBoard(Ref* pSender);
 	void doShowAchivement(Ref* pSender);
 
-	virtual void editBoxEditingDidBegin(cocos2d::ui::EditBox* editBox);
-	virtual void editBoxEditingDidEnd(cocos2d::ui::EditBox* editBox);
-	virtual void editBoxTextChanged(cocos2d::ui::EditBox* editBox, const std::string& text);
-	virtual void editBoxReturn(cocos2d::ui::EditBox* editBox);
-
+	void setScore(std::string score);
 };
 #endif

@@ -87,65 +87,20 @@ bool ScoreScene::init()
 	pMenuItem6->setColor(Color3B(0, 0, 0));
 	pMenuItem6->setPosition(Vec2(300, 80));
 
-	auto pMenuItem7 = MenuItemFont::create(
-		" Login ",
-		CC_CALLBACK_1(ScoreScene::doLogin, this));
-	pMenuItem7->setColor(Color3B(0, 0, 0));
-	pMenuItem7->setPosition(Vec2(300, 30));
-
 	auto pMenu = Menu::create(
 		pMenuItem1, pMenuItem2, pMenuItem3, pMenuItem4,
-		pMenuItem5, pMenuItem6, pMenuItem7,
+		pMenuItem5, pMenuItem6,
 		nullptr);
 
 	pMenu->setPosition(Vec2(0, 0));
 
 	this->addChild(pMenu);
 
+	txtNum = 10;
 	//--------------------------------------------------------------
-	Size editBoxSize = Size(300, 60);
-	std::string pNormalSprite = "Images/green_edit.png";
-	_editNum = ui::EditBox::create(editBoxSize,
-		ui::Scale9Sprite::create(pNormalSprite));
-	_editNum->setPosition(Vec2(240, 250));
-	_editNum->setFontName("Paint Boy");
-	_editNum->setFontSize(25);
-	_editNum->setFontColor(Color3B::RED);
-	_editNum->setPlaceHolder("Score or Time :");
-	_editNum->setPlaceholderFontColor(Color3B::WHITE);
-	_editNum->setMaxLength(8);
-	_editNum->setReturnType(ui::EditBox::KeyboardReturnType::DONE);
-	//_editNum->setDelegate();
-	this->addChild(_editNum);
-
-
 	return true;
 }
 
-void ScoreScene::editBoxEditingDidBegin(cocos2d::ui::EditBox* editBox)
-{
-}
-
-void ScoreScene::editBoxEditingDidEnd(cocos2d::ui::EditBox* editBox)
-{
-}
-
-void ScoreScene::editBoxTextChanged(cocos2d::ui::EditBox* editBox, const std::string& text)
-{
-	txtNum = text;
-}
-
-void ScoreScene::editBoxReturn(ui::EditBox* editBox)
-{
-}
-
-
-void ScoreScene::doLogin(Ref* pSender)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	callJavaMethod("Login", "");
-#endif
-}
 
 void ScoreScene::doSendScore(Ref* pSender)
 {
@@ -189,4 +144,8 @@ void ScoreScene::doShowAchivement(Ref* pSender)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	callJavaMethod("ShowAchivement", "");
 #endif
+}
+
+void ScoreScene::setScore(std::string score) {
+	txtNum = score;
 }

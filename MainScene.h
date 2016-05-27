@@ -25,7 +25,7 @@ public:
 
 	void selcetStage(int num);
 	void moveScene(cocos2d::Ref* pSender);
-
+	
 	virtual void scrollViewDidScroll(ScrollView* view) {};
 	virtual void scrollViewDidZoom(ScrollView* view) {};
 	virtual void tableCellTouched(TableView* table, TableViewCell* cell);
