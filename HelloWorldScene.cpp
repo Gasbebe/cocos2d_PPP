@@ -2,13 +2,38 @@
 #include "SimpleAudioEngine.h"
 #include "ScoreScene.h"
 
+USING_NS_CC;
+using namespace CocosDenshion;
+
 #define MAINMUSIC "Sound/music_collection.ogg"
 #define HEALER_SKILL "Sound/sfx_neutral_spelljammer_attack_swing.ogg"
 #define SWORDMAN_SKILL "Sound/sfx_neutral_xho_attack_impact.ogg"
 #define ARCHER_SKILL "Sound/sfx_spell_phoenixfire.ogg"
 
-USING_NS_CC;
-using namespace CocosDenshion;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#include "platform/android/jni/JniHelper.h"
+
+void HellocallJavaMethod(std::string func, std::string arg0)
+{
+	JniMethodInfo t;
+
+	/**
+	JniHelper를 통해 org/cocos2dx/cpp/에 있는
+	AppActivity class의 파라미터로 들어온 스트링 이름의 함수 정보를 가져온다.
+	*/
+	if (JniHelper::getStaticMethodInfo(t
+		, "org/cocos2dx/cpp/AppActivity"
+		, func.c_str()
+		, "(Ljava/lang/String;)V"))
+	{
+		jstring stringArg0 = t.env->NewStringUTF(arg0.c_str());
+		// 함수 호출
+		t.env->CallStaticVoidMethod(t.classID, t.methodID, stringArg0);
+		// Release
+		t.env->DeleteLocalRef(t.classID);
+	}
+}
+#endif
 
 Scene* HelloWorld::createScene()
 {
@@ -573,7 +598,8 @@ void HelloWorld::tick(float dt) {
 
 			auto pScene = ScoreScene::createScene();
 			Director::getInstance()->pushScene(TransitionCrossFade::create(0.5, pScene));
-			
+			//리더보드에 시간을 보냄
+			doSendTime();
 			scene_move = false;
 		}
 	}
@@ -1389,8 +1415,17 @@ void HelloWorld::offBlock() {
 void HelloWorld::uptateTime(float dt) {
 	time_score = time_score + 0.1f;
 
+	//시간을 문자로 변환 및 리더보드로 보내는 변수
 	char num[100];
 	sprintf(num, "%0.1f", time_score);
-
+	txtNum = num;
 	score->setString(num);
+}
+
+void HelloWorld::doSendTime()
+{
+	log("%s", txtNum.c_str());
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	HellocallJavaMethod("SendTime", txtNum);
+#endif
 }

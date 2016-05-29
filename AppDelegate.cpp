@@ -1,5 +1,6 @@
 ﻿#include "AppDelegate.h"
 #include "IntroScene.h"
+//#include "ScoreScene.h"
 
 USING_NS_CC;
 
@@ -53,7 +54,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	//EXACR_FIT:    NO_BORDER:
 
     // create a scene. it's an autorelease object
-    auto scene = IntroScene::createScene();
+    //auto scene = ScoreScene::createScene();
+	auto scene = IntroScene::createScene();
     // run
     director->runWithScene(scene);
 

@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "Monster.h"
 #include "Effect.h"
+#include "extensions/cocos-ext.h"
 
 #define PTM_RATIO 32
 
@@ -24,6 +25,7 @@
 #define MONSTER_SKILL3 6
 
 using namespace cocos2d;
+using namespace cocos2d::extension;
 
 class HelloWorld : public cocos2d::Layer
 {
@@ -142,6 +144,10 @@ public:
 	cocos2d::LabelAtlas* score;
 	double time_score;
 	void uptateTime(float dt);
+
+	//리더보드
+	void doSendTime();
+	std::string txtNum;
 
 protected:
 		void onDraw(const cocos2d::Mat4& transform, uint32_t flags);

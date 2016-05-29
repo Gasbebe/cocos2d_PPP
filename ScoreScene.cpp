@@ -6,7 +6,7 @@ USING_NS_CC;
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "platform/android/jni/JniHelper.h"
 
-void callJavaMethod(std::string func, std::string arg0)
+void ScorecallJavaMethod(std::string func, std::string arg0)
 {
 	JniMethodInfo t;
 
@@ -51,18 +51,6 @@ bool ScoreScene::init()
 	MenuItemFont::setFontName("fonts/Marker Felt.ttf");
 	MenuItemFont::setFontSize(20);
 
-	auto pMenuItem1 = MenuItemFont::create(
-		" 최고점수 ",
-		CC_CALLBACK_1(ScoreScene::doSendScore, this));
-	pMenuItem1->setColor(Color3B(0, 0, 0));
-	pMenuItem1->setPosition(Vec2(180, 180));
-
-	auto pMenuItem2 = MenuItemFont::create(
-		" 소요시간 ",
-		CC_CALLBACK_1(ScoreScene::doSendTime, this));
-	pMenuItem2->setColor(Color3B(0, 0, 0));
-	pMenuItem2->setPosition(Vec2(300, 180));
-
 	auto pMenuItem3 = MenuItemFont::create(
 		" 일회성 업적 ",
 		CC_CALLBACK_1(ScoreScene::doSendOne, this));
@@ -88,7 +76,7 @@ bool ScoreScene::init()
 	pMenuItem6->setPosition(Vec2(300, 80));
 
 	auto pMenu = Menu::create(
-		pMenuItem1, pMenuItem2, pMenuItem3, pMenuItem4,
+		pMenuItem3, pMenuItem4,
 		pMenuItem5, pMenuItem6,
 		nullptr);
 
@@ -106,7 +94,7 @@ void ScoreScene::doSendScore(Ref* pSender)
 {
 	log("%s", txtNum.c_str());
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	callJavaMethod("SendScore", txtNum);
+	ScorecallJavaMethod("SendScore", txtNum);
 #endif
 }
 
@@ -114,35 +102,35 @@ void ScoreScene::doSendTime(Ref* pSender)
 {
 	log("%s", txtNum.c_str());
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	callJavaMethod("SendTime", txtNum);
+	ScorecallJavaMethod("SendTime", txtNum);
 #endif
 }
 
 void ScoreScene::doSendOne(Ref* pSender)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	callJavaMethod("SendOne", "");
+	ScorecallJavaMethod("SendOne", "");
 #endif
 }
 
 void ScoreScene::doSendMulti(Ref* pSender)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	callJavaMethod("SendMulti", "");
+	ScorecallJavaMethod("SendMulti", "");
 #endif
 }
 
 void ScoreScene::doShowLeaderBoard(Ref* pSender)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	callJavaMethod("ShowLeaderBoard", "");
+	ScorecallJavaMethod("ShowLeaderBoard", "");
 #endif
 }
 
 void ScoreScene::doShowAchivement(Ref* pSender)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	callJavaMethod("ShowAchivement", "");
+	ScorecallJavaMethod("ShowAchivement", "");
 #endif
 }
 

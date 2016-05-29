@@ -109,6 +109,7 @@ bool MainScene::init() {
 	return true;
 }
 
+//스테이지 선택 번호
 void MainScene::selcetStage(int num) {
 	stageNum = num;
 }
@@ -133,38 +134,29 @@ Size MainScene::tableCellSizeForIndex(TableView* table, ssize_t idx) {
 TableViewCell* MainScene::tableCellAtIndex(TableView *table, ssize_t idx) {
 	auto string = String::createWithFormat("%ld", idx);
 	TableViewCell *cell = table->dequeueCell();
-	if (!cell) {
-		cell = new CustomTableViewCell();
-		cell->autorelease();
 
-		log("%d", idx);
-		if (cell->getIdx() == 0) {
-			sprite = Sprite::create("Images/boss1.png");
-		}
-		else {
-			sprite = Sprite::create("Images/offBoss.png");
-		}
+	cell = new CustomTableViewCell();
+	cell->autorelease();
 
-		sprite->setAnchorPoint(Vec2::ZERO);
-		sprite->setPosition(Vec2(0, 0));
-		cell->addChild(sprite);
-
-		auto label = LabelTTF::create(string->getCString(), "Helvetica", 20.0);
-		label->setPosition(Vec2::ZERO);
-		label->setAnchorPoint(Vec2::ZERO);
-		label->setTag(123);
-		cell->addChild(label);
+	log("%d", idx);
+	if (cell->getIdx() == 0) {
+		sprite = Sprite::create("Images/boss1.png");
 	}
-	else {
-		if (cell->getIdx() == 0) {
-			sprite->setTexture("Images/boss1.png");
-		}
-		else {
-			sprite->setTexture("Images/offBoss.png");
-		}
-		auto label = (LabelTTF*)cell->getChildByTag(123);
-		label->setString(string->getCString());
+	else if(cell->getIdx() != 0){
+		sprite = Sprite::create("Images/offBoss.png");
 	}
+
+	sprite->setAnchorPoint(Vec2::ZERO);
+	sprite->setPosition(Vec2(0, 0));
+	cell->addChild(sprite);
+
+	auto label = LabelTTF::create(string->getCString(), "Helvetica", 20.0);
+	label->setPosition(Vec2::ZERO);
+	label->setAnchorPoint(Vec2::ZERO);
+	label->setTag(123);
+	cell->addChild(label);
+
+
 	return cell;
 }
 
