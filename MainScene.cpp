@@ -61,9 +61,9 @@ bool MainScene::init() {
 	auto bg2 = Sprite::create("background/main_background.png");
 	bg2->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(bg2);
-
+	
 	auto logo = Sprite::create("background/main_logo.png");
-	logo->setPosition(Vec2(winSize.width / 2, winSize.height / 2 + 30));
+	logo->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(logo);
 
 	//스테이지 고르는 번호 

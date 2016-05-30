@@ -1,5 +1,4 @@
 ﻿#include "IntroScene.h"
-
 #include "MainScene.h"
 #include "SimpleAudioEngine.h"
 
@@ -100,10 +99,6 @@ bool IntroScene::init(){
 void IntroScene::startGame(Ref* pSender) {
 	if (flag) {
 		auto pScene = MainScene::createScene();
-		//SimpleAudioEngine::getInstance()->stopBackgroundMusic();
-		//TransitionCrossFade::create(t, s);
-		//Director::getInstance()->pushScene(createTransition(num1++, 1, pScene));
-		//auto tran = TransitionCrossFade::create(pScene, 0.5);
 		Director::getInstance()->replaceScene(TransitionCrossFade::create(0.5, pScene));
 		flag = false;
 	}

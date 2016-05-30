@@ -9,28 +9,24 @@ using namespace cocos2d;
 using namespace cocos2d::extension;
 
 
-class ScoreScene : public cocos2d::LayerColor
+class ScoreScene : public cocos2d::Layer
 {
 public:
 	static cocos2d::Scene* createScene();
 
 	virtual bool init();
-
+	bool flag;
 	CREATE_FUNC(ScoreScene);
 	cocos2d::Size winSize;
 
-	cocos2d::ui::EditBox* _editNum;
+	cocos2d::LabelAtlas* scoreLabel;
+	double score;
 	std::string txtNum;
 
-	void doSendScore(Ref* pSender);
-	void doSendTime(Ref* pSender);
-
-	void doSendOne(Ref* pSender);
-	void doSendMulti(Ref* pSender);
-
 	void doShowLeaderBoard(Ref* pSender);
-	void doShowAchivement(Ref* pSender);
+	void moveScene(Ref* pSender);
+	void quitGame(Ref* pSender);
+	void setLabelScore(std::string num);
 
-	void setScore(std::string score);
 };
 #endif

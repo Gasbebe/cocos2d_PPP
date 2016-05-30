@@ -85,17 +85,6 @@ bool HelloWorld::init()
 	//effect  this부분에 Backgound 레이어 만들어서 넣을것
 	effect = new Effect();
 	effect->retain();
-	//effect->getTypeEffect(1, Vec2(winSize.width / 2, winSize.height / 2), this);
-	//effect->getTypeEffect(2, Vec2(winSize.width / 2 + 20, winSize.height / 2), this);
-	//effect->getTypeEffect(3, Vec2(winSize.width / 2 + 40, winSize.height / 2), this);
-	//effect->getTypeEffect(4, Vec2(winSize.width / 2 + 60, winSize.height / 2), this);
-	//effect->getTypeEffect(5, Vec2(winSize.width / 2 + 80, winSize.height / 2), this);
-	//effect->getTypeEffect(6, Vec2(winSize.width / 2 + 100, winSize.height / 2), this);
-	//effect->getTypeEffect(7, Vec2(winSize.width / 2 + 120, winSize.height / 2), this);
-	//effect->getTypeEffect(8, Vec2(winSize.width / 2 + 140, winSize.height / 2), this);
-	//effect->getTypeEffect(9, Vec2(winSize.width / 2 + 160, winSize.height / 2), this);
-	//effect->getTypeEffect(10, Vec2(winSize.width / 2 + 180, winSize.height / 2), this);
-	//effect->getTypeEffect(11, Vec2(winSize.width / 2 + 200, winSize.height / 2), this);
 
 	//command 
 	command = new Command();
@@ -583,8 +572,7 @@ void HelloWorld::tick(float dt) {
 
 	//플레이어 3명 죽음 체크
 	if (player1->ps == player1->Die && player2->ps == player2->Die && player3->ps == player3->Die) {
-		//log("세명 다 죽었습니다");
-		//Director::getInstance()->pause();
+		Director::getInstance()->pause();
 		//removeChild(command);
 		this->unschedule(schedule_selector(HelloWorld::uptateTime));
 		command->setVisible(false);
@@ -595,11 +583,10 @@ void HelloWorld::tick(float dt) {
 		if (scene_move) {
 			this->unschedule(schedule_selector(HelloWorld::uptateTime));
 			command->setVisible(false);
-
+			doSendTime();
 			auto pScene = ScoreScene::createScene();
 			Director::getInstance()->pushScene(TransitionCrossFade::create(0.5, pScene));
 			//리더보드에 시간을 보냄
-			doSendTime();
 			scene_move = false;
 		}
 	}
@@ -1416,16 +1403,18 @@ void HelloWorld::uptateTime(float dt) {
 	time_score = time_score + 0.1f;
 
 	//시간을 문자로 변환 및 리더보드로 보내는 변수
-	char num[100];
-	sprintf(num, "%0.1f", time_score);
-	txtNum = num;
+	char num[10];
+	sprintf(num, "%0.1f", time_score * 10);
+	
 	score->setString(num);
+	txtNum = score->getString();
+	
 }
 
 void HelloWorld::doSendTime()
 {
 	log("%s", txtNum.c_str());
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	HellocallJavaMethod("SendTime", txtNum);
+	HellocallJavaMethod("SendScore", txtNum);
 #endif
 }

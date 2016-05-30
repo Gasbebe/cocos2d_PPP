@@ -1,7 +1,7 @@
 ﻿#include "ScoreScene.h"
+#include "MainScene.h"
 
 USING_NS_CC;
-
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "platform/android/jni/JniHelper.h"
@@ -39,86 +39,78 @@ Scene* ScoreScene::createScene()
 
 bool ScoreScene::init()
 {
-	if (!LayerColor::initWithColor(Color4B(255, 255, 255, 255)))
+	if (!Layer::init())
 	{
 		return false;
 	}
-
+	flag = true;
 	/////////////////////////////
+	winSize = Director::getInstance()->getWinSize();
+	//background
+	auto backlight = Sprite::create("background/light.png");
+	backlight->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	this->addChild(backlight);
+
+	auto action = FadeIn::create(2.0f);
+	auto action2 = FadeOut::create(2.0f);
+	auto seq = Sequence::create(action, action2, nullptr);
+	auto rep = RepeatForever::create(seq);
+
+	backlight->runAction(rep);
+
+	auto bg = Sprite::create("background/162.png");
+	bg->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	//bg->setZOrder(-3);
+	this->addChild(bg);
+
+	auto logo = Sprite::create("background/scorelogo.png");
+	logo->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	//bg->setZOrder(-3);
+	this->addChild(logo);
+	
 
 	// 메뉴 아이템 생성 및 초기화
-
 	MenuItemFont::setFontName("fonts/Marker Felt.ttf");
 	MenuItemFont::setFontSize(20);
 
-	auto pMenuItem3 = MenuItemFont::create(
-		" 일회성 업적 ",
-		CC_CALLBACK_1(ScoreScene::doSendOne, this));
-	pMenuItem3->setColor(Color3B(0, 0, 0));
-	pMenuItem3->setPosition(Vec2(180, 130));
-
-	auto pMenuItem4 = MenuItemFont::create(
-		" 단계별 업적 ",
-		CC_CALLBACK_1(ScoreScene::doSendMulti, this));
-	pMenuItem4->setColor(Color3B(0, 0, 0));
-	pMenuItem4->setPosition(Vec2(300, 130));
-
-	auto pMenuItem5 = MenuItemFont::create(
-		" 리더보드 ",
+	auto pMenuItem1 = MenuItemImage::create(
+		"button/rank_btn.png",
+		"button/rank_btn_press.png",
 		CC_CALLBACK_1(ScoreScene::doShowLeaderBoard, this));
-	pMenuItem5->setColor(Color3B(0, 0, 0));
-	pMenuItem5->setPosition(Vec2(180, 80));
+	pMenuItem1->setPosition(Vec2(winSize.width / 2 - 200, 40));
 
-	auto pMenuItem6 = MenuItemFont::create(
-		" 업적보기 ",
-		CC_CALLBACK_1(ScoreScene::doShowAchivement, this));
-	pMenuItem6->setColor(Color3B(0, 0, 0));
-	pMenuItem6->setPosition(Vec2(300, 80));
+	auto pMenuItem2 = MenuItemImage::create(
+		"button/retry_btn.png",
+		"button/retry_btn_press.png",
+		CC_CALLBACK_1(ScoreScene::moveScene, this));
+	pMenuItem2->setPosition(Vec2(winSize.width / 2, 40));
+
+	auto pMenuItem3 = MenuItemImage::create(
+		"button/quit_btn.png",
+		"button/quit_btn_press.png",
+		CC_CALLBACK_1(ScoreScene::quitGame, this));
+	pMenuItem3->setPosition(Vec2(winSize.width / 2 + 200, 40));
 
 	auto pMenu = Menu::create(
-		pMenuItem3, pMenuItem4,
-		pMenuItem5, pMenuItem6,
+		pMenuItem1, pMenuItem2, pMenuItem3,
 		nullptr);
 
 	pMenu->setPosition(Vec2(0, 0));
 
 	this->addChild(pMenu);
 
-	txtNum = 10;
+	scoreLabel = LabelAtlas::create("0", "number/numbers.png", 60, 85, '.');  //12 ,32 픽셀로 자름    '.'아스키코드값부터 시작 9까지
+	scoreLabel->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	scoreLabel->setScale(0.5f);
+	this->addChild(scoreLabel);
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	ScorecallJavaMethod("setLabel", "");
+#endif
 	//--------------------------------------------------------------
 	return true;
 }
 
-
-void ScoreScene::doSendScore(Ref* pSender)
-{
-	log("%s", txtNum.c_str());
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	ScorecallJavaMethod("SendScore", txtNum);
-#endif
-}
-
-void ScoreScene::doSendTime(Ref* pSender)
-{
-	log("%s", txtNum.c_str());
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	ScorecallJavaMethod("SendTime", txtNum);
-#endif
-}
-
-void ScoreScene::doSendOne(Ref* pSender)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	ScorecallJavaMethod("SendOne", "");
-#endif
-}
-
-void ScoreScene::doSendMulti(Ref* pSender)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	ScorecallJavaMethod("SendMulti", "");
-#endif
-}
 
 void ScoreScene::doShowLeaderBoard(Ref* pSender)
 {
@@ -127,13 +119,19 @@ void ScoreScene::doShowLeaderBoard(Ref* pSender)
 #endif
 }
 
-void ScoreScene::doShowAchivement(Ref* pSender)
+void ScoreScene::moveScene(Ref* pSender)
 {
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	ScorecallJavaMethod("ShowAchivement", "");
-#endif
+	if (flag) {
+		auto pScene = MainScene::createScene();
+		Director::getInstance()->replaceScene(TransitionCrossFade::create(0.5, pScene));
+		flag = false;
+	}
 }
 
-void ScoreScene::setScore(std::string score) {
-	txtNum = score;
+void ScoreScene::quitGame(Ref* pSender) {
+
+}
+
+void ScoreScene::setLabelScore(std::string time_score) {
+	scoreLabel->setString(time_score);
 }
