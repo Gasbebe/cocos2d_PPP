@@ -1,7 +1,8 @@
-﻿#include "ScoreScene.h"
+﻿#include "SimpleAudioEngine.h"
+#include "ScoreScene.h"
 #include "MainScene.h"
 
-USING_NS_CC;
+#define SCOREMUSIC "Sound/music_mainmenu_songhai.ogg"
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "platform/android/jni/JniHelper.h"
@@ -28,6 +29,9 @@ void ScorecallJavaMethod(std::string func, std::string arg0)
 }
 #endif
 
+USING_NS_CC;
+using namespace CocosDenshion;
+
 Scene* ScoreScene::createScene()
 {
 	auto scene = Scene::create();
@@ -45,6 +49,10 @@ bool ScoreScene::init()
 	}
 	flag = true;
 	/////////////////////////////
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic(SCOREMUSIC);
+	SimpleAudioEngine::getInstance()->playBackgroundMusic(SCOREMUSIC, true);
+	SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(1.0f);
+
 	winSize = Director::getInstance()->getWinSize();
 	//background
 	auto backlight = Sprite::create("background/light.png");
@@ -103,10 +111,9 @@ bool ScoreScene::init()
 	scoreLabel->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	scoreLabel->setScale(0.5f);
 	this->addChild(scoreLabel);
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	ScorecallJavaMethod("setLabel", "");
-#endif
+	
+	score = UserDefault::getInstance()->getIntegerForKey("int_key");
+	setLabelScore(score);
 	//--------------------------------------------------------------
 	return true;
 }
@@ -129,9 +136,14 @@ void ScoreScene::moveScene(Ref* pSender)
 }
 
 void ScoreScene::quitGame(Ref* pSender) {
-
+	Director::getInstance()->end();
 }
 
-void ScoreScene::setLabelScore(std::string time_score) {
-	scoreLabel->setString(time_score);
+void ScoreScene::setLabelScore(int time_score) {
+
+	char num[100];
+	sprintf(num, "%d", time_score);
+
+	scoreLabel->setString(num);
+
 }

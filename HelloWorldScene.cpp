@@ -2,6 +2,7 @@
 #include "SimpleAudioEngine.h"
 #include "ScoreScene.h"
 
+
 USING_NS_CC;
 using namespace CocosDenshion;
 
@@ -98,7 +99,7 @@ bool HelloWorld::init()
 	
 	if (createBox2dWorld(false)) {
 		this->schedule(schedule_selector(HelloWorld::tick));
-		this->schedule(schedule_selector(HelloWorld::uptateTime), 0.1f);
+		this->schedule(schedule_selector(HelloWorld::uptateTime), 1.0f);
 	}
 	
 	///////////////
@@ -164,7 +165,7 @@ bool HelloWorld::init()
 
 
 	//점수
-	time_score = 0.0f;
+	time_score = 0;
 	score = LabelAtlas::create("0", "number/numbers.png", 60, 86, '.');
 	score->setPosition(Vec2(winSize.width / 2 - 50, winSize.height / 2 + 100));
 	score->setScale(0.5f);
@@ -209,6 +210,17 @@ bool HelloWorld::init()
 	auto delay5_sep = Sequence::create(delay5, CallFunc::create(CC_CALLBACK_0(HelloWorld::setFlag5, this)), nullptr);
 	act_flag5= delay5_sep;
 	act_flag5->retain();
+	
+	auto pMenuItem = MenuItemImage::create(
+		"button/fail_btn.png",
+		"button/fail_btn.png",
+		CC_CALLBACK_1(HelloWorld::gameOver, this));
+	pMenuItem->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+
+	menu = Menu::create(pMenuItem, nullptr);
+	menu->setPosition(Vec2(0, 0));
+	this->addChild(menu);
+	menu->setVisible(false);
 
 	return true;
 }
@@ -572,10 +584,9 @@ void HelloWorld::tick(float dt) {
 
 	//플레이어 3명 죽음 체크
 	if (player1->ps == player1->Die && player2->ps == player2->Die && player3->ps == player3->Die) {
-		Director::getInstance()->pause();
-		//removeChild(command);
 		this->unschedule(schedule_selector(HelloWorld::uptateTime));
 		command->setVisible(false);
+		menu->setVisible(true);
 	}
 	if (monster->ms == monster->Die) {
 		//log("몬스터 가 죽었습니다");
@@ -583,10 +594,16 @@ void HelloWorld::tick(float dt) {
 		if (scene_move) {
 			this->unschedule(schedule_selector(HelloWorld::uptateTime));
 			command->setVisible(false);
-			doSendTime();
-			auto pScene = ScoreScene::createScene();
-			Director::getInstance()->pushScene(TransitionCrossFade::create(0.5, pScene));
+
 			//리더보드에 시간을 보냄
+			doSendTime();
+
+			//씬이동
+			UserDefault::getInstance()->setIntegerForKey("int_key", time_score);
+
+			auto pScene = ScoreScene::createScene();
+			Director::getInstance()->pushScene(TransitionCrossFade::create(1.0f, pScene));
+		
 			scene_move = false;
 		}
 	}
@@ -979,7 +996,7 @@ void HelloWorld::setCharectorAnimations() {
 	//       monster            //
 	/////////////////////////////
 
-	monster = new Monster(100);
+	monster = new Monster(1000);
 
 	//monster animation idle
 	Vector<SpriteFrame*> monster_animFramesIdle;
@@ -1400,13 +1417,14 @@ void HelloWorld::offBlock() {
 
 //시간 업데이트
 void HelloWorld::uptateTime(float dt) {
-	time_score = time_score + 0.1f;
+	time_score = time_score + 1;
 
 	//시간을 문자로 변환 및 리더보드로 보내는 변수
-	char num[10];
-	sprintf(num, "%0.1f", time_score * 10);
-	
+	char num[100];
+	sprintf(num, "%d", time_score);
+
 	score->setString(num);
+
 	txtNum = score->getString();
 	
 }
@@ -1414,7 +1432,22 @@ void HelloWorld::uptateTime(float dt) {
 void HelloWorld::doSendTime()
 {
 	log("%s", txtNum.c_str());
+
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	HellocallJavaMethod("SendScore", txtNum);
 #endif
+
+}
+
+
+void HelloWorld::gameOver(Ref* pSender) {
+	if (scene_move) {
+		UserDefault::getInstance()->setIntegerForKey("int_key", 0);
+
+		auto pScene = ScoreScene::createScene();
+		Director::getInstance()->pushScene(TransitionCrossFade::create(1.0f, pScene));
+
+		scene_move = false;
+	}
+
 }

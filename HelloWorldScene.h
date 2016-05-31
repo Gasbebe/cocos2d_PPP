@@ -19,10 +19,10 @@
 #define UILAYER 10
 
 //한방 데미지 25
-#define MONSTER_SKILL2 30
+#define MONSTER_SKILL2 31
 
 //화살 데미지 5
-#define MONSTER_SKILL3 6
+#define MONSTER_SKILL3 7
 
 using namespace cocos2d;
 using namespace cocos2d::extension;
@@ -40,6 +40,11 @@ public:
 	cocos2d::Size winSize;
 	cocos2d::Texture2D* texture;
 	
+
+	//menu
+	cocos2d::Menu* menu;
+
+
 	//Box2d
 	void tick(float dt);
 	virtual void draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, uint32_t flags) override;
@@ -139,10 +144,11 @@ public:
 
 	//씬 이동
 	bool scene_move;
+	void gameOver(Ref* pSender);
 
 	//time score
 	cocos2d::LabelAtlas* score;
-	double time_score;
+	int time_score;
 	void uptateTime(float dt);
 
 	//리더보드

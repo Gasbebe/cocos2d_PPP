@@ -1,6 +1,5 @@
 ﻿#include "AppDelegate.h"
-//#include "IntroScene.h"
-#include "ScoreScene.h"
+#include "IntroScene.h"
 
 USING_NS_CC;
 
@@ -44,18 +43,17 @@ bool AppDelegate::applicationDidFinishLaunching() {
     }
 
     // turn on display FPS
-    director->setDisplayStats(true);
+    director->setDisplayStats(false);
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
     // Set the design resolution
     glview->setDesignResolutionSize(designResolutionSize.width,
 									designResolutionSize.height,
-									ResolutionPolicy::NO_BORDER);
+									ResolutionPolicy::SHOW_ALL);
 	//EXACR_FIT:    NO_BORDER:
 
     // create a scene. it's an autorelease object
-    auto scene = ScoreScene::createScene();
-	//auto scene = IntroScene::createScene();
+	auto scene = IntroScene::createScene();
     // run
     director->runWithScene(scene);
 

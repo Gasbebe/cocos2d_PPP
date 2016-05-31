@@ -20,13 +20,13 @@ public:
 	cocos2d::Size winSize;
 
 	cocos2d::LabelAtlas* scoreLabel;
-	double score;
+	int score;
 	std::string txtNum;
 
 	void doShowLeaderBoard(Ref* pSender);
 	void moveScene(Ref* pSender);
 	void quitGame(Ref* pSender);
-	void setLabelScore(std::string num);
+	void setLabelScore(int num);
 
 };
 #endif
