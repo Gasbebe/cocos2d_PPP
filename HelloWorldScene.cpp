@@ -222,6 +222,8 @@ bool HelloWorld::init()
 	this->addChild(menu);
 	menu->setVisible(false);
 
+	//
+
 	return true;
 }
 
@@ -281,6 +283,16 @@ HelloWorld::~HelloWorld() {
 	delete _world;
 
 	this->unschedule(schedule_selector(HelloWorld::tick));
+	this->unscheduleAllSelectors();
+
+	CC_SAFE_RELEASE_NULL(command);
+	CC_SAFE_RELEASE_NULL(player1);
+	CC_SAFE_RELEASE_NULL(player2);
+	CC_SAFE_RELEASE_NULL(player3);
+	CC_SAFE_RELEASE_NULL(monster);
+	CC_SAFE_RELEASE_NULL(effect);
+
+	SimpleAudioEngine::getInstance()->end();
 
 	_world = nullptr;
 }
@@ -598,11 +610,12 @@ void HelloWorld::tick(float dt) {
 			//리더보드에 시간을 보냄
 			doSendTime();
 
-			//씬이동
-			UserDefault::getInstance()->setIntegerForKey("int_key", time_score);
+			//씬이동 delay
+			auto delay = DelayTime::create(1.5f);
+			auto seq = Sequence::create(delay, CallFunc::create(CC_CALLBACK_0(HelloWorld::moveScene, this)), nullptr);
+			this->runAction(seq);
 
-			auto pScene = ScoreScene::createScene();
-			Director::getInstance()->pushScene(TransitionCrossFade::create(1.0f, pScene));
+			UserDefault::getInstance()->setIntegerForKey("int_key", time_score);
 		
 			scene_move = false;
 		}
@@ -1449,5 +1462,12 @@ void HelloWorld::gameOver(Ref* pSender) {
 
 		scene_move = false;
 	}
+
+}
+
+void HelloWorld::moveScene() {
+	
+	auto pScene = ScoreScene::createScene();
+	Director::getInstance()->pushScene(TransitionCrossFade::create(1.0f, pScene));
 
 }

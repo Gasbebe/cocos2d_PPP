@@ -1,8 +1,10 @@
 ﻿#include "SimpleAudioEngine.h"
+#include "HelloWorldScene.h"
 #include "ScoreScene.h"
 #include "MainScene.h"
 
 #define SCOREMUSIC "Sound/music_mainmenu_songhai.ogg"
+
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "platform/android/jni/JniHelper.h"
@@ -136,7 +138,12 @@ void ScoreScene::moveScene(Ref* pSender)
 }
 
 void ScoreScene::quitGame(Ref* pSender) {
-	Director::getInstance()->end();
+
+	//Director::getInstance()->end();
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	ScorecallJavaMethod("Quit", "");
+#endif
+
 }
 
 void ScoreScene::setLabelScore(int time_score) {

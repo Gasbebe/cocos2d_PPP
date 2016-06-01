@@ -41,6 +41,7 @@ public:
 	cocos2d::Texture2D* texture;
 	
 
+
 	//menu
 	cocos2d::Menu* menu;
 
@@ -145,6 +146,7 @@ public:
 	//씬 이동
 	bool scene_move;
 	void gameOver(Ref* pSender);
+	void moveScene();
 
 	//time score
 	cocos2d::LabelAtlas* score;
